@@ -1,0 +1,68 @@
+<!-- $Id: docs.shtml,v 1.1 2005/02/03 01:04:59 jchapman0 Exp $ -->
+<html>
+<head>
+	<title>BrowserLauncher2 Documentation Page</title>
+    <link rel="stylesheet" href="browserlauncherweb.css" type="text/css">
+</head>
+<body bgcolor="#ffffff">
+<table border="0" width="80%">
+    <tr valign="top">
+        <!--#include virtual="sidebar.shtml" -->
+        <td>
+            <span class="header1"><a name="files">Download Files</a></span>
+			<br/><br/>
+			<table border="1" cellpadding="2" cellspacing="2">
+				<tr class="header2" valign="top">
+					<td>File</td>
+					<td>Description</td>
+				</tr>
+				<tr class="paratext" valign="top">
+					<td>BrowserLauncher2.jar</td>
+					<td>A small JAR file containing only the *.class files. This 
+					is intended to be included in (distributed) client applications 
+					that use BrowserLauncher2.</td>
+				</tr>
+				<tr class="paratext" valign="top">
+					<td>BrowserLauncher2-all.jar</td>
+					<td>A &ldquo;big&rdquo; JAR file again containing the class 
+					files. Additionally, it includes the source and Javadoc API documentation. 
+					This is intended to be used by developers that want to develop applications 
+					that use BrowseLauncher2.</td>
+				</tr>
+			</table>
+			<br/>
+            <span class="header1"><a name="testapp">Test Application</a></span>
+			<br/><br/>
+			<p class="paratext">BrowserLauncher2-all.zip contains a small application 
+			for testing the library. To invoke the test application, enter the following 
+			on a command line: <code>java -jar BrowserLauncher2-all.zip</code>. The application
+			contains a text field for entering urls (you will need to include the protocol) and
+			a text area that records information about your environment and captures stack
+			traces.</p>
+			<br/>
+            <span class="header1"><a name="apinotes">General API Notes</a></span>
+			<br/><br/>
+			<p class="paratext">The preferred method for using the BrowserLauncher2 api is to
+			create an instance of BrowserLauncher (<code>edu.stanford.ejalbert.BrowserLauncher</code>) and
+			invoke the method <code>public void openURLinBrowser(String urlString)</code>.</p>
+			<p class="paratext">If the application will be invoking urls often, it might be useful
+			to wrap the BrowserLauncher instance with a singleton or use some mechanism to cache it.</p>
+			<p class="paratext">The call to openURLinBrowser() should be executed in a separate thread from the
+			application's main/event thread. Applications can create an instance of BrowserLauncherRunner
+			(<code>edu.stanford.ejalbert.BrowserLauncherRunner</code>) and pass it to a Thread. The sample code
+			below is taken from the test application 
+			(<code>edu.stanford.ejalbert.BrowserLauncher.BrowserLauncherTestApp</code>) which can be used as a 
+			reference application.
+			<br/><br/>
+			<code>
+            BrowserLauncherErrorHandler errorHandler = new TestAppErrorHandler(debugTextArea);<br/>
+            BrowserLauncherRunner runner = new BrowserLauncherRunner(launcher, urlString, errorHandler);<br/>
+            Thread launcherThread = new Thread(runner);<br/>
+            launcherThread.start();<br/>
+			</code>
+			</p>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!-- $Id: platformsupport.shtml,v 1.1 2005/02/03 01:04:59 jchapman0 Exp $ -->
+<html>
+<head>
+	<title>Platform Support for BrowserLauncher2 Page</title>
+    <link rel="stylesheet" href="browserlauncherweb.css" type="text/css">
+</head>
+<body bgcolor="#ffffff">
+<table border="0" width="80%">
+    <tr valign="top">
+        <!--#include virtual="sidebar.shtml" -->
+        <td>
+            <span class="header1">Platform Support for BrowserLauncher2</span>
+			<br/><br/>
+			<table border="1" cellpadding="2" cellspacing="2">
+				<tr class="header2" valign="top">
+					<td>OS Name</td>
+					<td>Browsers</td>
+					<td>Status</td>
+					<td>Notes</td>
+				</tr>
+				<tr class="paratext" valign="top">
+					<td>Linux (2.4.x or higher)</td>
+					<td>FireFox, Mozilla, Netscape</td>
+					<td>Supported</td>
+					<td>If more than one of the supported browsers is available, the first one in alpha order will be invoked.</td>
+				</tr>
+				<tr class="paratext" valign="top">
+					<td>Mac OS X (10.2 or higher)</td>
+					<td></td>
+					<td>Supported</td>
+					<td></td>
+				</tr>
+				<tr class="paratext" valign="top">
+					<td>Windows 2000 (5.0)</td>
+					<td>Mozilla</td>
+					<td>Supported</td>
+					<td></td>
+				</tr>
+			</table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

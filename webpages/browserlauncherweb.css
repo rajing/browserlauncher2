@@ -1,0 +1,61 @@
+<!-- $Id: browserlauncherweb.css,v 1.1 2005/02/03 01:04:59 jchapman0 Exp $ -->
+
+.menu {
+	font-family: "Times New Roman", Arial, Helvetica, sans-serif;
+	font-variant: normal;
+	text-indent: 0in;
+	widows: 2;
+	font-style: normal;
+	font-weight: normal;
+	text-decoration: none;
+	color: #000000;
+	text-align: left;
+	font-size: 12pt;
+	font-stretch: normal;
+	background-color: #ffffff;
+}
+
+.paratext {
+	font-family: "Times New Roman", Arial, Helvetica, sans-serif;
+	font-variant: normal;
+	text-indent: 0in;
+	widows: 2;
+	font-style: normal;
+	font-weight: normal;
+	text-decoration: none;
+	color: #000000;
+	text-align: left;
+	font-size: 12pt;
+	font-stretch: normal;
+	background-color: #ffffff;
+}
+
+.header1 {
+	font-family: "Times New Roman", Arial, Helvetica, sans-serif;
+	font-variant: normal;
+	text-indent: 0in;
+	widows: 2;
+	font-style: normal;
+	font-weight: bold;
+	text-decoration: none;
+	color: #0000dd;
+	text-align: left;
+	font-size: 16pt;
+	font-stretch: normal;
+	background-color: #ffffff;
+}
+
+.header2 {
+	font-family: "Times New Roman", Arial, Helvetica, sans-serif;
+	font-variant: normal;
+	text-indent: 0in;
+	widows: 2;
+	font-style: normal;
+	font-weight: bold;
+	text-decoration: none;
+	color: #000000;
+	text-align: left;
+	font-size: 14pt;
+	font-stretch: normal;
+	background-color: #ffffff;
+}

@@ -1,0 +1,33 @@
+<!-- $Id: projectsusing.shtml,v 1.1 2005/02/03 01:04:59 jchapman0 Exp $ -->
+<html>
+<head>
+	<title>Projects Using BrowserLauncher2 Page</title>
+    <link rel="stylesheet" href="browserlauncherweb.css" type="text/css">
+</head>
+<body bgcolor="#ffffff">
+<table border="0" width="80%">
+    <tr valign="top">
+        <!--#include virtual="sidebar.shtml" -->
+        <td>
+            <span class="header1">Projects Using BrowserLauncher2</span>
+			<br/><br/>
+			<p class="paratext">Is your project using the BrowserLauncher2 library?</p>
+			<p class="paratext">Let us know and we will list it below. E-mail the project 
+			administrator at <a href="mailto:jchapman0@users.sourceforge.net">jchapman0@users.sourceforge.net</a>. 
+			Please provide a link to your project page and a brief description.</p>
+			<br/>
+			<table border="1" cellpadding="2" cellspacing="2">
+				<tr class="header2" valign="top">
+					<td>Project Name</td>
+					<td>Description</td>
+				</tr>
+				<tr class="paratext" valign="top">
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

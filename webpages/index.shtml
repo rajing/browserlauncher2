@@ -1,0 +1,39 @@
+<!-- $Id: index.shtml,v 1.1 2005/02/03 01:04:59 jchapman0 Exp $ -->
+<html>
+<head>
+	<title>BrowserLauncher2 Main Page</title>
+	<meta name="keywords" content="java, url, browser">
+	<meta name="description" content="BrowserLauncher2 is a cross-platform library implemented in Java for openning a url with the user's default browser.">
+    <link rel="stylesheet" href="browserlauncherweb.css" type="text/css">
+</head>
+<body bgcolor="#ffffff">
+<table border="0" width="80%">
+    <tr valign="top">
+        <!--#include virtual="sidebar.shtml" -->
+        <td>
+            <span class="header1">BrowserLauncher2</span>
+			<br/><br/>
+	        <span class="header2">What Is It?</span>
+			<br/>
+			<p class="paratext">BrowserLauncher2, a continuation of the BrowserLauncher project, is a library 
+			that facilitates openning a browser from a Java application and directing the browser to a supplied 
+			url. In most cases the browser openned will be the user's default browser.</p>
+			<br/>
+	        <span class="header2">System Requirements</span>
+			<br/>
+			<p class="paratext">BrowserLauncher2 is written entirely in Java. The libraries have been compiled 
+			using JDK 1.4. Operating System support is ongoing (see <a href="platformsupport.shtml">Platform 
+			Support</a> for details). The library supports various flavors of Mac, Windows, and Unix/Linux.</p>
+			<br/>
+	        <span class="header2">License</span>
+	        <p class="paratext">This software is being released under the <a 
+			href="http://www.gnu.org/licenses/lgpl.html">GNU Lesser General Public License</a>. For more information 
+			on GNU and the LGPL, visit <a href="http://www.gnu.org">http://www.gnu.org</a>.</p>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
+
+
+			
