@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 20042005 Markus Gebhard, Jeff Chapman
+    Copyright 2004,2005 Markus Gebhard, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncher.java,v 1.2 2005/01/22 20:38:51 jchapman0 Exp $
+// $Id: BrowserLauncher.java,v 1.3 2005/01/31 21:11:47 jchapman0 Exp $
 package edu.stanford.ejalbert;
 
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
@@ -28,7 +28,7 @@ import edu.stanford.ejalbert.launching.BrowserLaunchingFactory;
 import edu.stanford.ejalbert.launching.IBrowserLaunching;
 
 /**
- * BrowserLauncher is a class that provides one static method, openURL, which opens the default
+ * BrowserLauncher is a class that provides a method, openURLinBrowser, which opens the default
  * web browser for the current user of the system to the given URL.  It may support other
  * protocols depending on the system -- mailto, ftp, etc. -- but that has not been rigorously
  * tested and is not guaranteed to work.
@@ -69,7 +69,7 @@ import edu.stanford.ejalbert.launching.IBrowserLaunching;
  * Larry Barowski, Trevor Bedzek, Frank Miedrich, and Ron Rabakukk
  *
  * @author Eric Albert (<a href="mailto:ejalbert@cs.stanford.edu">ejalbert@cs.stanford.edu</a>)
- * @version 1.4b1 (Released June 20, 2001)
+ * @version 1.0rc1
  */
 public class BrowserLauncher {
 
@@ -79,7 +79,11 @@ public class BrowserLauncher {
     private IBrowserLaunching launching;
 
     /**
-     * This class should be never be instantiated; this just ensures so.
+     * Initializes the browser launcher for the operating system on which
+     * the application is running.
+     *
+     * @throws BrowserLaunchingInitializingException
+     * @throws UnsupportedOperatingSystemException
      */
     public BrowserLauncher()
             throws BrowserLaunchingInitializingException,
@@ -89,6 +93,10 @@ public class BrowserLauncher {
 
     /**
      * Determines the operating system and loads the necessary runtime data.
+     *
+     * @throws UnsupportedOperatingSystemException
+     * @throws BrowserLaunchingExecutionException
+     * @throws BrowserLaunchingInitializingException
      *
      * @return IBrowserLaunching
      */
@@ -122,8 +130,10 @@ public class BrowserLauncher {
      * @deprecated -- create a BrowserLauncher object and use it instead of
      *                calling this static method.
      * @todo what if the url is null or empty?
-     * @param url The URL to open
-     * @throws IOException If the web browser could not be located or does not run
+     * @param urlString The URL to open
+     * @throws UnsupportedOperatingSystemException
+     * @throws BrowserLaunchingExecutionException
+     * @throws BrowserLaunchingInitializingException
      */
     public static void openURL(String urlString)
             throws UnsupportedOperatingSystemException,
@@ -135,6 +145,8 @@ public class BrowserLauncher {
 
     /**
      * Opens a browser and url from the command line. Useful for testing.
+     * The first argument is the url to be opened. All other arguments will
+     * be ignored.
      *
      * @param args String[]
      */
