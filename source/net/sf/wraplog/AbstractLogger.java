@@ -36,45 +36,7 @@ package net.sf.wraplog;
  */
 public abstract class AbstractLogger {
 	
-	/** Logging level for messages that usually are of no interest for the user. */
-	public static final int DEBUG = 0;
-
-	/**
-	 * Logging level for messages that explain why the desired operation cannot
-	 * be performed.
-	 * <p>
-	 * Note: a simple way for deriving goog error messages is to make them fit
-	 * the pattern: <blockquote>cannot do something: actual state must match
-	 * expectation. </blockquote> Just fill in "do something", "actual state"
-	 * and "expectation".<p> In case your code is just reporting a Java
-	 * <code>Exception</code> that happens at a lower level on the call stack,
-	 * use the pattern: <blockquote>cannot do something: &lt;
-	 * <code>exception.getMessage()</code> &gt;. </blockquote> In practice,
-	 * this often results into sucky error messages, but therer is not much you
-	 * can do about it except making sure that if your own
-	 * <code>Exceptions</code> have a useful <code>getMessage()</code>.
-	 */
-	public static final int ERROR = 3;
-
-	/**
-	 * Logging level for messages that tell details about normal operations
-	 * currently going on.
-	 */
-	public static final int INFO = 1;
-
-	/**
-	 * Logging level for message that notify that the things can be processed,
-	 * but the user might want to take a closer look at the current situation.
-	 * <p>
-	 * Note: warnings are a good indicator for bad design. They hint at the
-	 * developer being to dumb to resolve a situation and therefor delegating
-	 * the responsibility to the user. Preferrably, the code shoud be changed to
-	 * either log <code>INFO</code>, throw an exception or log
-	 * <code>ERROR</code>.
-	 */
-	public static final int WARN = 2;
-
-	private int level = DEBUG;
+	private int level = Level.DEBUG;
 
 	private int loggedMessageCount;
 
@@ -85,9 +47,9 @@ public abstract class AbstractLogger {
 		} else {
 			actualName = name;
 		}
-		if ((logLevel < DEBUG) || (logLevel > ERROR)) {
+		if ((logLevel < Level.DEBUG) || (logLevel > Level.ERROR)) {
 			throw new IllegalArgumentException(actualName
-					+ " must be one of: DEBUG, INFO, WARN, ERROR");
+					+ " must be one of: Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR");
 		}
 	}
 
@@ -96,7 +58,7 @@ public abstract class AbstractLogger {
 	}
 
 	public void debug(String message, Throwable error) {
-		possiblyLog(DEBUG, message, error);
+		log(Level.DEBUG, message, error);
 	}
 
 	public void error(String message) {
@@ -104,7 +66,7 @@ public abstract class AbstractLogger {
 	}
 
 	public void error(String message, Throwable error) {
-		possiblyLog(ERROR, message, error);
+		log(Level.ERROR, message, error);
 	}
 
 	public int getLevel() {
@@ -121,7 +83,7 @@ public abstract class AbstractLogger {
 	}
 
 	public void info(String message, Throwable error) {
-		possiblyLog(INFO, message, error);
+		log(Level.INFO, message, error);
 	}
 
 	public boolean isEnabled(int logLevel) {
@@ -132,33 +94,41 @@ public abstract class AbstractLogger {
 	/**
 	 * Logs a message and optional error details.
 	 * 
-	 * @param level one of: DEBUG, INFO, WARN, ERROR
+	 * @param logLevel one of: Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR
 	 * @param message the actual message; this will never be <code>null</code>
 	 * @param error an error that is related to the message; unless <code>null</code>, the name and stack trace of the error are logged
 	 */
-	protected abstract void log(int logLevel, String message, Throwable error) throws Exception;
+	protected abstract void reallyLog(int logLevel, String message, Throwable error) throws Exception;
 
-	/**
-	 * Provided that <code>getLevel()</code> accepts it, log
-	 * <code>message</code> and <code>error</code>. Otherwise, do nothing.
-	 */
-	protected void possiblyLog(int logLevel, String message, Throwable error) {
-		if (isEnabled(logLevel)) {
-			try {
-				log(logLevel, message, error);
-				loggedMessageCount += 1;
-			} catch (Exception error2) {
-				throw new LoggingException("cannot log message: " + message, error2);
-			}
-		}
-	}
+    /**
+     * Provided that <code>getLevel()</code> accepts it, log
+     * <code>message</code>. Otherwise, do nothing.
+     */
+    public void log(int logLevel, String message) {
+        log(logLevel, message, null);
+    }
+
+    /**
+     * Provided that <code>getLevel()</code> accepts it, log
+     * <code>message</code> and <code>error</code>. Otherwise, do nothing.
+     */
+    public void log(int logLevel, String message, Throwable error) {
+        if (isEnabled(logLevel)) {
+            try {
+                reallyLog(logLevel, message, error);
+                loggedMessageCount += 1;
+            } catch (Exception error2) {
+                throw new LoggingException("cannot log message: " + message, error2);
+            }
+        }
+    }
 
 	public void setLevel(int newLevel) {
-		if ((level >= DEBUG) || (level <= ERROR)) {
+		if ((level >= Level.DEBUG) || (level <= Level.ERROR)) {
 			level = newLevel;
 		} else {
 			throw new IllegalArgumentException(
-					"newLevel must be one of: DEBUG, INFO, WARN, ERROR");
+					"newLevel must be one of: Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR");
 		}
 	}
 
@@ -167,22 +137,22 @@ public abstract class AbstractLogger {
 	}
 
     public boolean isDebugEnabled() {
-        return isEnabled(DEBUG);
+        return isEnabled(Level.DEBUG);
     }
     
     public boolean isInfoEnabled() {
-        return isEnabled(INFO);
+        return isEnabled(Level.INFO);
     }
     
     public boolean isWarnEnabled() {
-        return isEnabled(WARN);
+        return isEnabled(Level.WARN);
     }
     
     public boolean isErrorEnabled() {
-        return isEnabled(ERROR);
+        return isEnabled(Level.ERROR);
     }
 
     public void warn(String message, Throwable error) {
-		possiblyLog(WARN, message, error);
+		log(Level.WARN, message, error);
 	}
 }

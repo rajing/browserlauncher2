@@ -29,6 +29,8 @@
 package net.sf.wraplog;
 
 import java.io.PrintStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Logger to write messages to <code>System.out</code> (debug, info) and
@@ -38,15 +40,16 @@ import java.io.PrintStream;
  * @see System#out
  * @author Thomas Aglassinger
  */
-//$Id: SystemLogger.java,v 1.1 2005/02/24 21:16:04 roskakori Exp $
+//$Id: SystemLogger.java,v 1.2 2005/03/08 21:38:08 roskakori Exp $
 public class SystemLogger extends AbstractLogger {
 
+    private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
 	/* (non-Javadoc)
 	 * @see edu.stanford.ejalbert.logging.Logger#log(int, java.lang.String, java.lang.Throwable)
 	 */
-	protected void log(int logLevel, String message, Throwable error) {
+	protected void reallyLog(int logLevel, String message, Throwable error) {
 		PrintStream stream;
-		if (logLevel < AbstractLogger.WARN) {
+		if (logLevel < Level.WARN) {
 			stream = System.out;
 		} else {
 			stream = System.err;
@@ -57,9 +60,33 @@ public class SystemLogger extends AbstractLogger {
 		if (stream == null) {
 			throw new NullPointerException("stream must not be null");
 		}
-		stream.println(message);
+		String threadName = Thread.currentThread().getName();
+        String dateAndTime = format.format(new Date());
+        stream.println(dateAndTime +" [" + threadName + "] " 
+                + getLevelText(logLevel) + " " + message);
 		if (error != null) {
 			error.printStackTrace(stream);
 		}
 	}
+    
+    /**
+     * Return a text that represents <code>logLevel</code>.
+     */
+    protected String getLevelText(int logLevel) {
+        String result; 
+        if (logLevel == Level.DEBUG) {
+            result = "DEBUG";
+        } else if (logLevel == Level.INFO) {
+            result = "INFO ";
+        } else if (logLevel == Level.WARN) {
+            result="WARN ";
+        } else if (logLevel == Level.ERROR) {
+            result = "ERROR";
+        } else {
+            throw new IllegalArgumentException(
+                    "logLevel must be one of those defined in net.sf.warplog.Level, but is " 
+                    + logLevel);
+        }
+        return result;
+    }
 }
