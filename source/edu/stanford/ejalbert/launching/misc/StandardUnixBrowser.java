@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: StandardUnixBrowser.java,v 1.1 2005/01/06 17:07:06 jchapman0 Exp $
+// $Id: StandardUnixBrowser.java,v 1.2 2005/02/20 22:21:39 roskakori Exp $
 package edu.stanford.ejalbert.launching.misc;
 
 import java.io.IOException;
@@ -46,7 +46,8 @@ class StandardUnixBrowser implements UnixBrowser {
             "mozilla");
     static StandardUnixBrowser FIREFOX = new StandardUnixBrowser("FireFox",
             "firefox");
-
+    static StandardUnixBrowser KONQUEROR = new StandardUnixBrowser("Konqueror",
+            "konqueror");
     private StandardUnixBrowser(String browserName, String browserArgName) {
         this.browserArgName = browserArgName;
         this.browserName = browserName;
