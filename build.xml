@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!-- Build file for BrowserLauncher2 -->
-<!-- $Id: build.xml,v 1.4 2005/02/02 21:48:28 roskakori Exp $ -->
+<!-- $Id: build.xml,v 1.5 2005/02/02 21:49:39 roskakori Exp $ -->
 <project name="BrowserLauncher2" default="build" basedir=".">
     <property name="product.name" value="BrowserLauncher2" />
     <property name="output.dir" value="classes" />
@@ -51,18 +51,18 @@
                <fileset file="${gnu.copying}" />
                <fileset file="${readme}" />
            </jar>
-           <jar destfile="${archive.all}"
-               index="true"
-               update="overwrite"
-               manifest="${app.manifest.test}" >
-               <fileset dir="${output.dir}" />
-               <fileset dir="." includes="build.xml, *.txt" />
-               <fileset dir="." includes=".classpath, .project" />
-               <fileset dir="." includes="**/*.java" />
-               <fileset dir="." includes="${api.dir}/**" />
-               <fileset file="${gnu.copying}" />
-               <fileset file="${readme}" />
-           </jar>
+        <jar destfile="${archive.all}"
+	           index="true"
+	           update="overwrite"
+	           manifest="${app.manifest.test}" >
+	           <fileset dir="${output.dir}" />
+	           <fileset dir="." includes="build.xml, *.txt" />
+	           <fileset dir="." includes=".classpath, .project" />
+	           <fileset dir="." includes="**/*.java" />
+	           <fileset dir="." includes="${api.dir}/**" />
+	           <fileset file="${gnu.copying}" />
+	           <fileset file="${readme}" />
+        </jar>
     </target>
 
     <target name="api" depends="init" description="create API documentation">
