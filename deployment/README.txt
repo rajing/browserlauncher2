@@ -16,8 +16,10 @@ Project Founder (BrowserLauncher2):
 Jeff Chapman sdvalidator@yahoo.com
 
 Contributors:  
+Thomas Aglassinger
 Jeff Chapman
 Markus Gebhard
+Morgan Schweers
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -26,10 +28,28 @@ For more information on OSI, see http://www.opensource.org
 System Requirements
 -------------------
 
-At a minimum, you must have a 1.4.x version of the Java(TM) 
-Runtime Environment (JRE) installed.
+BrowserLauncher2 is written entirely in Java. The libraries have been 
+compiled using JDK 1.4. Operating System support is ongoing. The library 
+supports various flavors of Mac, Windows, and Unix/Linux.
 
 Using the Library
--------------------
+-----------------
 
+The preferred method for using the BrowserLauncher2 api is to create an 
+instance of BrowserLauncher (edu.stanford.ejalbert.BrowserLauncher) and 
+invoke the method: public void openURLinBrowser(String urlString).
 
+If the application will be invoking urls often, it might be useful to wrap 
+the BrowserLauncher instance with a singleton or use some mechanism to cache it.
+
+The call to openURLinBrowser() should be executed in a separate thread from 
+the application's main/event thread. Applications can create an instance of 
+BrowserLauncherRunner (edu.stanford.ejalbert.BrowserLauncherRunner) and pass 
+it to a Thread. The sample code below is taken from the test application 
+(edu.stanford.ejalbert.BrowserLauncher.BrowserLauncherTestApp) which can be 
+used as a reference application.
+
+BrowserLauncherErrorHandler errorHandler = new TestAppErrorHandler(debugTextArea);
+BrowserLauncherRunner runner = new BrowserLauncherRunner(launcher, urlString, errorHandler);
+Thread launcherThread = new Thread(runner);
+launcherThread.start();
