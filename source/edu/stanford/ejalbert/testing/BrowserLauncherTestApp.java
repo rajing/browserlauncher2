@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004 Jeff Chapman
+    Copyright 2004,2005 Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,12 +18,14 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherTestApp.java,v 1.1 2005/01/06 17:07:06 jchapman0 Exp $
+// $Id: BrowserLauncherTestApp.java,v 1.2 2005/01/22 20:39:28 jchapman0 Exp $
 package edu.stanford.ejalbert.testing;
 
+import java.awt.AWTEvent;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -33,14 +35,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 
 import edu.stanford.ejalbert.BrowserLauncher;
-import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
-import java.awt.AWTEvent;
-import java.awt.event.WindowEvent;
-import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
+import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
+import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 
 /**
  * Standalone gui that allows for testing the broserlauncher code and provides
@@ -53,10 +52,12 @@ public class BrowserLauncherTestApp extends JFrame {
     private JButton browseButton = new JButton();
     private JLabel enterUrlLabel = new JLabel();
     private JTextField urlTextField = new JTextField();
+    private BrowserLauncher launcher; // in ctor
 
     public BrowserLauncherTestApp() {
         super("BrowserLauncher Test App");
         try {
+            launcher = new BrowserLauncher();
             enableEvents(AWTEvent.WINDOW_EVENT_MASK);
             jbInit();
         } catch (Exception ex) {
@@ -112,7 +113,7 @@ public class BrowserLauncherTestApp extends JFrame {
         }
         if (errMessage == null) {
             BrowserLauncherRunner runner =
-                    new BrowserLauncherRunner(urlString);
+                    new BrowserLauncherRunner(urlString, launcher);
             Thread launcherThread = new Thread(runner);
             launcherThread.start();
         }
@@ -125,16 +126,18 @@ public class BrowserLauncherTestApp extends JFrame {
     }
 
     private static class BrowserLauncherRunner implements Runnable {
-        private String urlString;
+        private String urlString; // in ctor
+        private BrowserLauncher launcher; // in ctor
 
-        BrowserLauncherRunner(String urlString) {
+        BrowserLauncherRunner(String urlString, BrowserLauncher launcher) {
             this.urlString = urlString;
+            this.launcher = launcher;
         }
 
         public void run() {
             String errMessage = null;
             try {
-                BrowserLauncher.openURL(urlString);
+                launcher.openURLinBrowser(urlString);
             } catch (UnsupportedOperatingSystemException ex) {
                 errMessage = ex.getMessage();
             }
