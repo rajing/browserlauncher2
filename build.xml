@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!-- Build file for BrowserLauncher2 -->
-<!-- $Id: build.xml,v 1.5 2005/02/02 21:49:39 roskakori Exp $ -->
+<!-- $Id: build.xml,v 1.6 2005/02/02 21:50:11 roskakori Exp $ -->
 <project name="BrowserLauncher2" default="build" basedir=".">
     <property name="product.name" value="BrowserLauncher2" />
     <property name="output.dir" value="classes" />
@@ -35,10 +35,10 @@
     <target name="build" depends="init" description="compile all source files">
         <mkdir dir="${output.dir}" />
         <javac srcdir="${source.dir}" destdir="${output.dir}" debug="true" />
-	<!-- copy all non-java files (properties) -->
-	<copy todir="${output.dir}">
-		<fileset dir="${source.dir}" excludes="**/*.java"/>
-	</copy>
+		<!-- copy all non-java files (properties) -->
+		<copy todir="${output.dir}">
+			<fileset dir="${source.dir}" excludes="**/*.java"/>
+		</copy>
         <jar destfile="${archive.runtime}" basedir="${output.dir}" includes="**/*.class" />
     </target>
 
