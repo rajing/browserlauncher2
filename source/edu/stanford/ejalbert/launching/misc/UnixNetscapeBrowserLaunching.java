@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: UnixNetscapeBrowserLaunching.java,v 1.1 2005/01/06 17:07:06 jchapman0 Exp $
+// $Id: UnixNetscapeBrowserLaunching.java,v 1.2 2005/02/20 22:13:17 roskakori Exp $
 package edu.stanford.ejalbert.launching.misc;
 
 import java.util.ArrayList;
@@ -56,16 +56,28 @@ public class UnixNetscapeBrowserLaunching implements IBrowserLaunching {
         potentialBrowsers.add(StandardUnixBrowser.NETSCAPE);
         // iterate potential browsers to see which are available
         Iterator iter = potentialBrowsers.iterator();
+        // will store all names of potential browsers in case the error message should list the browsers to install
+    	String potentialBrowserNames = "";
         UnixBrowser browser;
         while (iter.hasNext()) {
             browser = (UnixBrowser) iter.next();
+            potentialBrowserNames += browser.getBrowserName();
+            if (iter.hasNext()) {
+            	potentialBrowserNames+= ", ";
+            }
             if (browser.isBrowserAvailable()) {
                 unixBrowsers.add(browser);
             }
         }
+        if (unixBrowsers.size() == 0) {
+        	// no browser installed
+        	throw new BrowserLaunchingInitializingException(
+        			"one of the supported browsers must be installed: " 
+        			+ potentialBrowserNames);
+        }
         unixBrowsers = Collections.unmodifiableList(unixBrowsers);
     }
-
+    
     /**
      * This implementation will cause the calling thread to block until the
      * browser exits. Calling methods MUST wrap the call in a separate thread.
