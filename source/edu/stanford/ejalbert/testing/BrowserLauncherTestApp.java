@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherTestApp.java,v 1.3 2005/01/24 18:09:18 roskakori Exp $
+// $Id: BrowserLauncherTestApp.java,v 1.4 2005/01/25 19:05:12 roskakori Exp $
 package edu.stanford.ejalbert.testing;
 
 import java.awt.AWTEvent;
@@ -37,9 +37,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import edu.stanford.ejalbert.BrowserLauncher;
-import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
-import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
-import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 
 /**
  * Standalone gui that allows for testing the broserlauncher code and provides
@@ -101,28 +98,16 @@ public class BrowserLauncherTestApp extends JFrame {
 
     private void browseButton_actionPerformed(ActionEvent e) {
         String urlString = urlTextField.getText();
-        String errMessage = null;
-        if (urlString == null || urlString.length() == 0) {
-            errMessage = "Please enter a url to browse.";
-        }
-        if (errMessage == null) {
-            try {
-                URL url = new URL(urlString);
-            } catch (MalformedURLException ex) {
-                errMessage = ex.getMessage();
-            }
-        }
-        if (errMessage == null) {
+        try {
             BrowserLauncherRunner runner =
                     new BrowserLauncherRunner(urlString, launcher);
             Thread launcherThread = new Thread(runner);
             launcherThread.start();
-        }
-        if (errMessage != null) {
+        } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
-                                          errMessage,
+                                          ex.getMessage(),
                                           "Error Message",
-                                          JOptionPane.ERROR_MESSAGE); ;
+                                          JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -130,28 +115,22 @@ public class BrowserLauncherTestApp extends JFrame {
         private String urlString; // in ctor
         private BrowserLauncher launcher; // in ctor
 
-        BrowserLauncherRunner(String urlString, BrowserLauncher launcher) {
+        BrowserLauncherRunner(String urlString, BrowserLauncher launcher) throws MalformedURLException {
+            // validate URL
+            if (urlString == null || urlString.length() == 0) {
+                throw new MalformedURLException("URL to browse must be specified");
+            }
+            new URL(urlString);
             this.urlString = urlString;
             this.launcher = launcher;
         }
 
         public void run() {
-            String errMessage = null;
             try {
                 launcher.openURLinBrowser(urlString);
-            } catch (UnsupportedOperatingSystemException ex) {
-                errMessage = ex.getMessage();
-            }
-            catch (BrowserLaunchingInitializingException ex) {
-                errMessage = ex.getMessage();
-            }
-            catch (BrowserLaunchingExecutionException ex) {
-                errMessage = ex.getMessage();
-            }
-
-            if (errMessage != null) {
+            } catch (Exception ex) {
                 JOptionPane.showMessageDialog(JOptionPane.getRootFrame(),
-                                              errMessage,
+                                              ex.getMessage(),
                                               "Error Message",
                                               JOptionPane.ERROR_MESSAGE);
             }
