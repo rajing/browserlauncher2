@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<project name="BrowserLauncher2" default="build" basedir=".">
+    <property name="product.name" value="BrowserLauncher2" />
+    <property name="output.dir" value="classes" />
+    <property name="source.dir" value="source" />
+    <property name="lib.dir" value="lib" />
+    <property name="deployment.dir" value="deployment" />
+    <property name="api.dir" value="api" />
+    <property name="archive.runtime" value="${deployment.dir}/BrowserLauncher2.jar" />
+    <property name="archive.all" value="${deployment.dir}/BrowserLauncher2-all.zip" />
+
+    <target name="init">
+        <tstamp />
+        <mkdir dir="${lib.dir}" />
+        <mkdir dir="${output.dir}" />
+        <mkdir dir="${deployment.dir}" />
+    </target>
+
+    <target name="clean" description="remove all files created by build" depends="init">
+        <delete>
+            <fileset dir="${output.dir}" />
+        </delete>
+        <delete dir="${api.dir}" />
+        <delete file="${archive.all}" />
+        <delete file="${archive.runtime}" />
+    </target>
+
+    <target name="build" depends="package" description="build application" />
+
+    <target name="compile" depends="init" description="compile all source files">
+        <mkdir dir="${output.dir}" />
+        <javac srcdir="${source.dir}" destdir="${output.dir}" debug="true" />
+        <jar destfile="${archive.runtime}" basedir="${output.dir}" includes="**/*.class" />
+    </target>
+
+    <target name="package" depends="compile, api" description="create source archive">
+        <zip destfile="${archive.all}">
+            <zipfileset dir="${output.dir}" />
+            <zipfileset dir="." includes="build.xml, *.txt" />
+            <zipfileset dir="." includes=".classpath, .project" />
+            <zipfileset dir="." includes="**/*.java" />
+            <zipfileset dir="." includes="${api.dir}/**" />
+        </zip>
+    </target>
+
+    <target name="api" depends="init" description="create API documentation">
+        <javadoc destdir="${api.dir}" windowtitle="${product.name}" link="http://java.sun.com/j2se/1.4.2/docs/api/" author="true" version="true">
+            <packageset dir="${source.dir}" />
+        </javadoc>
+    </target>
+
+</project>
