@@ -18,11 +18,10 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherTestApp.java,v 1.7 2005/01/31 21:14:30 jchapman0 Exp $
+// $Id: BrowserLauncherTestApp.java,v 1.8 2005/02/01 18:50:36 roskakori Exp $
 package edu.stanford.ejalbert.testing;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.PrintWriter;
@@ -68,7 +67,7 @@ public class BrowserLauncherTestApp
     private JScrollPane debugTextScrollPane = new JScrollPane();
     private JButton copyButton = new JButton();
     private ResourceBundle bundle; // in ctor
-    private FlowLayout flowLayout1 = new FlowLayout();
+    private BorderLayout urlPaneLayout = new BorderLayout();
 
     public BrowserLauncherTestApp() {
         super();
@@ -127,14 +126,14 @@ public class BrowserLauncherTestApp
         enterUrlLabel.setText(bundle.getString("label.url"));
         urlTextField.setText(bundle.getString("url.default"));
         urlTextField.setColumns(25);
-        urlPanel.setLayout(flowLayout1);
-        flowLayout1.setAlignment(FlowLayout.LEFT);
-        urlPanel.add(enterUrlLabel);
-        urlPanel.add(urlTextField);
-        urlPanel.add(browseButton);
+        urlPanel.setLayout(urlPaneLayout);
+        urlPanel.add(enterUrlLabel, BorderLayout.LINE_START);
+        urlPanel.add(urlTextField, BorderLayout.CENTER);
+        urlPanel.add(browseButton, BorderLayout.LINE_END);
 
         debugTextArea.setEditable(false);
         debugTextArea.setLineWrap(true);
+        debugTextArea.setWrapStyleWord(true);
         debugTextArea.setText("");
         debugTextScrollPane.getViewport().add(debugTextArea);
 
