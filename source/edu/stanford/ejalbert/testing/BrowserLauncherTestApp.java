@@ -18,10 +18,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherTestApp.java,v 1.5 2005/01/29 20:54:56 roskakori Exp $
+// $Id: BrowserLauncherTestApp.java,v 1.6 2005/01/29 21:01:17 roskakori Exp $
 package edu.stanford.ejalbert.testing;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
@@ -61,27 +60,26 @@ public class BrowserLauncherTestApp extends JFrame {
 
     public static void main(String[] args) {
         BrowserLauncherTestApp app = new BrowserLauncherTestApp();
-        app.setSize(250, 100);
         app.pack();
         app.setVisible(true);
     }
 
     private void jbInit() throws Exception {
-        urlTextField.setPreferredSize(new Dimension(200, 19));
+        urlTextField.setColumns(20);
         browseButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 browseButton_actionPerformed(e);
             }
         });
-        this.getContentPane().add(mainPanel);
         browseButton.setText("Browse");
-        getRootPane().setDefaultButton(browseButton);
         enterUrlLabel.setText("Enter a url:");
         urlTextField.setText("file://localhost/");
         mainPanel.add(enterUrlLabel);
         mainPanel.add(urlTextField);
         mainPanel.add(browseButton);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        getContentPane().add(mainPanel);
+        getRootPane().setDefaultButton(browseButton);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     private void browseButton_actionPerformed(ActionEvent e) {
