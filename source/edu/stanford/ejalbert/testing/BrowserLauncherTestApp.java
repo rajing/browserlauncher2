@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherTestApp.java,v 1.8 2005/02/01 18:50:36 roskakori Exp $
+// $Id: BrowserLauncherTestApp.java,v 1.9 2005/02/03 00:59:56 jchapman0 Exp $
 package edu.stanford.ejalbert.testing;
 
 import java.awt.BorderLayout;
@@ -43,6 +43,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import edu.stanford.ejalbert.BrowserLauncher;
+import edu.stanford.ejalbert.exceptionhandler.BrowserLauncherErrorHandler;
+import edu.stanford.ejalbert.BrowserLauncherRunner;
 
 /**
  * Standalone gui that allows for testing the broserlauncher code and provides
@@ -174,9 +176,14 @@ public class BrowserLauncherTestApp
     private void browseButton_actionPerformed(ActionEvent e) {
         try {
             String urlString = urlTextField.getText();
-            BrowserLauncherRunner runner =
-                    new BrowserLauncherRunner(urlString, launcher,
-                                              debugTextArea);
+            if(urlString == null || urlString.trim().length() == 0) {
+                throw new MalformedURLException("You must specify a url.");
+            }
+            new URL(urlString); // may throw MalformedURLException
+            BrowserLauncherErrorHandler errorHandler = new TestAppErrorHandler(
+                    debugTextArea);
+            BrowserLauncherRunner runner = new BrowserLauncherRunner(launcher,
+                    urlString, errorHandler);
             Thread launcherThread = new Thread(runner);
             launcherThread.start();
         }
@@ -194,42 +201,26 @@ public class BrowserLauncherTestApp
     private void copyButton_actionPerformed(ActionEvent e) {
         debugTextArea.selectAll();
         debugTextArea.copy();
-        debugTextArea.select(0,0);
+        debugTextArea.select(0, 0);
     }
 
-    private static class BrowserLauncherRunner
-            implements Runnable {
-        private String urlString; // in ctor
-        private BrowserLauncher launcher; // in ctor
-        private JTextArea debugTextArea; // in ctor, to capture exceptions
+    private static class TestAppErrorHandler
+            implements BrowserLauncherErrorHandler {
+        private JTextArea debugTextArea; // in ctor
 
-        BrowserLauncherRunner(String urlString, BrowserLauncher launcher,
-                              JTextArea debugTextArea)
-                throws MalformedURLException {
-            // validate URL
-            if (urlString == null || urlString.length() == 0) {
-                throw new MalformedURLException(
-                        "URL to browse must be specified");
-            }
-            new URL(urlString);
-            this.urlString = urlString;
-            this.launcher = launcher;
+        TestAppErrorHandler(JTextArea debugTextArea) {
             this.debugTextArea = debugTextArea;
         }
 
-        public void run() {
-            try {
-                launcher.openURLinBrowser(urlString);
-            }
-            catch (Exception ex) {
-                // capture exception
-                BrowserLauncherTestApp.updateDebugTextArea(ex, debugTextArea);
-                // show message to user
-                JOptionPane.showMessageDialog(JOptionPane.getRootFrame(),
-                                              ex.getMessage(),
-                                              "Error Message",
-                                              JOptionPane.ERROR_MESSAGE);
-            }
+        public void handleException(Exception ex) {
+            // capture exception
+            BrowserLauncherTestApp.updateDebugTextArea(ex, debugTextArea);
+            // show message to user
+            JOptionPane.showMessageDialog(JOptionPane.getRootFrame(),
+                                          ex.getMessage(),
+                                          "Error Message",
+                                          JOptionPane.ERROR_MESSAGE);
         }
+
     }
 }
