@@ -18,14 +18,12 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherTestApp.java,v 1.4 2005/01/25 19:05:12 roskakori Exp $
+// $Id: BrowserLauncherTestApp.java,v 1.5 2005/01/29 20:54:56 roskakori Exp $
 package edu.stanford.ejalbert.testing;
 
-import java.awt.AWTEvent;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -55,7 +53,6 @@ public class BrowserLauncherTestApp extends JFrame {
         super("BrowserLauncher Test App");
         try {
             launcher = new BrowserLauncher();
-            enableEvents(AWTEvent.WINDOW_EVENT_MASK);
             jbInit();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -68,14 +65,6 @@ public class BrowserLauncherTestApp extends JFrame {
         app.pack();
         app.setVisible(true);
     }
-
-    protected void processWindowEvent(WindowEvent e) {
-      if (e.getID() == WindowEvent.WINDOW_CLOSING) {
-          System.exit(0);
-      }
-      // done here to avoid window disappearing before close actions complete
-      super.processWindowEvent(e);
-  }
 
     private void jbInit() throws Exception {
         urlTextField.setPreferredSize(new Dimension(200, 19));
@@ -92,8 +81,7 @@ public class BrowserLauncherTestApp extends JFrame {
         mainPanel.add(enterUrlLabel);
         mainPanel.add(urlTextField);
         mainPanel.add(browseButton);
-        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     private void browseButton_actionPerformed(ActionEvent e) {
