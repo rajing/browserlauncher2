@@ -1,4 +1,6 @@
 <?xml version="1.0"?>
+<!-- Build file for BrowserLauncher2 -->
+<!-- $Id: build.xml,v 1.2 2005/01/25 23:02:55 roskakori Exp $ -->
 <project name="BrowserLauncher2" default="build" basedir=".">
     <property name="product.name" value="BrowserLauncher2" />
     <property name="output.dir" value="classes" />
@@ -8,6 +10,11 @@
     <property name="api.dir" value="api" />
     <property name="archive.runtime" value="${deployment.dir}/BrowserLauncher2.jar" />
     <property name="archive.all" value="${deployment.dir}/BrowserLauncher2-all.zip" />
+    <property name="optimize" value="on" />
+    <property name="app.manifest" value="${deployment.dir}/manifest.mf" />
+    <property name="app.manifest.test" value="${deployment.dir}/manifest.test.mf" />
+    <property name="gnu.copying" value="${deployment.dir}/COPYING.txt" />
+    <property name="readme" location="${deployment.dir}/README.txt" />
 
     <target name="init">
         <tstamp />
@@ -25,22 +32,33 @@
         <delete file="${archive.runtime}" />
     </target>
 
-    <target name="build" depends="package" description="build application" />
-
-    <target name="compile" depends="init" description="compile all source files">
+    <target name="build" depends="init" description="compile all source files">
         <mkdir dir="${output.dir}" />
         <javac srcdir="${source.dir}" destdir="${output.dir}" debug="true" />
         <jar destfile="${archive.runtime}" basedir="${output.dir}" includes="**/*.class" />
     </target>
 
-    <target name="package" depends="compile, api" description="create source archive">
-        <zip destfile="${archive.all}">
-            <zipfileset dir="${output.dir}" />
-            <zipfileset dir="." includes="build.xml, *.txt" />
-            <zipfileset dir="." includes=".classpath, .project" />
-            <zipfileset dir="." includes="**/*.java" />
-            <zipfileset dir="." includes="${api.dir}/**" />
-        </zip>
+    <target name="deploy" depends="build, api" description="create archives">
+        <jar destfile="${archive.runtime}"
+               index="true"
+               update="overwrite"
+               manifest="${app.manifest}" >
+               <fileset dir="${output.dir}" />
+               <fileset file="${gnu.copying}" />
+               <fileset file="${readme}" />
+           </jar>
+           <jar destfile="${archive.all}"
+               index="true"
+               update="overwrite"
+               manifest="${app.manifest.test}" >
+               <fileset dir="${output.dir}" />
+               <fileset dir="." includes="build.xml, *.txt" />
+               <fileset dir="." includes=".classpath, .project" />
+               <fileset dir="." includes="**/*.java" />
+               <fileset dir="." includes="${api.dir}/**" />
+               <fileset file="${gnu.copying}" />
+               <fileset file="${readme}" />
+           </jar>
     </target>
 
     <target name="api" depends="init" description="create API documentation">
