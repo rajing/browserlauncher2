@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherTestApp.java,v 1.9 2005/02/03 00:59:56 jchapman0 Exp $
+// $Id: BrowserLauncherTestApp.java,v 1.10 2005/02/24 21:16:04 roskakori Exp $
 package edu.stanford.ejalbert.testing;
 
 import java.awt.BorderLayout;
@@ -42,6 +42,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import net.sf.wraplog.Logger;
+
 import edu.stanford.ejalbert.BrowserLauncher;
 import edu.stanford.ejalbert.exceptionhandler.BrowserLauncherErrorHandler;
 import edu.stanford.ejalbert.BrowserLauncherRunner;
@@ -56,6 +58,7 @@ public class BrowserLauncherTestApp
         extends JFrame {
     private static final String debugResources =
             "edu.stanford.ejalbert.resources.Debugging";
+    private static Logger logger = Logger.getLogger(BrowserLauncherTestApp.class);
     private JPanel urlPanel = new JPanel();
     private JButton browseButton = new JButton();
     private JLabel enterUrlLabel = new JLabel();
@@ -174,6 +177,9 @@ public class BrowserLauncherTestApp
     }
 
     private void browseButton_actionPerformed(ActionEvent e) {
+        if (logger.isInfoEnabled()) {
+            logger.info("browse button clicked");
+        }
         try {
             String urlString = urlTextField.getText();
             if(urlString == null || urlString.trim().length() == 0) {
@@ -199,6 +205,9 @@ public class BrowserLauncherTestApp
     }
 
     private void copyButton_actionPerformed(ActionEvent e) {
+        if (logger.isInfoEnabled()) {
+            logger.info("copy button clicked");
+        }
         debugTextArea.selectAll();
         debugTextArea.copy();
         debugTextArea.select(0, 0);
