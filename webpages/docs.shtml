@@ -1,4 +1,4 @@
-<!-- $Id: docs.shtml,v 1.1 2005/02/03 01:04:59 jchapman0 Exp $ -->
+<!-- $Id: docs.shtml,v 1.2 2005/02/03 04:15:06 jchapman0 Exp $ -->
 <html>
 <head>
 	<title>BrowserLauncher2 Documentation Page</title>
@@ -33,9 +33,9 @@
 			<br/>
             <span class="header1"><a name="testapp">Test Application</a></span>
 			<br/><br/>
-			<p class="paratext">BrowserLauncher2-all.zip contains a small application 
+			<p class="paratext">BrowserLauncher2-all.jar contains a small application 
 			for testing the library. To invoke the test application, enter the following 
-			on a command line: <code>java -jar BrowserLauncher2-all.zip</code>. The application
+			on a command line: <code class="codetext">java -jar BrowserLauncher2-all.jar</code>. The application
 			contains a text field for entering urls (you will need to include the protocol) and
 			a text area that records information about your environment and captures stack
 			traces.</p>
@@ -43,18 +43,18 @@
             <span class="header1"><a name="apinotes">General API Notes</a></span>
 			<br/><br/>
 			<p class="paratext">The preferred method for using the BrowserLauncher2 api is to
-			create an instance of BrowserLauncher (<code>edu.stanford.ejalbert.BrowserLauncher</code>) and
-			invoke the method <code>public void openURLinBrowser(String urlString)</code>.</p>
+			create an instance of BrowserLauncher (<code class="codetext">edu.stanford.ejalbert.BrowserLauncher</code>) and
+			invoke the method <code class="codetext">public void openURLinBrowser(String urlString)</code>.</p>
 			<p class="paratext">If the application will be invoking urls often, it might be useful
 			to wrap the BrowserLauncher instance with a singleton or use some mechanism to cache it.</p>
 			<p class="paratext">The call to openURLinBrowser() should be executed in a separate thread from the
 			application's main/event thread. Applications can create an instance of BrowserLauncherRunner
-			(<code>edu.stanford.ejalbert.BrowserLauncherRunner</code>) and pass it to a Thread. The sample code
+			(<code class="codetext">edu.stanford.ejalbert.BrowserLauncherRunner</code>) and pass it to a Thread. The sample code
 			below is taken from the test application 
-			(<code>edu.stanford.ejalbert.BrowserLauncher.BrowserLauncherTestApp</code>) which can be used as a 
+			(<code class="codetext">edu.stanford.ejalbert.BrowserLauncher.BrowserLauncherTestApp</code>) which can be used as a 
 			reference application.
 			<br/><br/>
-			<code>
+			<code class="codetext">
             BrowserLauncherErrorHandler errorHandler = new TestAppErrorHandler(debugTextArea);<br/>
             BrowserLauncherRunner runner = new BrowserLauncherRunner(launcher, urlString, errorHandler);<br/>
             Thread launcherThread = new Thread(runner);<br/>
