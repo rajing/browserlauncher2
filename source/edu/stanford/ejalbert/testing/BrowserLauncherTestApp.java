@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherTestApp.java,v 1.2 2005/01/22 20:39:28 jchapman0 Exp $
+// $Id: BrowserLauncherTestApp.java,v 1.3 2005/01/24 18:09:18 roskakori Exp $
 package edu.stanford.ejalbert.testing;
 
 import java.awt.AWTEvent;
@@ -89,8 +89,9 @@ public class BrowserLauncherTestApp extends JFrame {
         });
         this.getContentPane().add(mainPanel);
         browseButton.setText("Browse");
+        getRootPane().setDefaultButton(browseButton);
         enterUrlLabel.setText("Enter a url:");
-        urlTextField.setText("");
+        urlTextField.setText("file://localhost/");
         mainPanel.add(enterUrlLabel);
         mainPanel.add(urlTextField);
         mainPanel.add(browseButton);
