@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004 Markus Gebhard, Jeff Chapman
+    Copyright 20042005 Markus Gebhard, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,11 +18,12 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncher.java,v 1.1 2005/01/06 17:07:05 jchapman0 Exp $
+// $Id: BrowserLauncher.java,v 1.2 2005/01/22 20:38:51 jchapman0 Exp $
 package edu.stanford.ejalbert;
 
+import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
+import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
-import edu.stanford.ejalbert.exception.*;
 import edu.stanford.ejalbert.launching.BrowserLaunchingFactory;
 import edu.stanford.ejalbert.launching.IBrowserLaunching;
 
@@ -75,38 +76,51 @@ public class BrowserLauncher {
     /**
      * The Java virtual machine that we are running on.  Actually, in most cases we only care
      * about the operating system, but some operating systems require us to switch on the VM. */
-    private static IBrowserLaunching launching;
-
-
-    /**
-     * The message from any exception thrown throughout the initialization process.
-     */
-    private static UnsupportedOperatingSystemException uosError;
-    private static BrowserLaunchingInitializingException bliError;
-
-    /**
-     * An initialization block that determines the operating system and loads the necessary
-     * runtime data.
-     */
-    static {
-        try {
-            launching = BrowserLaunchingFactory.createSystemBrowserLaunching();
-            launching.initialize();
-        } catch (UnsupportedOperatingSystemException e) {
-            uosError = e;
-        } catch (BrowserLaunchingInitializingException bliex) {
-            bliError = bliex;
-        }
-    }
+    private IBrowserLaunching launching;
 
     /**
      * This class should be never be instantiated; this just ensures so.
      */
-    private BrowserLauncher() {
+    public BrowserLauncher()
+            throws BrowserLaunchingInitializingException,
+            UnsupportedOperatingSystemException {
+        this.launching = initBrowserLauncher();
+    }
+
+    /**
+     * Determines the operating system and loads the necessary runtime data.
+     *
+     * @return IBrowserLaunching
+     */
+    private IBrowserLaunching initBrowserLauncher()
+            throws UnsupportedOperatingSystemException,
+            BrowserLaunchingInitializingException {
+        IBrowserLaunching launching =
+                BrowserLaunchingFactory.createSystemBrowserLaunching();
+        launching.initialize();
+        return launching;
+    }
+
+    /**
+     * Attempts to open a browser and direct it to the passed url.
+     *
+     * @todo what to do if the url is null or empty?
+     * @param urlString String
+     * @throws BrowserLaunchingInitializingException
+     * @throws BrowserLaunchingExecutionException
+     * @throws UnsupportedOperatingSystemException
+     */
+    public void openURLinBrowser(String urlString)
+            throws BrowserLaunchingInitializingException,
+            BrowserLaunchingExecutionException,
+            UnsupportedOperatingSystemException {
+        launching.openUrl(urlString);
     }
 
     /**
      * Attempts to open the default web browser to the given URL.
+     * @deprecated -- create a BrowserLauncher object and use it instead of
+     *                calling this static method.
      * @todo what if the url is null or empty?
      * @param url The URL to open
      * @throws IOException If the web browser could not be located or does not run
@@ -115,28 +129,23 @@ public class BrowserLauncher {
             throws UnsupportedOperatingSystemException,
             BrowserLaunchingExecutionException,
             BrowserLaunchingInitializingException {
-        if (uosError != null) {
-            throw uosError;
-        }
-        if(bliError != null) {
-            throw bliError;
-        }
-        launching.openUrl(urlString);
+        BrowserLauncher launcher = new BrowserLauncher();
+        launcher.openURLinBrowser(urlString);
     }
 
     /**
-     * @todo populate main method; provide usage info and take arg[0] as the
-     * url value
+     * Opens a browser and url from the command line. Useful for testing.
      *
      * @param args String[]
      */
     public static void main(String[] args) {
-        if(args.length == 0) {
+        if (args.length == 0) {
             System.err.println("Usage: java -jar BrowserLauncher.jar url_value");
         }
         else {
             try {
-                launching.openUrl(args[0]);
+                BrowserLauncher launcher = new BrowserLauncher();
+                launcher.openURLinBrowser(args[0]);
             }
             catch (BrowserLaunchingInitializingException ex) {
                 ex.printStackTrace();
