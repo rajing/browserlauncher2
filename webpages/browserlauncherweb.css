@@ -1,4 +1,4 @@
-<!-- $Id: browserlauncherweb.css,v 1.1 2005/02/03 01:04:59 jchapman0 Exp $ -->
+<!-- $Id: browserlauncherweb.css,v 1.2 2005/02/03 04:13:59 jchapman0 Exp $ -->
 
 .menu {
 	font-family: "Times New Roman", Arial, Helvetica, sans-serif;
@@ -11,6 +11,21 @@
 	color: #000000;
 	text-align: left;
 	font-size: 12pt;
+	font-stretch: normal;
+	background-color: #ffffff;
+}
+
+.codetext {
+	font-family: courier, monospace;
+	font-variant: normal;
+	text-indent: 0in;
+	widows: 2;
+	font-style: normal;
+	font-weight: normal;
+	text-decoration: none;
+	color: #000000;
+	text-align: left;
+	font-size: 10t;
 	font-stretch: normal;
 	background-color: #ffffff;
 }
