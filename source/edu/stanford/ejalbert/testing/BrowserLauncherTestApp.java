@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherTestApp.java,v 1.10 2005/02/24 21:16:04 roskakori Exp $
+// $Id: BrowserLauncherTestApp.java,v 1.11 2005/04/13 18:07:32 jchapman0 Exp $
 package edu.stanford.ejalbert.testing;
 
 import java.awt.BorderLayout;
@@ -28,7 +28,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.StringTokenizer;
 
 import javax.swing.Box;
@@ -42,11 +42,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import net.sf.wraplog.Logger;
-
 import edu.stanford.ejalbert.BrowserLauncher;
-import edu.stanford.ejalbert.exceptionhandler.BrowserLauncherErrorHandler;
 import edu.stanford.ejalbert.BrowserLauncherRunner;
+import edu.stanford.ejalbert.exceptionhandler.BrowserLauncherErrorHandler;
 
 /**
  * Standalone gui that allows for testing the broserlauncher code and provides
@@ -58,10 +56,14 @@ public class BrowserLauncherTestApp
         extends JFrame {
     private static final String debugResources =
             "edu.stanford.ejalbert.resources.Debugging";
-    private static Logger logger = Logger.getLogger(BrowserLauncherTestApp.class);
+    //private static Logger logger = Logger.getLogger(BrowserLauncherTestApp.class);
+    private TestAppLogger logger; // in ctor
     private JPanel urlPanel = new JPanel();
     private JButton browseButton = new JButton();
     private JLabel enterUrlLabel = new JLabel();
+    private JLabel debugLevelLabel = new JLabel();
+    private JButton loggingLevelBttn = new JButton();
+    private JLabel loggingLevelTxtFld = new JLabel();
     private JTextField urlTextField = new JTextField();
     private BrowserLauncher launcher; // in ctor
     private BorderLayout borderLayout1 = new BorderLayout();
@@ -78,6 +80,12 @@ public class BrowserLauncherTestApp
         super();
         try {
             bundle = ResourceBundle.getBundle(debugResources);
+            String[] levelLabels =
+                    bundle.getString("logging.level.labels").split(";");
+            logger = new TestAppLogger(debugTextArea,
+                                       levelLabels,
+                                       bundle.getString("logging.dateformat"));
+            loggingLevelTxtFld.setText(logger.getLevelText());
             super.setTitle(bundle.getString("label.app.title"));
             launcher = new BrowserLauncher();
             jbInit();
@@ -132,6 +140,7 @@ public class BrowserLauncherTestApp
         urlTextField.setText(bundle.getString("url.default"));
         urlTextField.setColumns(25);
         urlPanel.setLayout(urlPaneLayout);
+
         urlPanel.add(enterUrlLabel, BorderLayout.LINE_START);
         urlPanel.add(urlTextField, BorderLayout.CENTER);
         urlPanel.add(browseButton, BorderLayout.LINE_END);
@@ -142,6 +151,15 @@ public class BrowserLauncherTestApp
         debugTextArea.setText("");
         debugTextScrollPane.getViewport().add(debugTextArea);
 
+        //loggingLevelTxtFld.setAlignmentX((float) 0.0);
+        //loggingLevelTxtFld.setEditable(false);
+        debugLevelLabel.setText(bundle.getString("label.logging.level"));
+        loggingLevelBttn.setText(bundle.getString("bttn.set.logging"));
+        loggingLevelBttn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                loggingLevelBttn_actionPerformed(e);
+            }
+        });
         copyButton.setText(bundle.getString("bttn.copy"));
         copyButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -150,6 +168,12 @@ public class BrowserLauncherTestApp
         });
         debugTextBttnPanel.setLayout(bttnBoxLayout);
         debugTextBttnPanel.add(Box.createHorizontalGlue());
+        debugTextBttnPanel.add(debugLevelLabel);
+        debugTextBttnPanel.add(Box.createHorizontalStrut(3));
+        debugTextBttnPanel.add(loggingLevelTxtFld);
+        debugTextBttnPanel.add(Box.createHorizontalStrut(5));
+        debugTextBttnPanel.add(loggingLevelBttn);
+        debugTextBttnPanel.add(Box.createHorizontalStrut(3));
         debugTextBttnPanel.add(copyButton);
         debugTextBttnPanel.add(Box.createHorizontalStrut(2));
 
@@ -182,7 +206,7 @@ public class BrowserLauncherTestApp
         }
         try {
             String urlString = urlTextField.getText();
-            if(urlString == null || urlString.trim().length() == 0) {
+            if (urlString == null || urlString.trim().length() == 0) {
                 throw new MalformedURLException("You must specify a url.");
             }
             new URL(urlString); // may throw MalformedURLException
@@ -211,6 +235,31 @@ public class BrowserLauncherTestApp
         debugTextArea.selectAll();
         debugTextArea.copy();
         debugTextArea.select(0, 0);
+    }
+
+    private void loggingLevelBttn_actionPerformed(ActionEvent e) {
+        String[] levels = logger.getLevelOptions();
+        int levelIndex = logger.getLevel();
+        String level = (String) JOptionPane.showInputDialog(
+                this,
+                bundle.getString("logging.level.select.message"),
+                bundle.getString("logging.level.select.title"),
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                levels,
+                levels[levelIndex]);
+        if (level != null && level.length() > 0) {
+            levelIndex = -1;
+            for (int idx = 0, max = levels.length;
+                                    idx < max && levelIndex == -1; idx++) {
+                if (level.equals(levels[idx])) {
+                    levelIndex = idx;
+                }
+
+            }
+            logger.setLevel(levelIndex);
+            loggingLevelTxtFld.setText(logger.getLevelText());
+        }
     }
 
     private static class TestAppErrorHandler
