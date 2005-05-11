@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004 Markus Gebhard, Jeff Chapman
+    Copyright 2004,2005 Markus Gebhard, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,15 +18,19 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: WindowsNtBrowserLaunching.java,v 1.1 2005/01/06 17:07:06 jchapman0 Exp $
+// $Id: WindowsNtBrowserLaunching.java,v 1.2 2005/05/11 13:38:55 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
+
+import net.sf.wraplog.AbstractLogger;
 
 /**
  * @author Markus Gebhard
  */
 public class WindowsNtBrowserLaunching
         extends DefaultWindowsBrowserLaunching {
-    public WindowsNtBrowserLaunching() {
-        super("cmd.exe");
+
+    public WindowsNtBrowserLaunching(AbstractLogger logger) {
+        super("cmd.exe", logger);
+        logger.info("WindowsNT launcher");
     }
 }

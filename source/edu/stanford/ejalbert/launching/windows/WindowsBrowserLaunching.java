@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004 Markus Gebhard, Jeff Chapman
+    Copyright 2004,2005 Markus Gebhard, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,17 +18,38 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: WindowsBrowserLaunching.java,v 1.1 2005/01/06 17:07:06 jchapman0 Exp $
+// $Id: WindowsBrowserLaunching.java,v 1.2 2005/05/11 13:38:55 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Arrays;
 
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.launching.IBrowserLaunching;
+import net.sf.wraplog.AbstractLogger;
 
 /**
  * @author Markus Gebhard
  */
 public abstract class WindowsBrowserLaunching
         implements IBrowserLaunching {
+    protected final AbstractLogger logger; // in ctor
+
+    protected WindowsBrowserLaunching(AbstractLogger logger) {
+        this.logger = logger;
+    }
+
+    protected String getArrayAsString(String[] array) {
+        return Arrays.asList(array).toString();
+    }
+
+    protected String getProtocol(String urlString)
+            throws MalformedURLException {
+        URL url = new URL(urlString);
+        return url.getProtocol();
+    }
+
     public void initialize()
             throws BrowserLaunchingInitializingException {
     }

@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004 Markus Gebhard, Jeff Chapman
+    Copyright 2004,2005 Markus Gebhard, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,22 +18,37 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: DefaultWindowsBrowserLaunching.java,v 1.1 2005/01/06 17:07:06 jchapman0 Exp $
+// $Id: DefaultWindowsBrowserLaunching.java,v 1.2 2005/05/11 13:38:55 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
 
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
+import net.sf.wraplog.AbstractLogger;
+
+import java.util.*;
 
 /**
  * @author Markus Gebhard
  */
 public abstract class DefaultWindowsBrowserLaunching
         extends WindowsBrowserLaunching {
+    private static final Map protocolToCommandsArg;
+    static {
+        Map tempMap = new HashMap();
+        CommandArgs stndrdArgs = new StandardCommandArgs();
+        tempMap.put(null, stndrdArgs); // default
+        tempMap.put(PROTOCOL_HTTP, stndrdArgs);
+        tempMap.put(PROTOCOL_MAILTO, stndrdArgs);
+        tempMap.put(PROTOCOL_FILE, new FileCommandArgs());
+        protocolToCommandsArg = Collections.unmodifiableMap(tempMap);
+    }
 
     private String browser;
 
-    protected DefaultWindowsBrowserLaunching(String browser) {
+    protected DefaultWindowsBrowserLaunching(String browser,
+                                             AbstractLogger logger) {
+        super(logger);
         this.browser = browser;
     }
 
@@ -51,28 +66,64 @@ public abstract class DefaultWindowsBrowserLaunching
      * parameter that the command line expects.  Setting this parameter allows
      * URLs containing spaces to work.
      */
-    private static final String THIRD_WINDOWS_PARAMETER = ""; //"\"\"";
+    private static final String THIRD_WINDOWS_PARAMETER = "\"\"";
 
     public void openUrl(String urlString)
             throws UnsupportedOperatingSystemException,
             BrowserLaunchingExecutionException,
             BrowserLaunchingInitializingException {
         try {
-            Process process =
-                    Runtime.getRuntime().exec(
-                            new String[] {
-                            browser,
-                            FIRST_WINDOWS_PARAMETER,
-                            SECOND_WINDOWS_PARAMETER,
-                            THIRD_WINDOWS_PARAMETER,
-                            '"' + urlString + '"'});
+            logger.info(urlString);
+            String protocol = getProtocol(urlString);
+            logger.info(protocol);
+            CommandArgs cmmndArgs =
+                    (CommandArgs) protocolToCommandsArg.get(protocol);
+            if(cmmndArgs == null) {
+                cmmndArgs =
+                    (CommandArgs) protocolToCommandsArg.get(null);
+            }
+            String[] args = cmmndArgs.getArgs(browser, urlString);
+            if (logger.isDebugEnabled()) {
+                logger.debug(getArrayAsString(args));
+            }
+            Process process = Runtime.getRuntime().exec(args);
             // This avoids a memory leak on some versions of Java on Windows.
             // That's hinted at in <http://developer.java.sun.com/developer/qow/archive/68/>.
             process.waitFor();
             process.exitValue();
         }
         catch (Exception e) {
+            logger.error("fatal exception", e);
             throw new BrowserLaunchingExecutionException(e);
+        }
+    }
+
+    private static abstract class CommandArgs {
+        abstract String[] getArgs(String browserCmmnd, String urlString);
+    }
+
+
+    private static final class StandardCommandArgs
+            extends CommandArgs {
+        String[] getArgs(String browserCmmnd, String urlString) {
+            return new String[] {
+                    browserCmmnd,
+                    FIRST_WINDOWS_PARAMETER,
+                    SECOND_WINDOWS_PARAMETER,
+                    THIRD_WINDOWS_PARAMETER,
+                    '"' + urlString + '"'};
+        }
+    }
+
+
+    private static final class FileCommandArgs
+            extends CommandArgs {
+        String[] getArgs(String browserCmmnd, String urlString) {
+            return new String[] {
+                    browserCmmnd,
+                    FIRST_WINDOWS_PARAMETER,
+                    SECOND_WINDOWS_PARAMETER,
+                    urlString};
         }
     }
 }

@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004 Markus Gebhard, Jeff Chapman
+    Copyright 2004,2005 Markus Gebhard, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,35 +18,19 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: Windows2000BrowserLaunching.java,v 1.1 2005/01/06 17:07:06 jchapman0 Exp $
+// $Id: Windows2000BrowserLaunching.java,v 1.2 2005/05/11 13:38:55 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
 
-import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
-import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
-import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
+import net.sf.wraplog.AbstractLogger;
 
 /**
  * @author Markus Gebhard
  */
 public class Windows2000BrowserLaunching
-        extends WindowsBrowserLaunching {
+        extends DefaultWindowsBrowserLaunching {
 
-    public void openUrl(String urlString)
-            throws UnsupportedOperatingSystemException,
-            BrowserLaunchingExecutionException,
-            BrowserLaunchingInitializingException {
-        try {
-            // Add quotes around the URL to allow ampersands and other special
-            // characters to work.
-            Process process = Runtime.getRuntime().exec(new String[] {"cmd.exe",
-                    "/c", "start", urlString});
-            // This avoids a memory leak on some versions of Java on Windows.
-            // That's hinted at in <http://developer.java.sun.com/developer/qow/archive/68/>.
-            process.waitFor();
-            process.exitValue();
-        }
-        catch (Exception e) {
-            throw new BrowserLaunchingExecutionException(e);
-        }
+    public Windows2000BrowserLaunching(AbstractLogger logger) {
+        super("cmd.exe", logger);
+        logger.info("Windows2000 launcher");
     }
 }

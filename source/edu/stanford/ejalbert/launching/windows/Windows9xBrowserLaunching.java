@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004 Markus Gebhard, Jeff Chapman
+    Copyright 2004,2005 Markus Gebhard, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,15 +18,19 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: Windows9xBrowserLaunching.java,v 1.1 2005/01/06 17:07:06 jchapman0 Exp $
+// $Id: Windows9xBrowserLaunching.java,v 1.2 2005/05/11 13:38:55 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
+
+import net.sf.wraplog.AbstractLogger;
 
 /**
  * @author Markus Gebhard
  */
 public class Windows9xBrowserLaunching
         extends DefaultWindowsBrowserLaunching {
-    public Windows9xBrowserLaunching() {
-        super("command.com");
+
+    public Windows9xBrowserLaunching(AbstractLogger logger) {
+        super("command.com", logger);
+        logger.info("Windows9x launcher");
     }
 }
