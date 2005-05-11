@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004 Markus Gebhard, Jeff Chapman
+    Copyright 2004,2005 Markus Gebhard, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: IBrowserLaunching.java,v 1.1 2005/01/06 17:07:06 jchapman0 Exp $
+// $Id: IBrowserLaunching.java,v 1.2 2005/05/11 13:38:34 jchapman0 Exp $
 package edu.stanford.ejalbert.launching;
 
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
@@ -29,6 +29,10 @@ import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
  * @author Markus Gebhard
  */
 public interface IBrowserLaunching {
+    public static final String PROTOCOL_HTTP = "http";
+    public static final String PROTOCOL_FILE = "file";
+    public static final String PROTOCOL_MAILTO = "mailto";
+
     public void initialize()
             throws BrowserLaunchingInitializingException;
 
