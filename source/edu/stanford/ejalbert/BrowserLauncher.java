@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncher.java,v 1.3 2005/01/31 21:11:47 jchapman0 Exp $
+// $Id: BrowserLauncher.java,v 1.4 2005/05/11 13:38:10 jchapman0 Exp $
 package edu.stanford.ejalbert;
 
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
@@ -26,6 +26,9 @@ import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 import edu.stanford.ejalbert.launching.BrowserLaunchingFactory;
 import edu.stanford.ejalbert.launching.IBrowserLaunching;
+import net.sf.wraplog.AbstractLogger;
+import net.sf.wraplog.Level;
+import net.sf.wraplog.Logger;
 
 /**
  * BrowserLauncher is a class that provides a method, openURLinBrowser, which opens the default
@@ -73,10 +76,8 @@ import edu.stanford.ejalbert.launching.IBrowserLaunching;
  */
 public class BrowserLauncher {
 
-    /**
-     * The Java virtual machine that we are running on.  Actually, in most cases we only care
-     * about the operating system, but some operating systems require us to switch on the VM. */
-    private IBrowserLaunching launching;
+    private final IBrowserLaunching launching; // in ctor
+    private AbstractLogger logger; // in init method
 
     /**
      * Initializes the browser launcher for the operating system on which
@@ -85,10 +86,19 @@ public class BrowserLauncher {
      * @throws BrowserLaunchingInitializingException
      * @throws UnsupportedOperatingSystemException
      */
-    public BrowserLauncher()
+    public BrowserLauncher(AbstractLogger logger)
             throws BrowserLaunchingInitializingException,
             UnsupportedOperatingSystemException {
-        this.launching = initBrowserLauncher();
+        this.launching = initBrowserLauncher(logger);
+    }
+
+    /**
+     * Returns the logger being used by this BrowserLauncher instance.
+     *
+     * @return AbstractLogger
+     */
+    public AbstractLogger getLogger() {
+        return logger;
     }
 
     /**
@@ -100,11 +110,16 @@ public class BrowserLauncher {
      *
      * @return IBrowserLaunching
      */
-    private IBrowserLaunching initBrowserLauncher()
+    private IBrowserLaunching initBrowserLauncher(AbstractLogger logger)
             throws UnsupportedOperatingSystemException,
             BrowserLaunchingInitializingException {
+        if(logger == null) {
+            logger = Logger.getLogger(BrowserLauncher.class);
+            logger.setLevel(Level.ERROR);
+        }
+        this.logger = logger;
         IBrowserLaunching launching =
-                BrowserLaunchingFactory.createSystemBrowserLaunching();
+                BrowserLaunchingFactory.createSystemBrowserLaunching(logger);
         launching.initialize();
         return launching;
     }
@@ -139,7 +154,7 @@ public class BrowserLauncher {
             throws UnsupportedOperatingSystemException,
             BrowserLaunchingExecutionException,
             BrowserLaunchingInitializingException {
-        BrowserLauncher launcher = new BrowserLauncher();
+        BrowserLauncher launcher = new BrowserLauncher(null);
         launcher.openURLinBrowser(urlString);
     }
 
@@ -156,7 +171,7 @@ public class BrowserLauncher {
         }
         else {
             try {
-                BrowserLauncher launcher = new BrowserLauncher();
+                BrowserLauncher launcher = new BrowserLauncher(null);
                 launcher.openURLinBrowser(args[0]);
             }
             catch (BrowserLaunchingInitializingException ex) {

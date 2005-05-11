@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherTestApp.java,v 1.11 2005/04/13 18:07:32 jchapman0 Exp $
+// $Id: BrowserLauncherTestApp.java,v 1.12 2005/05/11 13:38:11 jchapman0 Exp $
 package edu.stanford.ejalbert.testing;
 
 import java.awt.BorderLayout;
@@ -87,9 +87,9 @@ public class BrowserLauncherTestApp
                                        bundle.getString("logging.dateformat"));
             loggingLevelTxtFld.setText(logger.getLevelText());
             super.setTitle(bundle.getString("label.app.title"));
-            launcher = new BrowserLauncher();
             jbInit();
             populateDebugInfo(bundle, debugTextArea);
+            launcher = new BrowserLauncher(logger);
         }
         catch (Exception ex) {
             ex.printStackTrace();
@@ -167,11 +167,12 @@ public class BrowserLauncherTestApp
             }
         });
         debugTextBttnPanel.setLayout(bttnBoxLayout);
-        debugTextBttnPanel.add(Box.createHorizontalGlue());
+        debugTextBttnPanel.add(Box.createHorizontalStrut(2));
         debugTextBttnPanel.add(debugLevelLabel);
         debugTextBttnPanel.add(Box.createHorizontalStrut(3));
         debugTextBttnPanel.add(loggingLevelTxtFld);
         debugTextBttnPanel.add(Box.createHorizontalStrut(5));
+        debugTextBttnPanel.add(Box.createHorizontalGlue());
         debugTextBttnPanel.add(loggingLevelBttn);
         debugTextBttnPanel.add(Box.createHorizontalStrut(3));
         debugTextBttnPanel.add(copyButton);

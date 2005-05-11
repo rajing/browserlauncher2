@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004 Markus Gebhard, Jeff Chapman
+    Copyright 2004,2005 Markus Gebhard, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLaunchingFactory.java,v 1.1 2005/01/06 17:07:06 jchapman0 Exp $
+// $Id: BrowserLaunchingFactory.java,v 1.2 2005/05/11 13:38:11 jchapman0 Exp $
 package edu.stanford.ejalbert.launching;
 
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
@@ -30,20 +30,24 @@ import edu.stanford.ejalbert.launching.misc.UnixNetscapeBrowserLaunching;
 import edu.stanford.ejalbert.launching.windows.Windows2000BrowserLaunching;
 import edu.stanford.ejalbert.launching.windows.Windows9xBrowserLaunching;
 import edu.stanford.ejalbert.launching.windows.WindowsNtBrowserLaunching;
+import net.sf.wraplog.AbstractLogger;
 
 /**
  * @author Markus Gebhard
  */
 public class BrowserLaunchingFactory {
 
-    public static IBrowserLaunching createSystemBrowserLaunching()
+    public static IBrowserLaunching createSystemBrowserLaunching(AbstractLogger
+            logger)
             throws UnsupportedOperatingSystemException {
         String osName = System.getProperty("os.name");
         if (osName.startsWith("Mac OS")) {
+            logger.info("Mac OS");
             String mrjVersion = System.getProperty("mrj.version");
             String majorMRJVersion = mrjVersion.substring(0, 3);
             try {
                 double version = Double.valueOf(majorMRJVersion).doubleValue();
+                logger.info("version=" + Double.toString(version));
                 if (version == 2) {
                     return new MacOs2_0BrowserLaunching();
                 }
@@ -71,18 +75,20 @@ public class BrowserLaunchingFactory {
             }
         }
         else if (osName.startsWith("Windows")) {
+            logger.info("Windows OS");
             if (osName.indexOf("9") != -1) {
-                return new Windows9xBrowserLaunching();
+                return new Windows9xBrowserLaunching(logger);
             }
             else if (osName.indexOf("2000") != -1) {
-                return new Windows2000BrowserLaunching();
+                return new Windows2000BrowserLaunching(logger);
             }
             else {
-                return new WindowsNtBrowserLaunching();
+                return new WindowsNtBrowserLaunching(logger);
             }
         }
         else {
-            return new UnixNetscapeBrowserLaunching();
+            logger.info("Unix-type OS");
+            return new UnixNetscapeBrowserLaunching(logger);
         }
     }
 }

@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherRunner.java,v 1.1 2005/02/03 00:59:12 jchapman0 Exp $
+// $Id: BrowserLauncherRunner.java,v 1.2 2005/05/11 13:38:10 jchapman0 Exp $
 package edu.stanford.ejalbert;
 
 import edu.stanford.ejalbert.exceptionhandler.BrowserLauncherErrorHandler;
@@ -51,6 +51,9 @@ public class BrowserLauncherRunner
     public BrowserLauncherRunner(BrowserLauncher launcher,
                                  String url,
                                  BrowserLauncherErrorHandler errorHandler) {
+        if(launcher == null) {
+            throw new IllegalArgumentException("launcher instance cannot be null.");
+        }
         this.launcher = launcher;
         this.url = url;
         if(errorHandler == null) {
@@ -76,6 +79,7 @@ public class BrowserLauncherRunner
             launcher.openURLinBrowser(url);
         }
         catch (Exception ex) {
+            launcher.getLogger().error("fatal error opening url", ex);
             errorHandler.handleException(ex);
         }
     }

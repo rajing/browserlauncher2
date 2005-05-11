@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: UnixNetscapeBrowserLaunching.java,v 1.3 2005/02/20 22:21:39 roskakori Exp $
+// $Id: UnixNetscapeBrowserLaunching.java,v 1.4 2005/05/11 13:38:11 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.misc;
 
 import java.util.ArrayList;
@@ -30,16 +30,24 @@ import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.launching.IBrowserLaunching;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
+import net.sf.wraplog.AbstractLogger;
 
 /**
  * Try several browsers. Most users will have at least one of these installed.
  * @author Markus Gebhard, Jeff Chapman
  */
-public class UnixNetscapeBrowserLaunching implements IBrowserLaunching {
+public class UnixNetscapeBrowserLaunching
+        implements IBrowserLaunching {
     /**
      * list of commonly supported unix/linux browsers
      */
     private List unixBrowsers = new ArrayList(3);
+
+    private final AbstractLogger logger; // in ctor
+
+    public UnixNetscapeBrowserLaunching(AbstractLogger logger) {
+        this.logger = logger;
+    }
 
     /* ---------------------- from IBrowserLaunching ----------------------- */
 
@@ -49,7 +57,8 @@ public class UnixNetscapeBrowserLaunching implements IBrowserLaunching {
      * @todo what do we do if there are no browsers available?
      * @throws BrowserLaunchingInitializingException
      */
-    public void initialize() throws BrowserLaunchingInitializingException {
+    public void initialize()
+            throws BrowserLaunchingInitializingException {
         List potentialBrowsers = new ArrayList(3);
         potentialBrowsers.add(StandardUnixBrowser.FIREFOX);
         potentialBrowsers.add(StandardUnixBrowser.MOZILLA);
@@ -58,27 +67,28 @@ public class UnixNetscapeBrowserLaunching implements IBrowserLaunching {
         // iterate potential browsers to see which are available
         Iterator iter = potentialBrowsers.iterator();
         // will store all names of potential browsers in case the error message should list the browsers to install
-    	String potentialBrowserNames = "";
+        String potentialBrowserNames = "";
         UnixBrowser browser;
         while (iter.hasNext()) {
             browser = (UnixBrowser) iter.next();
             potentialBrowserNames += browser.getBrowserName();
             if (iter.hasNext()) {
-            	potentialBrowserNames+= ", ";
+                potentialBrowserNames += ", ";
             }
             if (browser.isBrowserAvailable()) {
                 unixBrowsers.add(browser);
             }
         }
         if (unixBrowsers.size() == 0) {
-        	// no browser installed
-        	throw new BrowserLaunchingInitializingException(
-        			"one of the supported browsers must be installed: " 
-        			+ potentialBrowserNames);
+            // no browser installed
+            throw new BrowserLaunchingInitializingException(
+                    "one of the supported browsers must be installed: "
+                    + potentialBrowserNames);
         }
+        logger.info(unixBrowsers.toString());
         unixBrowsers = Collections.unmodifiableList(unixBrowsers);
     }
-    
+
     /**
      * This implementation will cause the calling thread to block until the
      * browser exits. Calling methods MUST wrap the call in a separate thread.
@@ -89,15 +99,16 @@ public class UnixNetscapeBrowserLaunching implements IBrowserLaunching {
     public void openUrl(String urlString)
             throws UnsupportedOperatingSystemException,
             BrowserLaunchingExecutionException,
-            BrowserLaunchingInitializingException
- {
+            BrowserLaunchingInitializingException {
         try {
+            logger.info(urlString);
             boolean success = false;
             Iterator iter = unixBrowsers.iterator();
             UnixBrowser browser;
             Process process;
             while (iter.hasNext() && !success) {
                 browser = (UnixBrowser) iter.next();
+                logger.info(browser.getBrowserName());
                 process = Runtime.getRuntime().exec(browser.
                         getArgsForOpenBrowser(urlString));
                 int exitCode = process.waitFor();
@@ -108,7 +119,8 @@ public class UnixNetscapeBrowserLaunching implements IBrowserLaunching {
                 }
                 success = exitCode == 0;
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new BrowserLaunchingExecutionException(e);
         }
     }
