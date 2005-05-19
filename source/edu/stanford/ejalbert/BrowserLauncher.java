@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncher.java,v 1.4 2005/05/11 13:38:10 jchapman0 Exp $
+// $Id: BrowserLauncher.java,v 1.5 2005/05/19 13:47:52 jchapman0 Exp $
 package edu.stanford.ejalbert;
 
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
@@ -83,6 +83,10 @@ public class BrowserLauncher {
      * Initializes the browser launcher for the operating system on which
      * the application is running.
      *
+     * Passing null for the logger argument results in use of the default
+     * logger. The default logger is set to log errors to the console.
+     *
+     * @param logger AbstractLogger
      * @throws BrowserLaunchingInitializingException
      * @throws UnsupportedOperatingSystemException
      */
