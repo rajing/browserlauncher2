@@ -1,4 +1,4 @@
-<!-- $Id: projectsusing.shtml,v 1.1 2005/02/03 01:04:59 jchapman0 Exp $ -->
+<!-- $Id: projectsusing.shtml,v 1.2 2005/05/19 15:17:02 jchapman0 Exp $ -->
 <html>
 <head>
 	<title>Projects Using BrowserLauncher2 Page</title>
@@ -22,8 +22,8 @@
 					<td>Description</td>
 				</tr>
 				<tr class="paratext" valign="top">
-					<td></td>
-					<td></td>
+					<td><a href="http://sourceforge.net/projects/sdvalidator/">Structured Document Validator</a></td>
+					<td>SDValidator implements a generalized method for validating document structure and content. The application validates based on user-defined Structured Document Definitions and provides an environment for validation, SDD development, and document editting.</td>
 				</tr>
 			</table>
         </td>
