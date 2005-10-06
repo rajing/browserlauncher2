@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004 Jeff Chapman
+    Copyright 2004,2005 Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: StandardUnixBrowser.java,v 1.2 2005/02/20 22:21:39 roskakori Exp $
+// $Id: StandardUnixBrowser.java,v 1.3 2005/10/06 15:14:48 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.misc;
 
 import java.io.IOException;
@@ -46,6 +46,9 @@ class StandardUnixBrowser implements UnixBrowser {
             "mozilla");
     static StandardUnixBrowser FIREFOX = new StandardUnixBrowser("FireFox",
             "firefox");
+    // on some systems, firefox is referenced as mozilla-firefox
+    static StandardUnixBrowser MOZILLA_FIREFOX = new StandardUnixBrowser("FireFox",
+            "mozilla-firefox");
     static StandardUnixBrowser KONQUEROR = new StandardUnixBrowser("Konqueror",
             "konqueror");
     private StandardUnixBrowser(String browserName, String browserArgName) {
@@ -75,7 +78,7 @@ class StandardUnixBrowser implements UnixBrowser {
     }
 
     /**
-     * Returns true id browser is available, ie which command finds it.
+     * Returns true if the browser is available, ie which command finds it.
      *
      * @todo what do we do if an exception is thrown? log it or ignore it?
      * @return boolean

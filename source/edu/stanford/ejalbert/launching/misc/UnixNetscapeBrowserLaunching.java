@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: UnixNetscapeBrowserLaunching.java,v 1.4 2005/05/11 13:38:11 jchapman0 Exp $
+// $Id: UnixNetscapeBrowserLaunching.java,v 1.5 2005/10/06 15:14:49 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.misc;
 
 import java.util.ArrayList;
@@ -38,10 +38,11 @@ import net.sf.wraplog.AbstractLogger;
  */
 public class UnixNetscapeBrowserLaunching
         implements IBrowserLaunching {
+    private static final int BROWSER_COUNT = 5;
     /**
      * list of commonly supported unix/linux browsers
      */
-    private List unixBrowsers = new ArrayList(3);
+    private List unixBrowsers = new ArrayList(BROWSER_COUNT);
 
     private final AbstractLogger logger; // in ctor
 
@@ -59,11 +60,12 @@ public class UnixNetscapeBrowserLaunching
      */
     public void initialize()
             throws BrowserLaunchingInitializingException {
-        List potentialBrowsers = new ArrayList(3);
+        List potentialBrowsers = new ArrayList(BROWSER_COUNT);
         potentialBrowsers.add(StandardUnixBrowser.FIREFOX);
         potentialBrowsers.add(StandardUnixBrowser.MOZILLA);
         potentialBrowsers.add(StandardUnixBrowser.NETSCAPE);
         potentialBrowsers.add(StandardUnixBrowser.KONQUEROR);
+        potentialBrowsers.add(StandardUnixBrowser.MOZILLA_FIREFOX);
         // iterate potential browsers to see which are available
         Iterator iter = potentialBrowsers.iterator();
         // will store all names of potential browsers in case the error message should list the browsers to install
