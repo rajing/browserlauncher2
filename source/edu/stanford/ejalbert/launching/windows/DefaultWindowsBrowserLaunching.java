@@ -18,15 +18,17 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: DefaultWindowsBrowserLaunching.java,v 1.2 2005/05/11 13:38:55 jchapman0 Exp $
+// $Id: DefaultWindowsBrowserLaunching.java,v 1.3 2005/10/06 15:13:15 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 import net.sf.wraplog.AbstractLogger;
-
-import java.util.*;
 
 /**
  * @author Markus Gebhard
@@ -102,7 +104,6 @@ public abstract class DefaultWindowsBrowserLaunching
         abstract String[] getArgs(String browserCmmnd, String urlString);
     }
 
-
     private static final class StandardCommandArgs
             extends CommandArgs {
         String[] getArgs(String browserCmmnd, String urlString) {
@@ -115,7 +116,6 @@ public abstract class DefaultWindowsBrowserLaunching
         }
     }
 
-
     private static final class FileCommandArgs
             extends CommandArgs {
         String[] getArgs(String browserCmmnd, String urlString) {
@@ -123,7 +123,8 @@ public abstract class DefaultWindowsBrowserLaunching
                     browserCmmnd,
                     FIRST_WINDOWS_PARAMETER,
                     SECOND_WINDOWS_PARAMETER,
-                    urlString};
+                    THIRD_WINDOWS_PARAMETER,
+                    '"' + urlString + '"'};
         }
     }
 }
