@@ -18,17 +18,18 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: DefaultWindowsBrowserLaunching.java,v 1.3 2005/10/06 15:13:15 jchapman0 Exp $
+// $Id: DefaultWindowsBrowserLaunching.java,v 1.4 2005/10/07 19:59:56 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 import net.sf.wraplog.AbstractLogger;
+import edu.stanford.ejalbert.launching.IBrowserLaunching;
 
 /**
  * @author Markus Gebhard
@@ -98,6 +99,26 @@ public abstract class DefaultWindowsBrowserLaunching
             logger.error("fatal exception", e);
             throw new BrowserLaunchingExecutionException(e);
         }
+    }
+
+    public void openUrl(String browser, String urlString)
+            throws UnsupportedOperatingSystemException,
+            BrowserLaunchingExecutionException,
+            BrowserLaunchingInitializingException {
+        logger.debug("falling through to non-targetted openUrl");
+        openUrl(urlString);
+    }
+
+    /**
+     * Returns a list of browsers to be used for browser targetting.
+     * This list will always contain at least one item--the BROWSER_DEFAULT.
+     *
+     * @return List
+     */
+    public List getBrowserList() {
+        List browserList = new ArrayList(1);
+        browserList.add(IBrowserLaunching.BROWSER_DEFAULT);
+        return browserList;
     }
 
     private static abstract class CommandArgs {
