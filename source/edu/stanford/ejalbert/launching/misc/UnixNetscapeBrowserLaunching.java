@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004 Markus Gebhard, Jeff Chapman
+    Copyright 2004,2005 Markus Gebhard, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,18 +18,20 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: UnixNetscapeBrowserLaunching.java,v 1.5 2005/10/06 15:14:49 jchapman0 Exp $
+// $Id: UnixNetscapeBrowserLaunching.java,v 1.6 2005/10/07 20:01:08 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.misc;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
-import edu.stanford.ejalbert.launching.IBrowserLaunching;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
+import edu.stanford.ejalbert.launching.IBrowserLaunching;
 import net.sf.wraplog.AbstractLogger;
 
 /**
@@ -40,9 +42,9 @@ public class UnixNetscapeBrowserLaunching
         implements IBrowserLaunching {
     private static final int BROWSER_COUNT = 5;
     /**
-     * list of commonly supported unix/linux browsers
+     * list of supported unix/linux browsers
      */
-    private List unixBrowsers = new ArrayList(BROWSER_COUNT);
+    private Map unixBrowsers = new TreeMap(String.CASE_INSENSITIVE_ORDER);
 
     private final AbstractLogger logger; // in ctor
 
@@ -78,7 +80,7 @@ public class UnixNetscapeBrowserLaunching
                 potentialBrowserNames += ", ";
             }
             if (browser.isBrowserAvailable()) {
-                unixBrowsers.add(browser);
+                unixBrowsers.put(browser.getBrowserName(), browser);
             }
         }
         if (unixBrowsers.size() == 0) {
@@ -87,8 +89,8 @@ public class UnixNetscapeBrowserLaunching
                     "one of the supported browsers must be installed: "
                     + potentialBrowserNames);
         }
-        logger.info(unixBrowsers.toString());
-        unixBrowsers = Collections.unmodifiableList(unixBrowsers);
+        logger.info(unixBrowsers.keySet().toString());
+        unixBrowsers = Collections.unmodifiableMap(unixBrowsers);
     }
 
     /**
@@ -105,7 +107,7 @@ public class UnixNetscapeBrowserLaunching
         try {
             logger.info(urlString);
             boolean success = false;
-            Iterator iter = unixBrowsers.iterator();
+            Iterator iter = unixBrowsers.values().iterator();
             UnixBrowser browser;
             Process process;
             while (iter.hasNext() && !success) {
@@ -125,5 +127,51 @@ public class UnixNetscapeBrowserLaunching
         catch (Exception e) {
             throw new BrowserLaunchingExecutionException(e);
         }
+    }
+
+    public void openUrl(String browser, String urlString)
+            throws UnsupportedOperatingSystemException,
+            BrowserLaunchingExecutionException,
+            BrowserLaunchingInitializingException {
+        UnixBrowser unixBrowser = (UnixBrowser) unixBrowsers.get(browser);
+        if (unixBrowser == null) {
+            logger.debug("falling through to non-targetted openUrl");
+            openUrl(urlString);
+        }
+        else {
+            logger.info(unixBrowser.getBrowserName());
+            logger.info(urlString);
+            try {
+                Process process = Runtime.getRuntime().exec(unixBrowser.
+                        getArgsForOpenBrowser(urlString));
+                int exitCode = process.waitFor();
+                if (exitCode != 0) {
+                    process = Runtime.getRuntime().exec(unixBrowser.
+                            getArgsForStartingBrowser(urlString));
+                    exitCode = process.waitFor();
+                }
+                if (exitCode != 0) {
+                    logger.debug(
+                            "open browser failure, trying non-targetted openUrl");
+                    openUrl(urlString);
+                }
+            }
+            catch (Exception e) {
+                throw new BrowserLaunchingExecutionException(e);
+            }
+        }
+    }
+
+    /**
+     * Returns a list of browsers to be used for browser targetting.
+     * This list will always contain at least one item--the BROWSER_DEFAULT.
+     *
+     * @return List
+     */
+    public List getBrowserList() {
+        List browsers = new ArrayList();
+        browsers.add(IBrowserLaunching.BROWSER_DEFAULT);
+        browsers.addAll(unixBrowsers.keySet());
+        return browsers;
     }
 }

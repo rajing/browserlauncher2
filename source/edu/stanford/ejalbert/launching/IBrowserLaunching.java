@@ -18,8 +18,10 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: IBrowserLaunching.java,v 1.2 2005/05/11 13:38:34 jchapman0 Exp $
+// $Id: IBrowserLaunching.java,v 1.3 2005/10/07 20:01:07 jchapman0 Exp $
 package edu.stanford.ejalbert.launching;
+
+import java.util.List;
 
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
@@ -32,6 +34,10 @@ public interface IBrowserLaunching {
     public static final String PROTOCOL_HTTP = "http";
     public static final String PROTOCOL_FILE = "file";
     public static final String PROTOCOL_MAILTO = "mailto";
+    /**
+     * Identifier for the system's default browser.
+     */
+    public static final String BROWSER_DEFAULT = "Default";
 
     public void initialize()
             throws BrowserLaunchingInitializingException;
@@ -40,4 +46,28 @@ public interface IBrowserLaunching {
             throws UnsupportedOperatingSystemException,
             BrowserLaunchingExecutionException,
             BrowserLaunchingInitializingException;
+
+    /**
+     * Allows user to target a specific browser. The names of
+     * potential browsers can be accessed via the getBrowserList()
+     * method.
+     *
+     * @param browser String
+     * @param urlString String
+     * @throws UnsupportedOperatingSystemException
+     * @throws BrowserLaunchingExecutionException
+     * @throws BrowserLaunchingInitializingException
+     */
+    public void openUrl(String browser, String urlString)
+            throws UnsupportedOperatingSystemException,
+            BrowserLaunchingExecutionException,
+            BrowserLaunchingInitializingException;
+
+    /**
+     * Returns a list of browsers to be used for browser targetting.
+     * This list will always contain at least one item--the BROWSER_DEFAULT.
+     *
+     * @return List
+     */
+    public List getBrowserList();
 }

@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncher.java,v 1.5 2005/05/19 13:47:52 jchapman0 Exp $
+// $Id: BrowserLauncher.java,v 1.6 2005/10/07 20:01:07 jchapman0 Exp $
 package edu.stanford.ejalbert;
 
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
@@ -29,6 +29,7 @@ import edu.stanford.ejalbert.launching.IBrowserLaunching;
 import net.sf.wraplog.AbstractLogger;
 import net.sf.wraplog.Level;
 import net.sf.wraplog.Logger;
+import java.util.List;
 
 /**
  * BrowserLauncher is a class that provides a method, openURLinBrowser, which opens the default
@@ -105,6 +106,10 @@ public class BrowserLauncher {
         return logger;
     }
 
+    public List getBrowserList() {
+        return launching.getBrowserList();
+    }
+
     /**
      * Determines the operating system and loads the necessary runtime data.
      *
@@ -142,6 +147,25 @@ public class BrowserLauncher {
             BrowserLaunchingExecutionException,
             UnsupportedOperatingSystemException {
         launching.openUrl(urlString);
+    }
+
+    /**
+     * Attempts to open a specific browser and direct it to the passed url.
+     *
+     * The name for the targetted browser should come from the list
+     * returned from getBrowserList().
+     *
+     * @param browser String
+     * @param urlString String
+     * @throws BrowserLaunchingInitializingException
+     * @throws BrowserLaunchingExecutionException
+     * @throws UnsupportedOperatingSystemException
+     */
+    public void openURLinBrowser(String browser, String urlString)
+            throws BrowserLaunchingInitializingException,
+            BrowserLaunchingExecutionException,
+            UnsupportedOperatingSystemException {
+        launching.openUrl(browser, urlString);
     }
 
     /**

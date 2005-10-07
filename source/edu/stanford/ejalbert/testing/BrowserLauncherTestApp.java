@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherTestApp.java,v 1.12 2005/05/11 13:38:11 jchapman0 Exp $
+// $Id: BrowserLauncherTestApp.java,v 1.13 2005/10/07 20:01:08 jchapman0 Exp $
 package edu.stanford.ejalbert.testing;
 
 import java.awt.BorderLayout;
@@ -28,12 +28,15 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -59,6 +62,7 @@ public class BrowserLauncherTestApp
     //private static Logger logger = Logger.getLogger(BrowserLauncherTestApp.class);
     private TestAppLogger logger; // in ctor
     private JPanel urlPanel = new JPanel();
+    private JComboBox browserBox = new JComboBox();
     private JButton browseButton = new JButton();
     private JLabel enterUrlLabel = new JLabel();
     private JLabel debugLevelLabel = new JLabel();
@@ -90,6 +94,9 @@ public class BrowserLauncherTestApp
             jbInit();
             populateDebugInfo(bundle, debugTextArea);
             launcher = new BrowserLauncher(logger);
+            ComboBoxModel cbModel = new DefaultComboBoxModel(launcher.
+                    getBrowserList().toArray());
+            browserBox.setModel(cbModel);
         }
         catch (Exception ex) {
             ex.printStackTrace();
@@ -168,6 +175,8 @@ public class BrowserLauncherTestApp
         });
         debugTextBttnPanel.setLayout(bttnBoxLayout);
         debugTextBttnPanel.add(Box.createHorizontalStrut(2));
+        debugTextBttnPanel.add(browserBox);
+        debugTextBttnPanel.add(Box.createHorizontalStrut(2));
         debugTextBttnPanel.add(debugLevelLabel);
         debugTextBttnPanel.add(Box.createHorizontalStrut(3));
         debugTextBttnPanel.add(loggingLevelTxtFld);
@@ -213,8 +222,12 @@ public class BrowserLauncherTestApp
             new URL(urlString); // may throw MalformedURLException
             BrowserLauncherErrorHandler errorHandler = new TestAppErrorHandler(
                     debugTextArea);
-            BrowserLauncherRunner runner = new BrowserLauncherRunner(launcher,
-                    urlString, errorHandler);
+            String targetBrowser = browserBox.getSelectedItem().toString();
+            BrowserLauncherRunner runner = new BrowserLauncherRunner(
+                    launcher,
+                    targetBrowser,
+                    urlString,
+                    errorHandler);
             Thread launcherThread = new Thread(runner);
             launcherThread.start();
         }

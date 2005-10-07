@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherRunner.java,v 1.2 2005/05/11 13:38:10 jchapman0 Exp $
+// $Id: BrowserLauncherRunner.java,v 1.3 2005/10/07 20:01:07 jchapman0 Exp $
 package edu.stanford.ejalbert;
 
 import edu.stanford.ejalbert.exceptionhandler.BrowserLauncherErrorHandler;
@@ -33,6 +33,7 @@ import edu.stanford.ejalbert.exceptionhandler.BrowserLauncherDefaultErrorHandler
  */
 public class BrowserLauncherRunner
         implements Runnable {
+    private String targetBrowser; // in ctor
     private String url; // in ctor
     private BrowserLauncherErrorHandler errorHandler; // in ctor
     private BrowserLauncher launcher; // in ctor
@@ -51,11 +52,31 @@ public class BrowserLauncherRunner
     public BrowserLauncherRunner(BrowserLauncher launcher,
                                  String url,
                                  BrowserLauncherErrorHandler errorHandler) {
+        this(launcher, null, url, errorHandler);
+    }
+
+    /**
+     * Takes the items necessary for launching a browser and handling any
+     * exceptions.
+     *
+     * If the errorHandler is null, an instance of the
+     * BrowserLauncherDefaultErrorHandler will be used.
+     *
+     * @param launcher BrowserLauncher
+     * @param browserName String
+     * @param url String
+     * @param errorHandler BrowserLauncherErrorHandler
+     */
+    public BrowserLauncherRunner(BrowserLauncher launcher,
+                                 String browserName,
+                                 String url,
+                                 BrowserLauncherErrorHandler errorHandler) {
         if(launcher == null) {
             throw new IllegalArgumentException("launcher instance cannot be null.");
         }
         this.launcher = launcher;
         this.url = url;
+        this.targetBrowser = browserName;
         if(errorHandler == null) {
             errorHandler = new BrowserLauncherDefaultErrorHandler();
         }
@@ -76,7 +97,11 @@ public class BrowserLauncherRunner
      */
     public void run() {
         try {
-            launcher.openURLinBrowser(url);
+            if(targetBrowser != null) {
+                launcher.openURLinBrowser(targetBrowser, url);
+            } else {
+                launcher.openURLinBrowser(url);
+            }
         }
         catch (Exception ex) {
             launcher.getLogger().error("fatal error opening url", ex);

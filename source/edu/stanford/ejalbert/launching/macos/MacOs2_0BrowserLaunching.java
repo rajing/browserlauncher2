@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: MacOs2_0BrowserLaunching.java,v 1.1 2005/01/06 17:07:06 jchapman0 Exp $
+// $Id: MacOs2_0BrowserLaunching.java,v 1.2 2005/10/07 20:01:08 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.macos;
 
 import java.lang.reflect.Constructor;
@@ -28,6 +28,9 @@ import java.lang.reflect.Method;
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
+import edu.stanford.ejalbert.launching.IBrowserLaunching;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author Markus Gebhard
@@ -134,5 +137,25 @@ public class MacOs2_0BrowserLaunching
             aeDesc = null; // Encourage it to get disposed if it was created
             browser = null; // Ditto
         }
+    }
+
+    public void openUrl(String browser, String urlString)
+            throws UnsupportedOperatingSystemException,
+            BrowserLaunchingExecutionException,
+            BrowserLaunchingInitializingException {
+        //logger.debug("falling through to non-targetted openUrl");
+        openUrl(urlString);
+    }
+
+    /**
+     * Returns a list of browsers to be used for browser targetting.
+     * This list will always contain at least one item--the BROWSER_DEFAULT.
+     *
+     * @return List
+     */
+    public List getBrowserList() {
+        List browserList = new ArrayList(1);
+        browserList.add(IBrowserLaunching.BROWSER_DEFAULT);
+        return browserList;
     }
 }
