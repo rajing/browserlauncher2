@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: UnixNetscapeBrowserLaunching.java,v 1.7 2005/10/13 17:27:52 jchapman0 Exp $
+// $Id: UnixNetscapeBrowserLaunching.java,v 1.8 2005/10/13 19:27:59 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.misc;
 
 import java.util.ArrayList;
@@ -35,7 +35,10 @@ import edu.stanford.ejalbert.launching.IBrowserLaunching;
 import net.sf.wraplog.AbstractLogger;
 
 /**
- * Try several browsers. Most users will have at least one of these installed.
+ * Tries several browsers (mozilla, netscape, firefox, opera, and konqueror).
+ * Most users will have at least one of these installed. The types are
+ * defined in {@link StandardUnixBrowser StandardUnixBrowser}.
+ *
  * @author Markus Gebhard, Jeff Chapman
  */
 public class UnixNetscapeBrowserLaunching

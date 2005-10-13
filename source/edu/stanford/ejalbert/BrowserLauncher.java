@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncher.java,v 1.6 2005/10/07 20:01:07 jchapman0 Exp $
+// $Id: BrowserLauncher.java,v 1.7 2005/10/13 19:27:59 jchapman0 Exp $
 package edu.stanford.ejalbert;
 
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
@@ -83,7 +83,7 @@ public class BrowserLauncher {
     /**
      * Initializes the browser launcher for the operating system on which
      * the application is running.
-     *
+     * <p>
      * Passing null for the logger argument results in use of the default
      * logger. The default logger is set to log errors to the console.
      *
@@ -106,6 +106,13 @@ public class BrowserLauncher {
         return logger;
     }
 
+    /**
+     * Returns a list of browsers to be used for browser targetting.
+     * This list will always contain at least one item:
+     * {@link edu.stanford.ejalbert.launching.IBrowserLaunching#BROWSER_DEFAULT BROWSER_DEFAULT}.
+     * @see IBrowserLaunching
+     * @return List
+     */
     public List getBrowserList() {
         return launching.getBrowserList();
     }
@@ -113,11 +120,10 @@ public class BrowserLauncher {
     /**
      * Determines the operating system and loads the necessary runtime data.
      *
-     * @throws UnsupportedOperatingSystemException
-     * @throws BrowserLaunchingExecutionException
-     * @throws BrowserLaunchingInitializingException
-     *
+     * @param logger AbstractLogger
      * @return IBrowserLaunching
+     * @throws UnsupportedOperatingSystemException
+     * @throws BrowserLaunchingInitializingException
      */
     private IBrowserLaunching initBrowserLauncher(AbstractLogger logger)
             throws UnsupportedOperatingSystemException,
@@ -150,10 +156,12 @@ public class BrowserLauncher {
     }
 
     /**
-     * Attempts to open a specific browser and direct it to the passed url.
-     *
+     * Attempts to open a specific browser and direct it to the passed url. If
+     * the call to the requested browser fails, the code will fail over to the
+     * default browser.
+     * <p>
      * The name for the targetted browser should come from the list
-     * returned from getBrowserList().
+     * returned from {@link #getBrowserList() getBrowserList}.
      *
      * @param browser String
      * @param urlString String
@@ -172,7 +180,6 @@ public class BrowserLauncher {
      * Attempts to open the default web browser to the given URL.
      * @deprecated -- create a BrowserLauncher object and use it instead of
      *                calling this static method.
-     * @todo what if the url is null or empty?
      * @param urlString The URL to open
      * @throws UnsupportedOperatingSystemException
      * @throws BrowserLaunchingExecutionException

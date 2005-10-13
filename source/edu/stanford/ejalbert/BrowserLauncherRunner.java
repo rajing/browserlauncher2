@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherRunner.java,v 1.3 2005/10/07 20:01:07 jchapman0 Exp $
+// $Id: BrowserLauncherRunner.java,v 1.4 2005/10/13 19:27:59 jchapman0 Exp $
 package edu.stanford.ejalbert;
 
 import edu.stanford.ejalbert.exceptionhandler.BrowserLauncherErrorHandler;
@@ -41,10 +41,11 @@ public class BrowserLauncherRunner
     /**
      * Takes the items necessary for launching a browser and handling any
      * exceptions.
-     *
+     * <p>
      * If the errorHandler is null, an instance of the
      * BrowserLauncherDefaultErrorHandler will be used.
      *
+     * @see BrowserLauncherDefaultErrorHandler
      * @param launcher BrowserLauncher
      * @param url String
      * @param errorHandler BrowserLauncherErrorHandler
@@ -58,10 +59,11 @@ public class BrowserLauncherRunner
     /**
      * Takes the items necessary for launching a browser and handling any
      * exceptions.
-     *
+     * <p>
      * If the errorHandler is null, an instance of the
      * BrowserLauncherDefaultErrorHandler will be used.
      *
+     * @see BrowserLauncherDefaultErrorHandler
      * @param launcher BrowserLauncher
      * @param browserName String
      * @param url String
@@ -88,7 +90,7 @@ public class BrowserLauncherRunner
      * create a thread, starting the thread causes the object's
      * <code>run</code> method to be called in that separately executing
      * thread.
-     *
+     * <p>
      * This method will make the call to open the browser and display the
      * url. If an exception occurs, it will be passed to the instance of
      * BrowserLauncherErrorHandler that has been passed into the constructor.
