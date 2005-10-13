@@ -1,4 +1,4 @@
-<!-- $Id: platformsupport.shtml,v 1.1 2005/02/03 01:04:59 jchapman0 Exp $ -->
+<!-- $Id: platformsupport.shtml,v 1.2 2005/10/13 19:30:55 jchapman0 Exp $ -->
 <html>
 <head>
 	<title>Platform Support for BrowserLauncher2 Page</title>
@@ -20,9 +20,9 @@
 				</tr>
 				<tr class="paratext" valign="top">
 					<td>Linux (2.4.x or higher)</td>
-					<td>FireFox, Mozilla, Netscape</td>
+					<td>FireFox, Mozilla, Netscape, Konqueror, Opera</td>
 					<td>Supported</td>
-					<td>If more than one of the supported browsers is available, the first one in alpha order will be invoked.</td>
+					<td>If more than one of the supported browsers is available, the first one in alpha order will be invoked as the default. Any of the available browsers can be targetted.</td>
 				</tr>
 				<tr class="paratext" valign="top">
 					<td>Mac OS X (10.2 or higher)</td>
