@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: UnixNetscapeBrowserLaunching.java,v 1.6 2005/10/07 20:01:08 jchapman0 Exp $
+// $Id: UnixNetscapeBrowserLaunching.java,v 1.7 2005/10/13 17:27:52 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.misc;
 
 import java.util.ArrayList;
@@ -68,6 +68,7 @@ public class UnixNetscapeBrowserLaunching
         potentialBrowsers.add(StandardUnixBrowser.NETSCAPE);
         potentialBrowsers.add(StandardUnixBrowser.KONQUEROR);
         potentialBrowsers.add(StandardUnixBrowser.MOZILLA_FIREFOX);
+        potentialBrowsers.add(StandardUnixBrowser.OPERA);
         // iterate potential browsers to see which are available
         Iterator iter = potentialBrowsers.iterator();
         // will store all names of potential browsers in case the error message should list the browsers to install

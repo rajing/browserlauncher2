@@ -18,12 +18,13 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: StandardUnixBrowser.java,v 1.3 2005/10/06 15:14:48 jchapman0 Exp $
+// $Id: StandardUnixBrowser.java,v 1.4 2005/10/13 17:27:52 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.misc;
 
 import java.io.IOException;
 
-class StandardUnixBrowser implements UnixBrowser {
+class StandardUnixBrowser
+        implements UnixBrowser {
     /**
      * name of browser for user display
      */
@@ -40,17 +41,25 @@ class StandardUnixBrowser implements UnixBrowser {
     private static final String OPEN_PARAMETER_START = "openURL(";
     private static final String OPEN_PARAMETER_END = ")";
 
-    static StandardUnixBrowser NETSCAPE = new StandardUnixBrowser("Netscape",
+    static final StandardUnixBrowser NETSCAPE = new StandardUnixBrowser(
+            "Netscape",
             "netscape");
-    static StandardUnixBrowser MOZILLA = new StandardUnixBrowser("Mozilla",
+    static final StandardUnixBrowser MOZILLA = new StandardUnixBrowser(
+            "Mozilla",
             "mozilla");
-    static StandardUnixBrowser FIREFOX = new StandardUnixBrowser("FireFox",
+    static final StandardUnixBrowser FIREFOX = new StandardUnixBrowser(
+            "FireFox",
             "firefox");
     // on some systems, firefox is referenced as mozilla-firefox
-    static StandardUnixBrowser MOZILLA_FIREFOX = new StandardUnixBrowser("FireFox",
+    static final StandardUnixBrowser MOZILLA_FIREFOX = new StandardUnixBrowser(
+            "FireFox",
             "mozilla-firefox");
-    static StandardUnixBrowser KONQUEROR = new StandardUnixBrowser("Konqueror",
+    static final StandardUnixBrowser KONQUEROR = new StandardUnixBrowser(
+            "Konqueror",
             "konqueror");
+    static final StandardUnixBrowser OPERA = new StandardUnixBrowser(
+            "Opera",
+            "opera");
     private StandardUnixBrowser(String browserName, String browserArgName) {
         this.browserArgName = browserArgName;
         this.browserName = browserName;
@@ -74,7 +83,8 @@ class StandardUnixBrowser implements UnixBrowser {
     }
 
     public String[] getArgsForStartingBrowser(String urlString) {
-        return new String[] {browserArgName, urlString};
+        return new String[] {
+                browserArgName, urlString};
     }
 
     /**
@@ -90,9 +100,11 @@ class StandardUnixBrowser implements UnixBrowser {
                     browserArgName});
             int exitCode = process.waitFor();
             isAvailable = exitCode == 0;
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             // log this somewhere?
-        } catch (InterruptedException ex) {
+        }
+        catch (InterruptedException ex) {
             // log this somewhere?
         }
         return isAvailable;
