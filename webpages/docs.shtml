@@ -1,4 +1,4 @@
-<!-- $Id: docs.shtml,v 1.3 2005/05/19 15:16:35 jchapman0 Exp $ -->
+<!-- $Id: docs.shtml,v 1.4 2005/10/14 17:37:34 jchapman0 Exp $ -->
 <html>
 <head>
 	<title>BrowserLauncher2 Documentation Page</title>
@@ -39,9 +39,8 @@
 			contains a text field for entering urls (you will need to include the protocol) and
 			a text area that records information about your environment and captures stack
 			traces and logging information.</p>
-			<br/>
             <span class="header1"><a name="apinotes">General API Notes</a></span>
-			<br/><br/>
+			<br/>
 			<p class="paratext">The preferred method for using the BrowserLauncher2 api is to
 			create an instance of BrowserLauncher (<code class="codetext">edu.stanford.ejalbert.BrowserLauncher</code>) and
 			invoke the method <code class="codetext">public void openURLinBrowser(String urlString)</code>.</p>
@@ -70,6 +69,11 @@ Thread launcherThread = new Thread(runner);<br/>
 launcherThread.start();<br/>
 			</code>
 			</p>
+            <span class="header1"><a name="browsertargetting">Browser Targetting</a></span>
+			<br/>
+			<p class="paratext">Browser targetting provides an API for directing requests to a specific browser. This feature is fully supported on Unix/Linux, partially supported on Windows, and not supported on Mac.</p>
+			<p class="paratext">To use browser targetting, first call <code class="codetext">public List getBrowserList()</code> to retrieve a list of available browsers. (<b>Windows Note:</b> The list provided for Windows is a static list and may not be accurate. If the call to a specific browser fails, the code will fail over to the default browser call.) Select a name from the list of browsers and pass it with the url in the call to <code class="codetext">public void openURLinBrowser(String browser, String urlString)</code>.</p>
+
         </td>
     </tr>
 </table>

@@ -1,4 +1,4 @@
-<!-- $Id: platformsupport.shtml,v 1.2 2005/10/13 19:30:55 jchapman0 Exp $ -->
+<!-- $Id: platformsupport.shtml,v 1.3 2005/10/14 17:37:34 jchapman0 Exp $ -->
 <html>
 <head>
 	<title>Platform Support for BrowserLauncher2 Page</title>
@@ -16,25 +16,29 @@
 					<td>OS Name</td>
 					<td>Browsers</td>
 					<td>Status</td>
+					<td>Browser Targetting</td>
 					<td>Notes</td>
 				</tr>
 				<tr class="paratext" valign="top">
 					<td>Linux (2.4.x or higher)</td>
 					<td>FireFox, Mozilla, Netscape, Konqueror, Opera</td>
 					<td>Supported</td>
-					<td>If more than one of the supported browsers is available, the first one in alpha order will be invoked as the default. Any of the available browsers can be targetted.</td>
+					<td>Supported</td>
+					<td>If more than one of the supported browsers is available, the first one in alpha order will be invoked as the default.</td>
 				</tr>
 				<tr class="paratext" valign="top">
 					<td>Mac OS X (10.2 or higher)</td>
 					<td></td>
 					<td>Supported</td>
+					<td>Not supported, calls default</td>
 					<td></td>
 				</tr>
 				<tr class="paratext" valign="top">
 					<td>Windows 2000 (5.0)</td>
-					<td>Mozilla</td>
+					<td>Mozilla, Firefox, IE</td>
 					<td>Supported</td>
-					<td></td>
+					<td>Partially supported.</td>
+					<td>Users can pass the name of a browser to target but the list of available browsers may not be accurate.</td>
 				</tr>
 			</table>
         </td>
