@@ -18,23 +18,25 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: DefaultWindowsBrowserLaunching.java,v 1.4 2005/10/07 19:59:56 jchapman0 Exp $
+// $Id: DefaultWindowsBrowserLaunching.java,v 1.5 2005/10/14 17:35:06 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
-import net.sf.wraplog.AbstractLogger;
 import edu.stanford.ejalbert.launching.IBrowserLaunching;
+import net.sf.wraplog.AbstractLogger;
 
 /**
  * @author Markus Gebhard
  */
-public abstract class DefaultWindowsBrowserLaunching
+abstract class DefaultWindowsBrowserLaunching
         extends WindowsBrowserLaunching {
     private static final Map protocolToCommandsArg;
     static {
@@ -47,12 +49,19 @@ public abstract class DefaultWindowsBrowserLaunching
         protocolToCommandsArg = Collections.unmodifiableMap(tempMap);
     }
 
-    private String browser;
+    private final String browserCmmnd;
+    private final List browserList = new ArrayList();
 
-    protected DefaultWindowsBrowserLaunching(String browser,
+    protected DefaultWindowsBrowserLaunching(String browserCmmnd,
                                              AbstractLogger logger) {
         super(logger);
-        this.browser = browser;
+        this.browserCmmnd = browserCmmnd;
+        // creating a static list here until we can find a method
+        // to dynamically obtain a browser list
+        browserList.add(IBrowserLaunching.BROWSER_DEFAULT);
+        browserList.add("firefox");
+        browserList.add("iexplore");
+        browserList.add("mozilla");
     }
 
     /**
@@ -81,11 +90,11 @@ public abstract class DefaultWindowsBrowserLaunching
             logger.info(protocol);
             CommandArgs cmmndArgs =
                     (CommandArgs) protocolToCommandsArg.get(protocol);
-            if(cmmndArgs == null) {
+            if (cmmndArgs == null) {
                 cmmndArgs =
-                    (CommandArgs) protocolToCommandsArg.get(null);
+                        (CommandArgs) protocolToCommandsArg.get(null);
             }
-            String[] args = cmmndArgs.getArgs(browser, urlString);
+            String[] args = cmmndArgs.getArgs(browserCmmnd, urlString);
             if (logger.isDebugEnabled()) {
                 logger.debug(getArrayAsString(args));
             }
@@ -105,8 +114,44 @@ public abstract class DefaultWindowsBrowserLaunching
             throws UnsupportedOperatingSystemException,
             BrowserLaunchingExecutionException,
             BrowserLaunchingInitializingException {
-        logger.debug("falling through to non-targetted openUrl");
-        openUrl(urlString);
+        if (IBrowserLaunching.BROWSER_DEFAULT.equals(browser) ||
+            browser == null) {
+            logger.info("default or null browser target");
+            openUrl(urlString);
+        }
+        else {
+            boolean successfullLaunch = false;
+            try {
+                logger.info(urlString);
+                String protocol = getProtocol(urlString);
+                logger.info(protocol);
+                CommandArgs cmmndArgs =
+                        (CommandArgs) protocolToCommandsArg.get(protocol);
+                if (cmmndArgs == null) {
+                    cmmndArgs =
+                            (CommandArgs) protocolToCommandsArg.get(null);
+                }
+                String[] args = cmmndArgs.getArgs(browserCmmnd,
+                                                  browser,
+                                                  urlString);
+                if (logger.isDebugEnabled()) {
+                    logger.debug(getArrayAsString(args));
+                }
+                Process process = Runtime.getRuntime().exec(args);
+                // This avoids a memory leak on some versions of Java on Windows.
+                // That's hinted at in <http://developer.java.sun.com/developer/qow/archive/68/>.
+                process.waitFor();
+                successfullLaunch = process.exitValue() == 0;
+            }
+            catch (Exception e) {
+                logger.error("fatal exception", e);
+                successfullLaunch = false;
+            }
+            if (!successfullLaunch) {
+                logger.debug("falling through to non-targetted openUrl");
+                openUrl(urlString);
+            }
+        }
     }
 
     /**
@@ -116,18 +161,21 @@ public abstract class DefaultWindowsBrowserLaunching
      * @return List
      */
     public List getBrowserList() {
-        List browserList = new ArrayList(1);
-        browserList.add(IBrowserLaunching.BROWSER_DEFAULT);
         return browserList;
     }
 
     private static abstract class CommandArgs {
         abstract String[] getArgs(String browserCmmnd, String urlString);
+
+        abstract String[] getArgs(String browserCmmnd, String browserName,
+                                  String urlString);
     }
+
 
     private static final class StandardCommandArgs
             extends CommandArgs {
-        String[] getArgs(String browserCmmnd, String urlString) {
+        String[] getArgs(String browserCmmnd,
+                         String urlString) {
             return new String[] {
                     browserCmmnd,
                     FIRST_WINDOWS_PARAMETER,
@@ -135,16 +183,40 @@ public abstract class DefaultWindowsBrowserLaunching
                     THIRD_WINDOWS_PARAMETER,
                     '"' + urlString + '"'};
         }
+
+        String[] getArgs(String browserCmmnd,
+                         String browserName,
+                         String urlString) {
+            return new String[] {
+                    browserCmmnd,
+                    FIRST_WINDOWS_PARAMETER,
+                    SECOND_WINDOWS_PARAMETER,
+                    browserName,
+                    '"' + urlString + '"'};
+        }
     }
+
 
     private static final class FileCommandArgs
             extends CommandArgs {
-        String[] getArgs(String browserCmmnd, String urlString) {
+        String[] getArgs(String browserCmmnd,
+                         String urlString) {
             return new String[] {
                     browserCmmnd,
                     FIRST_WINDOWS_PARAMETER,
                     SECOND_WINDOWS_PARAMETER,
                     THIRD_WINDOWS_PARAMETER,
+                    '"' + urlString + '"'};
+        }
+
+        String[] getArgs(String browserCmmnd,
+                         String browserName,
+                         String urlString) {
+            return new String[] {
+                    browserCmmnd,
+                    FIRST_WINDOWS_PARAMETER,
+                    SECOND_WINDOWS_PARAMETER,
+                    browserName,
                     '"' + urlString + '"'};
         }
     }
