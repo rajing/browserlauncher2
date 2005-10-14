@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherTestApp.java,v 1.13 2005/10/07 20:01:08 jchapman0 Exp $
+// $Id: BrowserLauncherTestApp.java,v 1.14 2005/10/14 17:35:50 jchapman0 Exp $
 package edu.stanford.ejalbert.testing;
 
 import java.awt.BorderLayout;
@@ -223,6 +223,7 @@ public class BrowserLauncherTestApp
             BrowserLauncherErrorHandler errorHandler = new TestAppErrorHandler(
                     debugTextArea);
             String targetBrowser = browserBox.getSelectedItem().toString();
+            logger.debug(targetBrowser);
             BrowserLauncherRunner runner = new BrowserLauncherRunner(
                     launcher,
                     targetBrowser,
