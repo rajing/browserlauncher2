@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLaunchingFactory.java,v 1.2 2005/05/11 13:38:11 jchapman0 Exp $
+// $Id: BrowserLaunchingFactory.java,v 1.3 2005/10/28 18:54:35 jchapman0 Exp $
 package edu.stanford.ejalbert.launching;
 
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
@@ -27,12 +27,18 @@ import edu.stanford.ejalbert.launching.macos.MacOs2_1BrowserLaunching;
 import edu.stanford.ejalbert.launching.macos.MacOs3_0BrowserLaunching;
 import edu.stanford.ejalbert.launching.macos.MacOs3_1BrowserLaunching;
 import edu.stanford.ejalbert.launching.misc.UnixNetscapeBrowserLaunching;
+import edu.stanford.ejalbert.launching.misc.SunOSBrowserLaunching;
 import edu.stanford.ejalbert.launching.windows.Windows2000BrowserLaunching;
 import edu.stanford.ejalbert.launching.windows.Windows9xBrowserLaunching;
 import edu.stanford.ejalbert.launching.windows.WindowsNtBrowserLaunching;
 import net.sf.wraplog.AbstractLogger;
 
 /**
+ * Factory for determining the OS and returning the appropriate version
+ * of IBrowserLaunching. The factory uses
+ * {@link System#getProperty(String) System.getProperty("os.name")} to
+ * determine the OS.
+ *
  * @author Markus Gebhard
  */
 public class BrowserLaunchingFactory {
@@ -85,6 +91,10 @@ public class BrowserLaunchingFactory {
             else {
                 return new WindowsNtBrowserLaunching(logger);
             }
+        }
+        else if (osName.startsWith("SunOS")) {
+            logger.info("SunOS");
+            return new SunOSBrowserLaunching(logger);
         }
         else {
             logger.info("Unix-type OS");
