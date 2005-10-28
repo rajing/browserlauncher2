@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: TestAppLogger.java,v 1.1 2005/04/13 18:05:30 jchapman0 Exp $
+// $Id: TestAppLogger.java,v 1.2 2005/10/28 18:53:24 jchapman0 Exp $
 package edu.stanford.ejalbert.testing;
 
 import java.io.PrintWriter;
@@ -63,7 +63,7 @@ class TestAppLogger
                              Throwable error)
             throws Exception {
         if (message == null) {
-            throw new NullPointerException("message must not be null");
+            message = "null";
         }
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter, true);
