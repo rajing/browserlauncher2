@@ -18,8 +18,10 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: UnixBrowser.java,v 1.1 2005/01/06 17:07:06 jchapman0 Exp $
+// $Id: UnixBrowser.java,v 1.2 2005/10/28 18:56:05 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.misc;
+
+import net.sf.wraplog.AbstractLogger;
 
 public interface UnixBrowser {
     /**
@@ -33,5 +35,5 @@ public interface UnixBrowser {
 
     public String[] getArgsForStartingBrowser(String url);
 
-    public boolean isBrowserAvailable();
+    public boolean isBrowserAvailable(AbstractLogger logger);
 }
