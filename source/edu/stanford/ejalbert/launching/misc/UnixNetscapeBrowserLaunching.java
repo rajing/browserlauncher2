@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: UnixNetscapeBrowserLaunching.java,v 1.8 2005/10/13 19:27:59 jchapman0 Exp $
+// $Id: UnixNetscapeBrowserLaunching.java,v 1.9 2005/10/28 18:57:32 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.misc;
 
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public class UnixNetscapeBrowserLaunching
      */
     private Map unixBrowsers = new TreeMap(String.CASE_INSENSITIVE_ORDER);
 
-    private final AbstractLogger logger; // in ctor
+    protected final AbstractLogger logger; // in ctor
 
     public UnixNetscapeBrowserLaunching(AbstractLogger logger) {
         this.logger = logger;
@@ -83,7 +83,7 @@ public class UnixNetscapeBrowserLaunching
             if (iter.hasNext()) {
                 potentialBrowserNames += ", ";
             }
-            if (browser.isBrowserAvailable()) {
+            if (browser.isBrowserAvailable(logger)) {
                 unixBrowsers.put(browser.getBrowserName(), browser);
             }
         }

@@ -18,10 +18,14 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: StandardUnixBrowser.java,v 1.4 2005/10/13 17:27:52 jchapman0 Exp $
+// $Id: StandardUnixBrowser.java,v 1.5 2005/10/28 18:57:32 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.misc;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import net.sf.wraplog.AbstractLogger;
 
 class StandardUnixBrowser
         implements UnixBrowser {
@@ -60,7 +64,7 @@ class StandardUnixBrowser
     static final StandardUnixBrowser OPERA = new StandardUnixBrowser(
             "Opera",
             "opera");
-    private StandardUnixBrowser(String browserName, String browserArgName) {
+    StandardUnixBrowser(String browserName, String browserArgName) {
         this.browserArgName = browserArgName;
         this.browserName = browserName;
     }
@@ -90,22 +94,41 @@ class StandardUnixBrowser
     /**
      * Returns true if the browser is available, ie which command finds it.
      *
-     * @todo what do we do if an exception is thrown? log it or ignore it?
+     * @param logger AbstractLogger
      * @return boolean
      */
-    public boolean isBrowserAvailable() {
+    public boolean isBrowserAvailable(AbstractLogger logger) {
         boolean isAvailable = false;
         try {
             Process process = Runtime.getRuntime().exec(new String[] {"which",
                     browserArgName});
+            InputStream errStream = process.getErrorStream();
+            InputStream inStream = process.getInputStream();
             int exitCode = process.waitFor();
-            isAvailable = exitCode == 0;
+            BufferedReader errIn
+                    = new BufferedReader(new InputStreamReader(errStream));
+            BufferedReader in
+                    = new BufferedReader(new InputStreamReader(inStream));
+            String whichOutput = in.readLine();
+            String whichErrOutput = errIn.readLine();
+            in.close();
+            errIn.close();
+            if(whichOutput != null) {
+                logger.debug(whichOutput);
+            }
+            if(whichErrOutput != null) {
+                logger.debug(whichErrOutput);
+            }
+            // this doesn't work on SunOS unix systems but does on Linux systems
+            //isAvailable = exitCode == 0;
+            isAvailable = whichOutput != null &&
+                          whichOutput.startsWith("/");
         }
         catch (IOException ex) {
-            // log this somewhere?
+            logger.error("io error executing which command", ex);
         }
         catch (InterruptedException ex) {
-            // log this somewhere?
+            logger.error("interrupted executing which command", ex);
         }
         return isAvailable;
     }
