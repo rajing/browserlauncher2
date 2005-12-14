@@ -30,14 +30,17 @@ package net.sf.wraplog;
 
 /**
  * RuntimeException to indicate that a message could not be logged.
- * 
+ * <p>
+ * Updated to WrapLog version 1.1.
+ *
  * @author Thomas Aglassinger
  */
-public class LoggingException extends RuntimeException {
-	public LoggingException(String newMessage, Throwable cause) {
-		super(newMessage);
-		if (cause != null) {
-			initCause(cause);
-		}
-	}
+public class LoggingException
+        extends RuntimeException {
+    public LoggingException(String newMessage, Throwable cause) {
+        super(newMessage);
+        if (cause != null) {
+            initCause(cause);
+        }
+    }
 }

@@ -31,74 +31,80 @@ package net.sf.wraplog;
 /**
  * Abstract base class to write messages about interesting things happening to a
  * log.
- * 
+ * <p>
+ * Updated to WrapLog version 1.1.
+ *
  * @author Thomas Aglassinger
  */
 public abstract class AbstractLogger {
-	
-	private int level = Level.DEBUG;
 
-	private int loggedMessageCount;
+    private int level = Level.DEBUG;
 
-	protected void checkLevel(int logLevel, String name) {
-		String actualName;
-		if (name == null) {
-			actualName = "level";
-		} else {
-			actualName = name;
-		}
-		if ((logLevel < Level.DEBUG) || (logLevel > Level.ERROR)) {
-			throw new IllegalArgumentException(actualName
-					+ " must be one of: Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR");
-		}
-	}
+    private int loggedMessageCount;
 
-	public void debug(String message) {
-		debug(message, null);
-	}
+    protected void checkLevel(int logLevel, String name) {
+        String actualName;
+        if (name == null) {
+            actualName = "level";
+        }
+        else {
+            actualName = name;
+        }
+        if ((logLevel < Level.DEBUG) || (logLevel > Level.ERROR)) {
+            throw new IllegalArgumentException(actualName
+                                               +
+                    " must be one of: Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR");
+        }
+    }
 
-	public void debug(String message, Throwable error) {
-		log(Level.DEBUG, message, error);
-	}
+    public void debug(String message) {
+        debug(message, null);
+    }
 
-	public void error(String message) {
-		error(message, null);
-	}
+    public void debug(String message, Throwable error) {
+        log(Level.DEBUG, message, error);
+    }
 
-	public void error(String message, Throwable error) {
-		log(Level.ERROR, message, error);
-	}
+    public void error(String message) {
+        error(message, null);
+    }
 
-	public int getLevel() {
-		return level;
-	}
+    public void error(String message, Throwable error) {
+        log(Level.ERROR, message, error);
+    }
 
-	/** Count of how many messages have been logged. */
-	public int getLoggedMessageCount() {
-		return loggedMessageCount;
-	}
+    public int getLevel() {
+        return level;
+    }
 
-	public void info(String message) {
-		info(message, null);
-	}
+    /** Count of how many messages have been logged. */
+    public int getLoggedMessageCount() {
+        return loggedMessageCount;
+    }
 
-	public void info(String message, Throwable error) {
-		log(Level.INFO, message, error);
-	}
+    public void info(String message) {
+        info(message, null);
+    }
 
-	public boolean isEnabled(int logLevel) {
-		checkLevel(level, null);
-		return logLevel >= level;
-	}
+    public void info(String message, Throwable error) {
+        log(Level.INFO, message, error);
+    }
 
-	/**
-	 * Logs a message and optional error details.
-	 * 
-	 * @param logLevel one of: Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR
-	 * @param message the actual message; this will never be <code>null</code>
-	 * @param error an error that is related to the message; unless <code>null</code>, the name and stack trace of the error are logged
-	 */
-	protected abstract void reallyLog(int logLevel, String message, Throwable error) throws Exception;
+    public boolean isEnabled(int logLevel) {
+        checkLevel(level, null);
+        return logLevel >= level;
+    }
+
+    /**
+     * Logs a message and optional error details.
+     *
+     * @param logLevel one of: Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR
+     * @param message the actual message; this will never be <code>null</code>
+     * @param error an error that is related to the message; unless <code>null</code>, the name and stack trace of the error are logged
+     */
+    protected abstract void reallyLog(int logLevel, String message,
+                                      Throwable error)
+            throws Exception;
 
     /**
      * Provided that <code>getLevel()</code> accepts it, log
@@ -117,42 +123,45 @@ public abstract class AbstractLogger {
             try {
                 reallyLog(logLevel, message, error);
                 loggedMessageCount += 1;
-            } catch (Exception error2) {
-                throw new LoggingException("cannot log message: " + message, error2);
+            }
+            catch (Exception error2) {
+                throw new LoggingException("cannot log message: " + message,
+                                           error2);
             }
         }
     }
 
-	public void setLevel(int newLevel) {
-		if ((level >= Level.DEBUG) || (level <= Level.ERROR)) {
-			level = newLevel;
-		} else {
-			throw new IllegalArgumentException(
-					"newLevel must be one of: Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR");
-		}
-	}
+    public void setLevel(int newLevel) {
+        if ((level >= Level.DEBUG) || (level <= Level.ERROR)) {
+            level = newLevel;
+        }
+        else {
+            throw new IllegalArgumentException(
+                    "newLevel must be one of: Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR");
+        }
+    }
 
-	public void warn(String message) {
-		warn(message, null);
-	}
+    public void warn(String message) {
+        warn(message, null);
+    }
 
     public boolean isDebugEnabled() {
         return isEnabled(Level.DEBUG);
     }
-    
+
     public boolean isInfoEnabled() {
         return isEnabled(Level.INFO);
     }
-    
+
     public boolean isWarnEnabled() {
         return isEnabled(Level.WARN);
     }
-    
+
     public boolean isErrorEnabled() {
         return isEnabled(Level.ERROR);
     }
 
     public void warn(String message, Throwable error) {
-		log(Level.WARN, message, error);
-	}
+        log(Level.WARN, message, error);
+    }
 }
