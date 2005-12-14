@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherTestApp.java,v 1.14 2005/10/14 17:35:50 jchapman0 Exp $
+// $Id: BrowserLauncherTestApp.java,v 1.15 2005/12/14 16:09:43 jchapman0 Exp $
 package edu.stanford.ejalbert.testing;
 
 import java.awt.BorderLayout;
@@ -59,7 +59,6 @@ public class BrowserLauncherTestApp
         extends JFrame {
     private static final String debugResources =
             "edu.stanford.ejalbert.resources.Debugging";
-    //private static Logger logger = Logger.getLogger(BrowserLauncherTestApp.class);
     private TestAppLogger logger; // in ctor
     private JPanel urlPanel = new JPanel();
     private JComboBox browserBox = new JComboBox();

@@ -18,8 +18,10 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncher.java,v 1.7 2005/10/13 19:27:59 jchapman0 Exp $
+// $Id: BrowserLauncher.java,v 1.8 2005/12/14 16:09:43 jchapman0 Exp $
 package edu.stanford.ejalbert;
+
+import java.util.List;
 
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
@@ -28,8 +30,7 @@ import edu.stanford.ejalbert.launching.BrowserLaunchingFactory;
 import edu.stanford.ejalbert.launching.IBrowserLaunching;
 import net.sf.wraplog.AbstractLogger;
 import net.sf.wraplog.Level;
-import net.sf.wraplog.Logger;
-import java.util.List;
+import net.sf.wraplog.NoneLogger;
 
 /**
  * BrowserLauncher is a class that provides a method, openURLinBrowser, which opens the default
@@ -84,8 +85,9 @@ public class BrowserLauncher {
      * Initializes the browser launcher for the operating system on which
      * the application is running.
      * <p>
-     * Passing null for the logger argument results in use of the default
-     * logger. The default logger is set to log errors to the console.
+     * If null is passed in as a logger, the default logger used will
+     * be {@link net.sf.wraplog.NoneLogger NoneLogger}. All log messages are
+     * ignored by this logger.
      *
      * @param logger AbstractLogger
      * @throws BrowserLaunchingInitializingException
@@ -119,6 +121,10 @@ public class BrowserLauncher {
 
     /**
      * Determines the operating system and loads the necessary runtime data.
+     * <p>
+     * If null is passed in as a logger, the default logger used will
+     * be {@link net.sf.wraplog.NoneLogger NoneLogger}. All log messages are
+     * ignored by this logger.
      *
      * @param logger AbstractLogger
      * @return IBrowserLaunching
@@ -129,8 +135,8 @@ public class BrowserLauncher {
             throws UnsupportedOperatingSystemException,
             BrowserLaunchingInitializingException {
         if(logger == null) {
-            logger = Logger.getLogger(BrowserLauncher.class);
-            logger.setLevel(Level.ERROR);
+            logger = new NoneLogger();
+            //logger.setLevel(Level.ERROR);
         }
         this.logger = logger;
         IBrowserLaunching launching =
