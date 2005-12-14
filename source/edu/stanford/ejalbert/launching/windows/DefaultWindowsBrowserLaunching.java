@@ -18,14 +18,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: DefaultWindowsBrowserLaunching.java,v 1.5 2005/10/14 17:35:06 jchapman0 Exp $
+// $Id: DefaultWindowsBrowserLaunching.java,v 1.6 2005/12/14 16:08:54 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
@@ -38,24 +35,10 @@ import net.sf.wraplog.AbstractLogger;
  */
 abstract class DefaultWindowsBrowserLaunching
         extends WindowsBrowserLaunching {
-    private static final Map protocolToCommandsArg;
-    static {
-        Map tempMap = new HashMap();
-        CommandArgs stndrdArgs = new StandardCommandArgs();
-        tempMap.put(null, stndrdArgs); // default
-        tempMap.put(PROTOCOL_HTTP, stndrdArgs);
-        tempMap.put(PROTOCOL_MAILTO, stndrdArgs);
-        tempMap.put(PROTOCOL_FILE, new FileCommandArgs());
-        protocolToCommandsArg = Collections.unmodifiableMap(tempMap);
-    }
-
-    private final String browserCmmnd;
     private final List browserList = new ArrayList();
 
-    protected DefaultWindowsBrowserLaunching(String browserCmmnd,
-                                             AbstractLogger logger) {
+    protected DefaultWindowsBrowserLaunching(AbstractLogger logger) {
         super(logger);
-        this.browserCmmnd = browserCmmnd;
         // creating a static list here until we can find a method
         // to dynamically obtain a browser list
         browserList.add(IBrowserLaunching.BROWSER_DEFAULT);
@@ -68,17 +51,17 @@ abstract class DefaultWindowsBrowserLaunching
      * The first parameter that needs to be passed into Runtime.exec() to open the default web
      * browser on Windows.
      */
-    private static final String FIRST_WINDOWS_PARAMETER = "/c";
+    protected static final String FIRST_WINDOWS_PARAMETER = "/c";
 
     /** The second parameter for Runtime.exec() on Windows. */
-    private static final String SECOND_WINDOWS_PARAMETER = "start";
+    protected static final String SECOND_WINDOWS_PARAMETER = "start";
 
     /**
      * The third parameter for Runtime.exec() on Windows.  This is a "title"
      * parameter that the command line expects.  Setting this parameter allows
      * URLs containing spaces to work.
      */
-    private static final String THIRD_WINDOWS_PARAMETER = "\"\"";
+    protected static final String THIRD_WINDOWS_PARAMETER = "\"\"";
 
     public void openUrl(String urlString)
             throws UnsupportedOperatingSystemException,
@@ -88,13 +71,8 @@ abstract class DefaultWindowsBrowserLaunching
             logger.info(urlString);
             String protocol = getProtocol(urlString);
             logger.info(protocol);
-            CommandArgs cmmndArgs =
-                    (CommandArgs) protocolToCommandsArg.get(protocol);
-            if (cmmndArgs == null) {
-                cmmndArgs =
-                        (CommandArgs) protocolToCommandsArg.get(null);
-            }
-            String[] args = cmmndArgs.getArgs(browserCmmnd, urlString);
+            String[] args = getCommandArgs(protocol,
+                                           urlString);
             if (logger.isDebugEnabled()) {
                 logger.debug(getArrayAsString(args));
             }
@@ -125,15 +103,9 @@ abstract class DefaultWindowsBrowserLaunching
                 logger.info(urlString);
                 String protocol = getProtocol(urlString);
                 logger.info(protocol);
-                CommandArgs cmmndArgs =
-                        (CommandArgs) protocolToCommandsArg.get(protocol);
-                if (cmmndArgs == null) {
-                    cmmndArgs =
-                            (CommandArgs) protocolToCommandsArg.get(null);
-                }
-                String[] args = cmmndArgs.getArgs(browserCmmnd,
-                                                  browser,
-                                                  urlString);
+                String[] args = getCommandArgs(protocol,
+                                               browser,
+                                               urlString);
                 if (logger.isDebugEnabled()) {
                     logger.debug(getArrayAsString(args));
                 }
@@ -164,60 +136,25 @@ abstract class DefaultWindowsBrowserLaunching
         return browserList;
     }
 
-    private static abstract class CommandArgs {
-        abstract String[] getArgs(String browserCmmnd, String urlString);
+    /**
+     * Returns the windows arguments for launching a default browser.
+     *
+     * @param protocol String
+     * @param urlString String
+     * @return String[]
+     */
+    protected abstract String[] getCommandArgs(String protocol,
+                                               String urlString);
 
-        abstract String[] getArgs(String browserCmmnd, String browserName,
-                                  String urlString);
-    }
-
-
-    private static final class StandardCommandArgs
-            extends CommandArgs {
-        String[] getArgs(String browserCmmnd,
-                         String urlString) {
-            return new String[] {
-                    browserCmmnd,
-                    FIRST_WINDOWS_PARAMETER,
-                    SECOND_WINDOWS_PARAMETER,
-                    THIRD_WINDOWS_PARAMETER,
-                    '"' + urlString + '"'};
-        }
-
-        String[] getArgs(String browserCmmnd,
-                         String browserName,
-                         String urlString) {
-            return new String[] {
-                    browserCmmnd,
-                    FIRST_WINDOWS_PARAMETER,
-                    SECOND_WINDOWS_PARAMETER,
-                    browserName,
-                    '"' + urlString + '"'};
-        }
-    }
-
-
-    private static final class FileCommandArgs
-            extends CommandArgs {
-        String[] getArgs(String browserCmmnd,
-                         String urlString) {
-            return new String[] {
-                    browserCmmnd,
-                    FIRST_WINDOWS_PARAMETER,
-                    SECOND_WINDOWS_PARAMETER,
-                    THIRD_WINDOWS_PARAMETER,
-                    '"' + urlString + '"'};
-        }
-
-        String[] getArgs(String browserCmmnd,
-                         String browserName,
-                         String urlString) {
-            return new String[] {
-                    browserCmmnd,
-                    FIRST_WINDOWS_PARAMETER,
-                    SECOND_WINDOWS_PARAMETER,
-                    browserName,
-                    '"' + urlString + '"'};
-        }
-    }
+    /**
+     * Returns the windows arguments for launching a specified browser.
+     *
+     * @param protocol String
+     * @param browserName String
+     * @param urlString String
+     * @return String[]
+     */
+    protected abstract String[] getCommandArgs(String protocol,
+                                               String browserName,
+                                               String urlString);
 }

@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: Windows9xBrowserLaunching.java,v 1.2 2005/05/11 13:38:55 jchapman0 Exp $
+// $Id: Windows9xBrowserLaunching.java,v 1.3 2005/12/14 16:08:54 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
 
 import net.sf.wraplog.AbstractLogger;
@@ -28,9 +28,47 @@ import net.sf.wraplog.AbstractLogger;
  */
 public class Windows9xBrowserLaunching
         extends DefaultWindowsBrowserLaunching {
+    private static final String browserCommand = "command.com";
 
     public Windows9xBrowserLaunching(AbstractLogger logger) {
-        super("command.com", logger);
+        super(logger);
         logger.info("Windows9x launcher");
+    }
+
+    /**
+     * Command args for Windows 9x type.
+     *
+     * @param protocol String
+     * @param urlString String
+     * @return String[]
+     */
+    protected String[] getCommandArgs(String protocol,
+                                      String urlString) {
+        // no differences based on protocol
+        return new String[] {
+                browserCommand,
+                FIRST_WINDOWS_PARAMETER,
+                SECOND_WINDOWS_PARAMETER,
+                '"' + urlString + '"'};
+    }
+
+    /**
+     * Command args for Windows 9x type.
+     *
+     * @param protocol String
+     * @param browserName String
+     * @param urlString String
+     * @return String[]
+     */
+    protected String[] getCommandArgs(String protocol,
+                                      String browserName,
+                                      String urlString) {
+        // no differences based on protocol
+        return new String[] {
+                browserCommand,
+                FIRST_WINDOWS_PARAMETER,
+                SECOND_WINDOWS_PARAMETER,
+                browserName,
+                '"' + urlString + '"'};
     }
 }
