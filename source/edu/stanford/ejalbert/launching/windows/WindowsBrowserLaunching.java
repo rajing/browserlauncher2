@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: WindowsBrowserLaunching.java,v 1.2 2005/05/11 13:38:55 jchapman0 Exp $
+// $Id: WindowsBrowserLaunching.java,v 1.3 2005/12/22 18:07:13 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
 
 import java.net.MalformedURLException;
@@ -49,6 +49,8 @@ public abstract class WindowsBrowserLaunching
         URL url = new URL(urlString);
         return url.getProtocol();
     }
+
+    /* ----------------- from IBrowserLaunching -------------------- */
 
     public void initialize()
             throws BrowserLaunchingInitializingException {
