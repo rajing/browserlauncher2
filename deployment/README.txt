@@ -18,7 +18,9 @@ Jeff Chapman sdvalidator@yahoo.com
 Contributors:  
 Thomas Aglassinger
 Jeff Chapman
+Chris Dance
 Markus Gebhard
+Olivier Hochreutiner
 Morgan Schweers
 
 This software is OSI Certified Open Source Software.
@@ -53,3 +55,12 @@ BrowserLauncherErrorHandler errorHandler = new TestAppErrorHandler(debugTextArea
 BrowserLauncherRunner runner = new BrowserLauncherRunner(launcher, urlString, errorHandler);
 Thread launcherThread = new Thread(runner);
 launcherThread.start();
+
+Logging
+---------
+BrowserLauncher2 uses a subset of WrapLog 1.1 for logging. If you do not specify a logger 
+instance, a default logger (NoneLogger) will be used. The default logger does not log 
+anything.
+
+For more information on using WrapLog, see http://sourceforge.net/projects/wraplog.
+
