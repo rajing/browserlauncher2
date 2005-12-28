@@ -18,10 +18,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: WindowsBrowser.java,v 1.1 2005/12/22 18:06:12 jchapman0 Exp $
+// $Id: WindowsBrowser.java,v 1.2 2005/12/28 19:19:57 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
 
 /**
+ * Encapsulates information on a Windows browser.
  *
  * @author Jeff Chapman
  * @version 1.0

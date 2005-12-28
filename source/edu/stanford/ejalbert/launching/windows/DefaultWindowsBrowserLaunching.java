@@ -18,12 +18,20 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: DefaultWindowsBrowserLaunching.java,v 1.7 2005/12/22 18:07:13 jchapman0 Exp $
+// $Id: DefaultWindowsBrowserLaunching.java,v 1.8 2005/12/28 19:19:57 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.*;
-import java.io.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
@@ -36,7 +44,8 @@ import net.sf.wraplog.AbstractLogger;
 abstract class DefaultWindowsBrowserLaunching
         extends WindowsBrowserLaunching {
     /**
-     * Maps display name and exe name to windows browser objects
+     * Maps display name and exe name to {@link WindowsBrowser WindowsBrowser}
+     * objects. Using name and exe as keys for backward compatiblity.
      */
     private Map browserNameAndExeMap = null;
 
@@ -83,11 +92,13 @@ abstract class DefaultWindowsBrowserLaunching
                                                String urlString);
 
     /**
-     * Returns a list of browsers currently available for use on the systems.  This
-     * list will either match, or be a subset of, <code>getBrowserList</code>.  The
-     * method will return at least one item - the BROWSER_DEFAULT.
+     * Accesses the Windows registry to look for browser exes. The
+     * browsers search for are in the browsersToCheck list. The returned
+     * map will use display names and exe names as keys to the
+     * {@link WindowsBrowser WindowsBrowser} objects.
      *
-     * @return List
+     * @param browsersToCheck List
+     * @return Map
      */
     protected Map getAvailableBrowsers(List browsersToCheck) {
         logger.debug("entering getAvailableBrowsers");
@@ -179,6 +190,9 @@ abstract class DefaultWindowsBrowserLaunching
         return browsersAvailable;
     }
 
+    /**
+     * Handles lazy instantiation of available browser map.
+     */
     private void initBrowserMap() {
         synchronized(DefaultWindowsBrowserLaunching.class) {
             if (browserNameAndExeMap == null) {
@@ -194,6 +208,13 @@ abstract class DefaultWindowsBrowserLaunching
         }
     }
 
+    /**
+     * Returns map of browser names and exe names to
+     * {@link WindowsBrowser WindowsBrowser} objects.
+     * <p>
+     * This is the preferred method for accessing the browser name and exe map.
+     * @return Map
+     */
     protected final Map getBrowserMap() {
         initBrowserMap();
         return browserNameAndExeMap;
