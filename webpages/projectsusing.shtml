@@ -1,4 +1,4 @@
-<!-- $Id: projectsusing.shtml,v 1.2 2005/05/19 15:17:02 jchapman0 Exp $ -->
+<!-- $Id: projectsusing.shtml,v 1.3 2005/12/28 18:05:00 jchapman0 Exp $ -->
 <html>
 <head>
 	<title>Projects Using BrowserLauncher2 Page</title>
@@ -20,6 +20,10 @@
 				<tr class="header2" valign="top">
 					<td>Project Name</td>
 					<td>Description</td>
+				</tr>
+				<tr class="paratext" valign="top">
+					<td><a href="http://www.papercut.biz/">PaperCut NG - Print Quotas (http://www.papercut.biz/)</a></td>
+					<td>PaperCut NG is a cross-platform print quota system used to manage printing on academic networks such as schools and Universities.  Most education networks are a heterogeneous mix of Windows, Mac and Linux systems.  PaperCut NG uses BrowserLauncher2 in its cross-platform client tool.  It's a great help as it ensures as much code as possible is shared between platforms.</td>
 				</tr>
 				<tr class="paratext" valign="top">
 					<td><a href="http://sourceforge.net/projects/sdvalidator/">Structured Document Validator</a></td>
