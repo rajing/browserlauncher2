@@ -1,4 +1,4 @@
-<!-- $Id: docs.shtml,v 1.4 2005/10/14 17:37:34 jchapman0 Exp $ -->
+<!-- $Id: docs.shtml,v 1.5 2005/12/28 18:05:24 jchapman0 Exp $ -->
 <html>
 <head>
 	<title>BrowserLauncher2 Documentation Page</title>
@@ -73,7 +73,10 @@ launcherThread.start();<br/>
 			<br/>
 			<p class="paratext">Browser targetting provides an API for directing requests to a specific browser. This feature is fully supported on Unix/Linux, partially supported on Windows, and not supported on Mac.</p>
 			<p class="paratext">To use browser targetting, first call <code class="codetext">public List getBrowserList()</code> to retrieve a list of available browsers. (<b>Windows Note:</b> The list provided for Windows is a static list and may not be accurate. If the call to a specific browser fails, the code will fail over to the default browser call.) Select a name from the list of browsers and pass it with the url in the call to <code class="codetext">public void openURLinBrowser(String browser, String urlString)</code>.</p>
-
+            <span class="header1"><a name="logging">Logging</a></span>
+			<br/>
+			<p class="paratext">BrowserLauncher2 uses a subset of WrapLog 1.1 for logging. If you do not specify a logger instance, a default logger (NoneLogger) will be used. The default logger does not log anything.</p>
+			<p class="paratext">For more information on using WrapLog, see <a href="http://sourceforge.net/projects/wraplog">http://sourceforge.net/projects/wraplog</a>.</p>
         </td>
     </tr>
 </table>
