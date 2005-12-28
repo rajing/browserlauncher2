@@ -1,4 +1,4 @@
-<!-- $Id: platformsupport.shtml,v 1.3 2005/10/14 17:37:34 jchapman0 Exp $ -->
+<!-- $Id: platformsupport.shtml,v 1.4 2005/12/28 18:04:37 jchapman0 Exp $ -->
 <html>
 <head>
 	<title>Platform Support for BrowserLauncher2 Page</title>
@@ -34,11 +34,46 @@
 					<td></td>
 				</tr>
 				<tr class="paratext" valign="top">
-					<td>Windows 2000 (5.0)</td>
+					<td>SunOS</td>
+					<td>Mozilla, Firefox, Netscape</td>
+					<td>Supported</td>
+					<td>Supported</td>
+					<td>The default browser is invoked using the sdtwebclient command.</td>
+				</tr>
+				<tr class="paratext" valign="top">
+					<td>Windows 2000</td>
 					<td>Mozilla, Firefox, IE</td>
 					<td>Supported</td>
-					<td>Partially supported.</td>
-					<td>Users can pass the name of a browser to target but the list of available browsers may not be accurate.</td>
+					<td>Supported.</td>
+					<td></td>
+				</tr>
+				<tr class="paratext" valign="top">
+					<td>Windows 2003</td>
+					<td>Mozilla, Firefox, IE</td>
+					<td>Supported</td>
+					<td>Supported.</td>
+					<td></td>
+				</tr>
+				<tr class="paratext" valign="top">
+					<td>Windows 98</td>
+					<td>Mozilla, Firefox, IE</td>
+					<td>Supported</td>
+					<td>Supported.</td>
+					<td></td>
+				</tr>
+				<tr class="paratext" valign="top">
+					<td>Windows NT</td>
+					<td>Mozilla, Firefox, IE</td>
+					<td>Supported</td>
+					<td>Supported.</td>
+					<td></td>
+				</tr>
+				<tr class="paratext" valign="top">
+					<td>Windows XP</td>
+					<td>Mozilla, Firefox, IE</td>
+					<td>Supported</td>
+					<td>Supported.</td>
+					<td></td>
 				</tr>
 			</table>
         </td>
