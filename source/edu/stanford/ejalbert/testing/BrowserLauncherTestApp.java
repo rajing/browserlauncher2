@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004,2005 Jeff Chapman
+    Copyright 2004,2005,2006 Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherTestApp.java,v 1.15 2005/12/14 16:09:43 jchapman0 Exp $
+// $Id: BrowserLauncherTestApp.java,v 1.16 2006/02/23 18:50:48 jchapman0 Exp $
 package edu.stanford.ejalbert.testing;
 
 import java.awt.BorderLayout;
@@ -46,7 +46,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import edu.stanford.ejalbert.BrowserLauncher;
-import edu.stanford.ejalbert.BrowserLauncherRunner;
 import edu.stanford.ejalbert.exceptionhandler.BrowserLauncherErrorHandler;
 
 /**
@@ -92,7 +91,9 @@ public class BrowserLauncherTestApp
             super.setTitle(bundle.getString("label.app.title"));
             jbInit();
             populateDebugInfo(bundle, debugTextArea);
-            launcher = new BrowserLauncher(logger);
+            launcher = new BrowserLauncher(
+                    logger,
+                    new TestAppErrorHandler(debugTextArea));
             ComboBoxModel cbModel = new DefaultComboBoxModel(launcher.
                     getBrowserList().toArray());
             browserBox.setModel(cbModel);
@@ -223,13 +224,7 @@ public class BrowserLauncherTestApp
                     debugTextArea);
             String targetBrowser = browserBox.getSelectedItem().toString();
             logger.debug(targetBrowser);
-            BrowserLauncherRunner runner = new BrowserLauncherRunner(
-                    launcher,
-                    targetBrowser,
-                    urlString,
-                    errorHandler);
-            Thread launcherThread = new Thread(runner);
-            launcherThread.start();
+            launcher.openURLinBrowser(targetBrowser, urlString);
         }
         catch (Exception ex) {
             // capture exception

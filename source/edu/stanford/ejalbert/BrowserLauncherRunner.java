@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2005 Jeff Chapman
+    Copyright 2005,2006 Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,72 +18,79 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherRunner.java,v 1.4 2005/10/13 19:27:59 jchapman0 Exp $
+// $Id: BrowserLauncherRunner.java,v 1.5 2006/02/23 18:50:47 jchapman0 Exp $
 package edu.stanford.ejalbert;
 
 import edu.stanford.ejalbert.exceptionhandler.BrowserLauncherErrorHandler;
-import edu.stanford.ejalbert.exceptionhandler.BrowserLauncherDefaultErrorHandler;
+import edu.stanford.ejalbert.launching.IBrowserLaunching;
+import net.sf.wraplog.AbstractLogger;
 
 /**
  * This is a convenience class to facilitate executing the browser launch in
- * a separate thread. Applications will need to create a thread passing an
- * instance of this class, then call start() on the thread created.
+ * a separate thread. This class is used from within BrowserLauncher
+ * when handling calls to open a url.
  *
  * @author Jeff Chapman
  */
-public class BrowserLauncherRunner
+class BrowserLauncherRunner
         implements Runnable {
-    private String targetBrowser; // in ctor
-    private String url; // in ctor
-    private BrowserLauncherErrorHandler errorHandler; // in ctor
-    private BrowserLauncher launcher; // in ctor
+    private final String targetBrowser; // in ctor
+    private final String url; // in ctor
+    private final BrowserLauncherErrorHandler errorHandler; // in ctor
+    private final IBrowserLaunching launcher; // in ctor
+    private final AbstractLogger logger; // in ctor
 
     /**
      * Takes the items necessary for launching a browser and handling any
      * exceptions.
-     * <p>
-     * If the errorHandler is null, an instance of the
-     * BrowserLauncherDefaultErrorHandler will be used.
      *
-     * @see BrowserLauncherDefaultErrorHandler
-     * @param launcher BrowserLauncher
+     * @param launcher IBrowserLaunching
      * @param url String
+     * @param logger AbstractLogger
      * @param errorHandler BrowserLauncherErrorHandler
      */
-    public BrowserLauncherRunner(BrowserLauncher launcher,
-                                 String url,
-                                 BrowserLauncherErrorHandler errorHandler) {
-        this(launcher, null, url, errorHandler);
+    BrowserLauncherRunner(IBrowserLaunching launcher,
+                          String url,
+                          AbstractLogger logger,
+                          BrowserLauncherErrorHandler errorHandler) {
+        this(launcher, null, url, logger, errorHandler);
     }
 
     /**
      * Takes the items necessary for launching a browser and handling any
      * exceptions.
-     * <p>
-     * If the errorHandler is null, an instance of the
-     * BrowserLauncherDefaultErrorHandler will be used.
      *
-     * @see BrowserLauncherDefaultErrorHandler
-     * @param launcher BrowserLauncher
+     * @param launcher IBrowserLaunching
      * @param browserName String
      * @param url String
+     * @param logger AbstractLogger
      * @param errorHandler BrowserLauncherErrorHandler
      */
-    public BrowserLauncherRunner(BrowserLauncher launcher,
-                                 String browserName,
-                                 String url,
-                                 BrowserLauncherErrorHandler errorHandler) {
-        if(launcher == null) {
-            throw new IllegalArgumentException("launcher instance cannot be null.");
+    BrowserLauncherRunner(IBrowserLaunching launcher,
+                          String browserName,
+                          String url,
+                          AbstractLogger logger,
+                          BrowserLauncherErrorHandler errorHandler) {
+        if (launcher == null) {
+            throw new IllegalArgumentException("launcher cannot be null.");
+        }
+        if (url == null) {
+            throw new IllegalArgumentException("url cannot be null.");
+        }
+        if (errorHandler == null) {
+            throw new IllegalArgumentException("errorHandler cannot be null.");
+        }
+        if (logger == null) {
+            throw new IllegalArgumentException("logger cannot be null");
         }
         this.launcher = launcher;
         this.url = url;
         this.targetBrowser = browserName;
-        if(errorHandler == null) {
-            errorHandler = new BrowserLauncherDefaultErrorHandler();
-        }
         this.errorHandler = errorHandler;
+        this.logger = logger;
     }
+
+    /* ------------------- from Runnable -------------------- */
 
     /**
      * When an object implementing interface <code>Runnable</code> is used to
@@ -94,19 +101,18 @@ public class BrowserLauncherRunner
      * This method will make the call to open the browser and display the
      * url. If an exception occurs, it will be passed to the instance of
      * BrowserLauncherErrorHandler that has been passed into the constructor.
-     * If no error handler is available, an instance of the default error
-     * handler will be used.
      */
     public void run() {
         try {
-            if(targetBrowser != null) {
-                launcher.openURLinBrowser(targetBrowser, url);
-            } else {
-                launcher.openURLinBrowser(url);
+            if (targetBrowser != null) {
+                launcher.openUrl(targetBrowser, url);
+            }
+            else {
+                launcher.openUrl(url);
             }
         }
         catch (Exception ex) {
-            launcher.getLogger().error("fatal error opening url", ex);
+            logger.error("fatal error opening url", ex);
             errorHandler.handleException(ex);
         }
     }

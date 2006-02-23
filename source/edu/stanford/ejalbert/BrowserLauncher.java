@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004,2005 Markus Gebhard, Jeff Chapman
+    Copyright 2004,2005,2006 Markus Gebhard, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncher.java,v 1.8 2005/12/14 16:09:43 jchapman0 Exp $
+// $Id: BrowserLauncher.java,v 1.9 2006/02/23 18:50:47 jchapman0 Exp $
 package edu.stanford.ejalbert;
 
 import java.util.List;
@@ -31,6 +31,9 @@ import edu.stanford.ejalbert.launching.IBrowserLaunching;
 import net.sf.wraplog.AbstractLogger;
 import net.sf.wraplog.Level;
 import net.sf.wraplog.NoneLogger;
+import edu.stanford.ejalbert.exceptionhandler.BrowserLauncherErrorHandler;
+import edu.stanford.ejalbert.exceptionhandler.
+        BrowserLauncherDefaultErrorHandler;
 
 /**
  * BrowserLauncher is a class that provides a method, openURLinBrowser, which opens the default
@@ -80,6 +83,30 @@ public class BrowserLauncher {
 
     private final IBrowserLaunching launching; // in ctor
     private AbstractLogger logger; // in init method
+    private BrowserLauncherErrorHandler errorHandler; // in ctor
+
+    /**
+     * Initializes the browser launcher for the operating system on which
+     * the application is running.
+     * <p>
+     * This method will use the default logger
+     * {@link net.sf.wraplog.NoneLogger NoneLogger}. All log messages are
+     * ignored by this logger.
+     * <p>
+     * This method will use the default errorHandler
+     * {@link edu.stanford.ejalbert.exceptionhandler.BrowserLauncherDefaultErrorHandler BrowserLauncherDefaultErrorHandler}.
+     * It will print a stack trace to the console. The errorHandler is used
+     * to catch and handle exceptions when executing the browser
+     * launch in a separate thread.
+     *
+     * @throws BrowserLaunchingInitializingException
+     * @throws UnsupportedOperatingSystemException
+     */
+    public BrowserLauncher()
+            throws BrowserLaunchingInitializingException,
+            UnsupportedOperatingSystemException {
+        this(null, null);
+    }
 
     /**
      * Initializes the browser launcher for the operating system on which
@@ -88,7 +115,13 @@ public class BrowserLauncher {
      * If null is passed in as a logger, the default logger used will
      * be {@link net.sf.wraplog.NoneLogger NoneLogger}. All log messages are
      * ignored by this logger.
-     *
+     * <p>
+     * This method will use the default errorHandler
+     * {@link edu.stanford.ejalbert.exceptionhandler.BrowserLauncherDefaultErrorHandler BrowserLauncherDefaultErrorHandler}.
+     * It will print a stack trace to the console. The errorHandler is used
+     * to catch and handle exceptions when executing the browser
+     * launch in a separate thread.
+
      * @param logger AbstractLogger
      * @throws BrowserLaunchingInitializingException
      * @throws UnsupportedOperatingSystemException
@@ -96,7 +129,46 @@ public class BrowserLauncher {
     public BrowserLauncher(AbstractLogger logger)
             throws BrowserLaunchingInitializingException,
             UnsupportedOperatingSystemException {
-        this.launching = initBrowserLauncher(logger);
+        this(logger, null);
+    }
+
+    /**
+     * Initializes the browser launcher for the operating system on which
+     * the application is running.
+     * <p>
+     * If null is passed in as a logger, the default logger used will
+     * be {@link net.sf.wraplog.NoneLogger NoneLogger}. All log messages are
+     * ignored by this logger.
+     * <p>
+     * If null is passed for the errorHandler, the default errorHandler
+     * used will be
+     * {@link edu.stanford.ejalbert.exceptionhandler.BrowserLauncherDefaultErrorHandler BrowserLauncherDefaultErrorHandler}.
+     * It will print a stack trace to the console. The errorHandler is used
+     * to catch and handle exceptions when executing the browser
+     * launch in a separate thread.
+     *
+     * @param logger AbstractLogger
+     * @param errorHandler BrowserLauncherErrorHandler
+     * @throws BrowserLaunchingInitializingException
+     * @throws UnsupportedOperatingSystemException
+     */
+    public BrowserLauncher(AbstractLogger logger,
+                           BrowserLauncherErrorHandler errorHandler)
+            throws BrowserLaunchingInitializingException,
+            UnsupportedOperatingSystemException {
+        // assign logger or use default
+        if (logger == null) {
+            logger = new NoneLogger();
+        }
+        this.logger = logger;
+        // assign error handler or use default
+        if (errorHandler == null) {
+            errorHandler = new BrowserLauncherDefaultErrorHandler();
+        }
+        this.errorHandler = errorHandler;
+        // init and assign IBrowserLaunching instance
+        // this method assumes the logger is not null
+        this.launching = initBrowserLauncher();
     }
 
     /**
@@ -131,14 +203,13 @@ public class BrowserLauncher {
      * @throws UnsupportedOperatingSystemException
      * @throws BrowserLaunchingInitializingException
      */
-    private IBrowserLaunching initBrowserLauncher(AbstractLogger logger)
+    private IBrowserLaunching initBrowserLauncher()
             throws UnsupportedOperatingSystemException,
             BrowserLaunchingInitializingException {
-        if(logger == null) {
-            logger = new NoneLogger();
-            //logger.setLevel(Level.ERROR);
+        if (logger == null) {
+            throw new IllegalArgumentException(
+                    "the logger cannot be null at this point.");
         }
-        this.logger = logger;
         IBrowserLaunching launching =
                 BrowserLaunchingFactory.createSystemBrowserLaunching(logger);
         launching.initialize();
@@ -150,15 +221,15 @@ public class BrowserLauncher {
      *
      * @todo what to do if the url is null or empty?
      * @param urlString String
-     * @throws BrowserLaunchingInitializingException
-     * @throws BrowserLaunchingExecutionException
-     * @throws UnsupportedOperatingSystemException
      */
-    public void openURLinBrowser(String urlString)
-            throws BrowserLaunchingInitializingException,
-            BrowserLaunchingExecutionException,
-            UnsupportedOperatingSystemException {
-        launching.openUrl(urlString);
+    public void openURLinBrowser(String urlString) {
+        Runnable runner = new BrowserLauncherRunner(
+                launching,
+                urlString,
+                logger,
+                errorHandler);
+        Thread launcherThread = new Thread(runner);
+        launcherThread.start();
     }
 
     /**
@@ -171,15 +242,17 @@ public class BrowserLauncher {
      *
      * @param browser String
      * @param urlString String
-     * @throws BrowserLaunchingInitializingException
-     * @throws BrowserLaunchingExecutionException
-     * @throws UnsupportedOperatingSystemException
      */
-    public void openURLinBrowser(String browser, String urlString)
-            throws BrowserLaunchingInitializingException,
-            BrowserLaunchingExecutionException,
-            UnsupportedOperatingSystemException {
-        launching.openUrl(browser, urlString);
+    public void openURLinBrowser(String browser,
+                                 String urlString) {
+        Runnable runner = new BrowserLauncherRunner(
+                launching,
+                browser,
+                urlString,
+                logger,
+                errorHandler);
+        Thread launcherThread = new Thread(runner);
+        launcherThread.start();
     }
 
     /**
@@ -218,9 +291,9 @@ public class BrowserLauncher {
             catch (BrowserLaunchingInitializingException ex) {
                 ex.printStackTrace();
             }
-            catch (BrowserLaunchingExecutionException ex) {
-                ex.printStackTrace();
-            }
+            //catch (BrowserLaunchingExecutionException ex) {
+            //    ex.printStackTrace();
+           // }
             catch (UnsupportedOperatingSystemException ex) {
                 ex.printStackTrace();
             }
