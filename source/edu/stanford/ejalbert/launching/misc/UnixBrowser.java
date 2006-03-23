@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004 Jeff Chapman
+    Copyright 2004,2006 Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,22 +18,41 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: UnixBrowser.java,v 1.2 2005/10/28 18:56:05 jchapman0 Exp $
+// $Id: UnixBrowser.java,v 1.3 2006/03/23 20:55:19 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.misc;
 
+import edu.stanford.ejalbert.launching.BrowserDescription;
 import net.sf.wraplog.AbstractLogger;
 
-public interface UnixBrowser {
+/**
+ * Augments the standard browser description with information
+ * specific to a Unix type browser.
+ */
+public interface UnixBrowser
+        extends BrowserDescription {
     /**
-     * Returns name of browser for display to user.
+     * Returns the command line arguments for addressing an already
+     * open browser.
      *
-     * @return String
+     * @param urlString String
+     * @return String[]
      */
-    public String getBrowserName();
-
     public String[] getArgsForOpenBrowser(String url);
 
+    /**
+     * Returns the command line arguments for starting a new browser
+     * instance.
+     *
+     * @param urlString String
+     * @return String[]
+     */
     public String[] getArgsForStartingBrowser(String url);
 
+    /**
+     * Returns true if the browser is available on the user's system..
+     *
+     * @param logger AbstractLogger
+     * @return boolean
+     */
     public boolean isBrowserAvailable(AbstractLogger logger);
 }

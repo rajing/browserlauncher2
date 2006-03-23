@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherTestApp.java,v 1.16 2006/02/23 18:50:48 jchapman0 Exp $
+// $Id: BrowserLauncherTestApp.java,v 1.17 2006/03/23 20:55:14 jchapman0 Exp $
 package edu.stanford.ejalbert.testing;
 
 import java.awt.BorderLayout;
@@ -288,6 +288,5 @@ public class BrowserLauncherTestApp
                                           "Error Message",
                                           JOptionPane.ERROR_MESSAGE);
         }
-
     }
 }

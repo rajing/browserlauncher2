@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004,2005 Markus Gebhard, Jeff Chapman
+    Copyright 2004,2005,2006 Markus Gebhard, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: IBrowserLaunching.java,v 1.4 2005/10/13 19:27:59 jchapman0 Exp $
+// $Id: IBrowserLaunching.java,v 1.5 2006/03/23 20:55:17 jchapman0 Exp $
 package edu.stanford.ejalbert.launching;
 
 import java.util.List;
@@ -28,11 +28,30 @@ import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 
 /**
+ * Main interface to the Browser Launching methods.
+ *
  * @author Markus Gebhard
  */
 public interface IBrowserLaunching {
+    /**
+     * property file key for delimiter character used in other properties.
+     */
+    public static final String PROP_KEY_DELIMITER = "delimchar";
+    /**
+     * prefix used for property file keys that define a browser
+     */
+    public static final String PROP_KEY_BROWSER_PREFIX = "browser.";
+    /**
+     * http protocol
+     */
     public static final String PROTOCOL_HTTP = "http";
+    /**
+     * file protocol
+     */
     public static final String PROTOCOL_FILE = "file";
+    /**
+     * mailto protocol
+     */
     public static final String PROTOCOL_MAILTO = "mailto";
     /**
      * Identifier for the system's default browser.

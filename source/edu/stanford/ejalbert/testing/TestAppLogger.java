@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2005 Jeff Chapman
+    Copyright 2005,2006 Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: TestAppLogger.java,v 1.2 2005/10/28 18:53:24 jchapman0 Exp $
+// $Id: TestAppLogger.java,v 1.3 2006/03/23 20:55:14 jchapman0 Exp $
 package edu.stanford.ejalbert.testing;
 
 import java.io.PrintWriter;
@@ -31,6 +31,10 @@ import javax.swing.JTextArea;
 import net.sf.wraplog.AbstractLogger;
 import net.sf.wraplog.Level;
 
+/**
+ * Implements a logger for the test application. The log messages
+ * are sent to a JTextArea.
+ */
 class TestAppLogger
         extends AbstractLogger {
     private JTextArea debugTextArea; // in ctor
@@ -94,7 +98,7 @@ class TestAppLogger
         if (logLevel < Level.DEBUG || logLevel > Level.ERROR) {
             throw new IllegalArgumentException(
                     "logLevel must be one of those defined in net.sf.warplog.Level, but is "
-                    + logLevel);
+                    + Integer.toString(logLevel));
         }
         else {
             return levelText[logLevel];
