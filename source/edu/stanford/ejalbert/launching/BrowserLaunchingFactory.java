@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004,2005 Markus Gebhard, Jeff Chapman
+    Copyright 2004,2005,2006 Markus Gebhard, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLaunchingFactory.java,v 1.3 2005/10/28 18:54:35 jchapman0 Exp $
+// $Id: BrowserLaunchingFactory.java,v 1.4 2006/03/23 20:52:34 jchapman0 Exp $
 package edu.stanford.ejalbert.launching;
 
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
@@ -26,11 +26,9 @@ import edu.stanford.ejalbert.launching.macos.MacOs2_0BrowserLaunching;
 import edu.stanford.ejalbert.launching.macos.MacOs2_1BrowserLaunching;
 import edu.stanford.ejalbert.launching.macos.MacOs3_0BrowserLaunching;
 import edu.stanford.ejalbert.launching.macos.MacOs3_1BrowserLaunching;
-import edu.stanford.ejalbert.launching.misc.UnixNetscapeBrowserLaunching;
 import edu.stanford.ejalbert.launching.misc.SunOSBrowserLaunching;
-import edu.stanford.ejalbert.launching.windows.Windows2000BrowserLaunching;
-import edu.stanford.ejalbert.launching.windows.Windows9xBrowserLaunching;
-import edu.stanford.ejalbert.launching.windows.WindowsNtBrowserLaunching;
+import edu.stanford.ejalbert.launching.misc.UnixNetscapeBrowserLaunching;
+import edu.stanford.ejalbert.launching.windows.WindowsBrowserLaunching;
 import net.sf.wraplog.AbstractLogger;
 
 /**
@@ -43,8 +41,18 @@ import net.sf.wraplog.AbstractLogger;
  */
 public class BrowserLaunchingFactory {
 
-    public static IBrowserLaunching createSystemBrowserLaunching(AbstractLogger
-            logger)
+    /**
+     * Analyzes the name of the underlying operating system
+     * based on the "os.name" system property and returns
+     * the IBrowserLaunching version appropriate for the
+     * O/S.
+     *
+     * @param logger AbstractLogger
+     * @return IBrowserLaunching
+     * @throws UnsupportedOperatingSystemException
+     */
+    public static IBrowserLaunching createSystemBrowserLaunching(
+            AbstractLogger logger)
             throws UnsupportedOperatingSystemException {
         String osName = System.getProperty("os.name");
         if (osName.startsWith("Mac OS")) {
@@ -83,13 +91,19 @@ public class BrowserLaunchingFactory {
         else if (osName.startsWith("Windows")) {
             logger.info("Windows OS");
             if (osName.indexOf("9") != -1) {
-                return new Windows9xBrowserLaunching(logger);
+                return new WindowsBrowserLaunching(
+                        logger,
+                        WindowsBrowserLaunching.WINKEY_WIN9X);
             }
             else if (osName.indexOf("2000") != -1) {
-                return new Windows2000BrowserLaunching(logger);
+                return new WindowsBrowserLaunching(
+                        logger,
+                        WindowsBrowserLaunching.WINKEY_WIN2000);
             }
             else {
-                return new WindowsNtBrowserLaunching(logger);
+                return new WindowsBrowserLaunching(
+                        logger,
+                        WindowsBrowserLaunching.WINKEY_WINNT);
             }
         }
         else if (osName.startsWith("SunOS")) {
@@ -98,7 +112,9 @@ public class BrowserLaunchingFactory {
         }
         else {
             logger.info("Unix-type OS");
-            return new UnixNetscapeBrowserLaunching(logger);
+            return new UnixNetscapeBrowserLaunching(
+                    logger,
+                    UnixNetscapeBrowserLaunching.CONFIGFILE_LINUX_UNIX);
         }
     }
 }
