@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004 Markus Gebhard, Jeff Chapman
+    Copyright 2004,2006 Markus Gebhard, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,20 +18,22 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLaunchingInitializingException.java,v 1.1 2005/01/06 17:07:05 jchapman0 Exp $
+// $Id: BrowserLaunchingInitializingException.java,v 1.2 2006/03/23 20:30:50 jchapman0 Exp $
 package edu.stanford.ejalbert.exception;
 
 /**
+ * Exception thrown if there is a problem during initialization.
+ *
  * @author Markus Gebhard
  */
-public class BrowserLaunchingInitializingException extends Exception {
+public class BrowserLaunchingInitializingException
+        extends Exception {
 
-  public BrowserLaunchingInitializingException(Exception cause) {
-    super(cause);
-  }
+    public BrowserLaunchingInitializingException(Exception cause) {
+        super(cause);
+    }
 
-  public BrowserLaunchingInitializingException(String message) {
-    super(message);
-  }
-
+    public BrowserLaunchingInitializingException(String message) {
+        super(message);
+    }
 }

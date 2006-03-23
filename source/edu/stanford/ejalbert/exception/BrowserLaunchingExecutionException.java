@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004 Markus Gebhard, Jeff Chapman
+    Copyright 2004,2006 Markus Gebhard, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,20 +18,23 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLaunchingExecutionException.java,v 1.1 2005/01/06 17:07:05 jchapman0 Exp $
+// $Id: BrowserLaunchingExecutionException.java,v 1.2 2006/03/23 20:30:50 jchapman0 Exp $
 package edu.stanford.ejalbert.exception;
 
 /**
+ * Exception thrown if there is problem during the attempt to launch
+ * a browser.
+ *
  * @author Markus Gebhard
  */
-public class BrowserLaunchingExecutionException extends Exception {
+public class BrowserLaunchingExecutionException
+        extends Exception {
 
-  public BrowserLaunchingExecutionException(Throwable cause) {
-    super(cause);
-  }
+    public BrowserLaunchingExecutionException(Throwable cause) {
+        super(cause);
+    }
 
-  public BrowserLaunchingExecutionException(String message) {
-    super(message);
-  }
-
+    public BrowserLaunchingExecutionException(String message) {
+        super(message);
+    }
 }

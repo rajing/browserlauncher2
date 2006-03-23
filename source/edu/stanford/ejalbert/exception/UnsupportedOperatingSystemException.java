@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004 Markus Gebhard, Jeff Chapman
+    Copyright 2004,2006 Markus Gebhard, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,20 +18,23 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: UnsupportedOperatingSystemException.java,v 1.1 2005/01/06 17:07:05 jchapman0 Exp $
+// $Id: UnsupportedOperatingSystemException.java,v 1.2 2006/03/23 20:30:50 jchapman0 Exp $
 package edu.stanford.ejalbert.exception;
 
 /**
+ * Exception thrown when the Operating System is not supported by
+ * the browser launcher project.
+ *
  * @author Markus Gebhard
  */
-public class UnsupportedOperatingSystemException extends Exception {
+public class UnsupportedOperatingSystemException
+        extends Exception {
 
-  public UnsupportedOperatingSystemException(String message) {
-    super(message);
-  }
+    public UnsupportedOperatingSystemException(String message) {
+        super(message);
+    }
 
-  public UnsupportedOperatingSystemException(Throwable cause) {
-    super(cause);
-  }
-
+    public UnsupportedOperatingSystemException(Throwable cause) {
+        super(cause);
+    }
 }
