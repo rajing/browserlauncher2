@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2005 Olivier Hochreutiner, Jeff Chapman
+    Copyright 2005,2006 Olivier Hochreutiner, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,12 +18,13 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: SunOSBrowserLaunching.java,v 1.1 2005/10/28 18:52:01 jchapman0 Exp $
+// $Id: SunOSBrowserLaunching.java,v 1.2 2006/03/23 20:54:04 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.misc;
 
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
+import edu.stanford.ejalbert.launching.IBrowserLaunching;
 import net.sf.wraplog.AbstractLogger;
 
 /**
@@ -34,18 +35,27 @@ import net.sf.wraplog.AbstractLogger;
  */
 public class SunOSBrowserLaunching
         extends UnixNetscapeBrowserLaunching {
+    /**
+     * config file for SunOS.
+     */
+    public static final String CONFIGFILE_SUNOS =
+            "/edu/stanford/ejalbert/launching/misc/sunOSConfig.properties";
 
-    static final StandardUnixBrowser SDT_WEB_CLIENT = new StandardUnixBrowser(
-            "SdtWebClient",
-            "sdtwebclient");
-
+    /**
+     * Passes the logger and config file for SunOS to its
+     * super class.
+     *
+     * @param logger AbstractLogger
+     */
     public SunOSBrowserLaunching(AbstractLogger logger) {
-        super(logger);
+        super(logger, CONFIGFILE_SUNOS);
     }
 
     /**
-     * This implementation will cause the calling thread to block until the
-     * browser exits. Calling methods MUST wrap the call in a separate thread.
+     * Opens a url using the default browser. It uses sdtwebclient
+     * to launch the default browser. The sdtwebclient executable
+     * is mapped to
+     * {@link IBrowserLaunching.BROWSER_DEFAULT IBrowserLaunching.BROWSER_DEFAULT}.
      *
      * @param urlString String
      * @throws BrowserLaunchingExecutionException
@@ -56,10 +66,21 @@ public class SunOSBrowserLaunching
             BrowserLaunchingInitializingException {
         try {
             logger.info(urlString);
-            logger.info(SDT_WEB_CLIENT.getBrowserName());
-            Process process = Runtime.getRuntime().exec(
-                    SDT_WEB_CLIENT.getArgsForStartingBrowser(urlString));
-            process.waitFor();
+            StandardUnixBrowser defBrowser = getBrowser(
+                    IBrowserLaunching.BROWSER_DEFAULT);
+            // we should always have a default browser defined for
+            // SunOS but if not, fail over to super class method
+            if (defBrowser == null) {
+                logger.info(
+                        "no default browser defined. Failing over to super.openUrl() method");
+                super.openUrl(urlString);
+            }
+            else {
+                logger.info(defBrowser.getBrowserDisplayName());
+                Process process = Runtime.getRuntime().exec(
+                        defBrowser.getArgsForStartingBrowser(urlString));
+                process.waitFor();
+            }
         }
         catch (Exception e) {
             throw new BrowserLaunchingExecutionException(e);

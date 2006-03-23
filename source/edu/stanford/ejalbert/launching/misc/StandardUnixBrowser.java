@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004,2005 Jeff Chapman
+    Copyright 2004,2005,2006 Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,77 +18,136 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: StandardUnixBrowser.java,v 1.5 2005/10/28 18:57:32 jchapman0 Exp $
+// $Id: StandardUnixBrowser.java,v 1.6 2006/03/23 20:54:04 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.misc;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
 import net.sf.wraplog.AbstractLogger;
 
+/**
+ * Contains information on a unix browser.
+ */
 class StandardUnixBrowser
         implements UnixBrowser {
     /**
      * name of browser for user display
      */
-    private String browserName; // in ctor
+    private final String browserName; // in ctor
     /**
-     * name of browser used to invoke it
+     * name of browser executable used to invoke it
      */
-    private String browserArgName; // in ctor
+    private final String browserArgName; // in ctor
     /**
-     * The shell parameters for Netscape that opens a given URL in an already-open copy of Netscape
-     * on many command-line systems.
+     * arguments used to address an already open browser.
      */
-    private static final String REMOTE_PARAMETER = "-remote";
-    private static final String OPEN_PARAMETER_START = "openURL(";
-    private static final String OPEN_PARAMETER_END = ")";
+    private final String argsForOpenBrowser; // in ctor
+    /**
+     * arguments used for starting a new instance of a browser.
+     */
+    private final String argsForStartBrowser; // in ctor
 
-    static final StandardUnixBrowser NETSCAPE = new StandardUnixBrowser(
-            "Netscape",
-            "netscape");
-    static final StandardUnixBrowser MOZILLA = new StandardUnixBrowser(
-            "Mozilla",
-            "mozilla");
-    static final StandardUnixBrowser FIREFOX = new StandardUnixBrowser(
-            "FireFox",
-            "firefox");
-    // on some systems, firefox is referenced as mozilla-firefox
-    static final StandardUnixBrowser MOZILLA_FIREFOX = new StandardUnixBrowser(
-            "FireFox",
-            "mozilla-firefox");
-    static final StandardUnixBrowser KONQUEROR = new StandardUnixBrowser(
-            "Konqueror",
-            "konqueror");
-    static final StandardUnixBrowser OPERA = new StandardUnixBrowser(
-            "Opera",
-            "opera");
-    StandardUnixBrowser(String browserName, String browserArgName) {
-        this.browserArgName = browserArgName;
-        this.browserName = browserName;
+    /**
+     * Splits the config string using the configSep character.
+     * The resulting config items are used to set the
+     * browser display name, the browser executable name, and
+     * the arguments for starting a new browser instance and
+     * addressing an already open browser.
+     *
+     * @param configSep String
+     * @param configStr String
+     */
+    StandardUnixBrowser(String configSep,
+                        String configStr) {
+        String[] configItems = configStr.split(configSep, -2);
+        this.browserName = configItems[0];
+        this.browserArgName = configItems[1];
+        this.argsForStartBrowser = configItems[2];
+        this.argsForOpenBrowser = configItems[3];
     }
 
+    /**
+     * Returns debug information.
+     *
+     * @return String
+     */
     public String toString() {
+        StringBuffer buf = new StringBuffer();
+        buf.append("display name=");
+        buf.append(browserName);
+        buf.append(" executable name=");
+        buf.append(browserArgName);
+        buf.append(" argsForStartBrowser=");
+        buf.append(argsForStartBrowser);
+        buf.append(" argsForOpenBrowser=");
+        buf.append(argsForOpenBrowser);
+        return buf.toString();
+    }
+
+    /**
+     * Replaces the placeholders <browser> and <url> in the
+     * argsString and splits the resulting string around
+     * space characters.
+     *
+     * @param argsString String
+     * @param urlString String
+     * @return String[]
+     */
+    private String[] getCommandLineArgs(String argsString,
+                                        String urlString) {
+        argsString = argsString.replaceAll("<browser>", browserArgName);
+        argsString = argsString.replaceAll("<url>", urlString);
+        return argsString.split("[ ]");
+    }
+
+    /* --------------------- from BrowserDescription --------------------- */
+
+    /**
+     * Returns the display name for the browser.
+     *
+     * @return String
+     */
+    public String getBrowserDisplayName() {
         return browserName;
+    }
+
+    /**
+     * Returns the executable name for the browser.
+     *
+     * @return String
+     */
+    public String getBrowserApplicationName() {
+        return browserArgName;
     }
 
     /* ------------------------- from UnixBrowser ------------------------ */
 
-    public String getBrowserName() {
-        return browserName;
-    }
-
+    /**
+     * Returns the command line arguments for addressing an already
+     * open browser.
+     *
+     * @param urlString String
+     * @return String[]
+     */
     public String[] getArgsForOpenBrowser(String urlString) {
-        return new String[] {
-                browserArgName,
-                REMOTE_PARAMETER,
-                OPEN_PARAMETER_START + urlString + OPEN_PARAMETER_END};
+        String argsStartString = argsForOpenBrowser != null &&
+                                 argsForOpenBrowser.length() > 0 ?
+                                 argsForOpenBrowser : argsForStartBrowser;
+        return getCommandLineArgs(argsStartString, urlString);
     }
 
+    /**
+     * Returns the command line arguments for starting a new browser
+     * instance.
+     *
+     * @param urlString String
+     * @return String[]
+     */
     public String[] getArgsForStartingBrowser(String urlString) {
-        return new String[] {
-                browserArgName, urlString};
+        return getCommandLineArgs(argsForStartBrowser, urlString);
     }
 
     /**
@@ -104,7 +163,6 @@ class StandardUnixBrowser
                     browserArgName});
             InputStream errStream = process.getErrorStream();
             InputStream inStream = process.getInputStream();
-            int exitCode = process.waitFor();
             BufferedReader errIn
                     = new BufferedReader(new InputStreamReader(errStream));
             BufferedReader in
@@ -119,16 +177,11 @@ class StandardUnixBrowser
             if(whichErrOutput != null) {
                 logger.debug(whichErrOutput);
             }
-            // this doesn't work on SunOS unix systems but does on Linux systems
-            //isAvailable = exitCode == 0;
             isAvailable = whichOutput != null &&
                           whichOutput.startsWith("/");
         }
         catch (IOException ex) {
             logger.error("io error executing which command", ex);
-        }
-        catch (InterruptedException ex) {
-            logger.error("interrupted executing which command", ex);
         }
         return isAvailable;
     }

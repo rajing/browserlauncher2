@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2005 Jeff Chapman
+    Copyright 2005,2006 Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,8 +18,10 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: WindowsBrowser.java,v 1.2 2005/12/28 19:19:57 jchapman0 Exp $
+// $Id: WindowsBrowser.java,v 1.3 2006/03/23 20:54:32 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
+
+import edu.stanford.ejalbert.launching.BrowserDescription;
 
 /**
  * Encapsulates information on a Windows browser.
@@ -27,39 +29,62 @@ package edu.stanford.ejalbert.launching.windows;
  * @author Jeff Chapman
  * @version 1.0
  */
-public class WindowsBrowser {
+public class WindowsBrowser
+        implements BrowserDescription {
+    /**
+     * The name for the browser suitable for display to a user.
+     */
     private final String displayName; // in ctor
+    /**
+     * The name of the executable for the browser.
+     */
     private final String exe; // in ctor
 
-    // common windows browsers
-    static final WindowsBrowser IEXPLORER = new WindowsBrowser(
-            "IE",
-            "iexplore");
-    static final WindowsBrowser FIREFOX = new WindowsBrowser(
-            "Firefox",
-            "firefox");
-    static final WindowsBrowser MOZILLA = new WindowsBrowser(
-            "Mozilla",
-            "mozilla");
-
-    WindowsBrowser(String displayName, String exe) {
-        this.displayName = displayName;
-        this.exe = exe;
+    /**
+     * Splits the config string using the delimiter character and
+     * sets the display name and executable.
+     * <p>
+     * Sample config string (with ; as the delim char): displayName;exeName
+     *
+     * @param delimChar String
+     * @param configInfo String
+     */
+    WindowsBrowser(String delimChar, String configInfo) {
+        String[] configItems = configInfo.split(delimChar);
+        this.displayName = configItems[0];
+        this.exe = configItems[1];
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public String getExe() {
-        return exe;
-    }
-
+    /**
+     * Returns displayname and executable name for debugging.
+     *
+     * @return String
+     */
     public String toString() {
         StringBuffer buf = new StringBuffer();
         buf.append(displayName);
         buf.append(' ');
         buf.append(exe);
         return buf.toString();
+    }
+
+    /* -------------------- from BrowserDescription ---------------------- */
+
+    /**
+     * Returns the display name for the browser.
+     *
+     * @return String
+     */
+    public String getBrowserDisplayName() {
+        return displayName;
+    }
+
+    /**
+     * Returns the name of the executable for the browser.
+     *
+     * @return String
+     */
+    public String getBrowserApplicationName() {
+        return exe;
     }
 }
