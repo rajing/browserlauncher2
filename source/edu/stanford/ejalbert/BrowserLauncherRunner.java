@@ -18,12 +18,13 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherRunner.java,v 1.5 2006/02/23 18:50:47 jchapman0 Exp $
+// $Id: BrowserLauncherRunner.java,v 1.6 2006/04/11 13:36:48 jchapman0 Exp $
 package edu.stanford.ejalbert;
 
 import edu.stanford.ejalbert.exceptionhandler.BrowserLauncherErrorHandler;
 import edu.stanford.ejalbert.launching.IBrowserLaunching;
 import net.sf.wraplog.AbstractLogger;
+import java.util.List;
 
 /**
  * This is a convenience class to facilitate executing the browser launch in
@@ -34,6 +35,7 @@ import net.sf.wraplog.AbstractLogger;
  */
 class BrowserLauncherRunner
         implements Runnable {
+    private final List targetBrowsers; // in ctor
     private final String targetBrowser; // in ctor
     private final String url; // in ctor
     private final BrowserLauncherErrorHandler errorHandler; // in ctor
@@ -53,7 +55,23 @@ class BrowserLauncherRunner
                           String url,
                           AbstractLogger logger,
                           BrowserLauncherErrorHandler errorHandler) {
-        this(launcher, null, url, logger, errorHandler);
+        this(launcher, null, null, url, logger, errorHandler);
+    }
+
+    BrowserLauncherRunner(IBrowserLaunching launcher,
+                          String browserName,
+                          String url,
+                          AbstractLogger logger,
+                          BrowserLauncherErrorHandler errorHandler) {
+        this(launcher, browserName, null, url, logger, errorHandler);
+    }
+
+    BrowserLauncherRunner(IBrowserLaunching launcher,
+                          List browserList,
+                          String url,
+                          AbstractLogger logger,
+                          BrowserLauncherErrorHandler errorHandler) {
+        this(launcher, null, browserList, url, logger, errorHandler);
     }
 
     /**
@@ -66,11 +84,12 @@ class BrowserLauncherRunner
      * @param logger AbstractLogger
      * @param errorHandler BrowserLauncherErrorHandler
      */
-    BrowserLauncherRunner(IBrowserLaunching launcher,
-                          String browserName,
-                          String url,
-                          AbstractLogger logger,
-                          BrowserLauncherErrorHandler errorHandler) {
+    private BrowserLauncherRunner(IBrowserLaunching launcher,
+                                  String browserName,
+                                  List browserList,
+                                  String url,
+                                  AbstractLogger logger,
+                                  BrowserLauncherErrorHandler errorHandler) {
         if (launcher == null) {
             throw new IllegalArgumentException("launcher cannot be null.");
         }
@@ -83,6 +102,7 @@ class BrowserLauncherRunner
         if (logger == null) {
             throw new IllegalArgumentException("logger cannot be null");
         }
+        this.targetBrowsers = browserList;
         this.launcher = launcher;
         this.url = url;
         this.targetBrowser = browserName;
@@ -105,7 +125,12 @@ class BrowserLauncherRunner
     public void run() {
         try {
             if (targetBrowser != null) {
-                launcher.openUrl(targetBrowser, url);
+                launcher.openUrl(targetBrowser,
+                                 url);
+            }
+            else if(targetBrowsers != null) {
+                launcher.openUrl(targetBrowsers,
+                                 url);
             }
             else {
                 launcher.openUrl(url);

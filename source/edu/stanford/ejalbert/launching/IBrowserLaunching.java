@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: IBrowserLaunching.java,v 1.5 2006/03/23 20:55:17 jchapman0 Exp $
+// $Id: IBrowserLaunching.java,v 1.6 2006/04/11 13:36:48 jchapman0 Exp $
 package edu.stanford.ejalbert.launching;
 
 import java.util.List;
@@ -93,7 +93,30 @@ public interface IBrowserLaunching {
      * @throws BrowserLaunchingExecutionException
      * @throws BrowserLaunchingInitializingException
      */
-    public void openUrl(String browser, String urlString)
+    public void openUrl(String browser,
+                        String urlString)
+            throws UnsupportedOperatingSystemException,
+            BrowserLaunchingExecutionException,
+            BrowserLaunchingInitializingException;
+
+    /**
+     * Allows user to target several browsers. The names of
+     * potential browsers can be accessed via the
+     * {@link #getBrowserList() getBrowserList} method.
+     * <p>
+     * The browsers from the list will be tried in order
+     * (first to last) until one of the calls succeeds. If
+     * all the calls to the requested browsers fail, the code
+     * will fail over to the default browser.
+     *
+     * @param browsers List
+     * @param urlString String
+     * @throws UnsupportedOperatingSystemException
+     * @throws BrowserLaunchingExecutionException
+     * @throws BrowserLaunchingInitializingException
+     */
+    public void openUrl(List browsers,
+                        String urlString)
             throws UnsupportedOperatingSystemException,
             BrowserLaunchingExecutionException,
             BrowserLaunchingInitializingException;

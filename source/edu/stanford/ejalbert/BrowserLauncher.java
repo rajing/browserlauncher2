@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncher.java,v 1.9 2006/02/23 18:50:47 jchapman0 Exp $
+// $Id: BrowserLauncher.java,v 1.10 2006/04/11 13:36:48 jchapman0 Exp $
 package edu.stanford.ejalbert;
 
 import java.util.List;
@@ -26,43 +26,52 @@ import java.util.List;
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
+import edu.stanford.ejalbert.exceptionhandler.BrowserLauncherDefaultErrorHandler;
+import edu.stanford.ejalbert.exceptionhandler.BrowserLauncherErrorHandler;
 import edu.stanford.ejalbert.launching.BrowserLaunchingFactory;
 import edu.stanford.ejalbert.launching.IBrowserLaunching;
 import net.sf.wraplog.AbstractLogger;
-import net.sf.wraplog.Level;
 import net.sf.wraplog.NoneLogger;
-import edu.stanford.ejalbert.exceptionhandler.BrowserLauncherErrorHandler;
-import edu.stanford.ejalbert.exceptionhandler.
-        BrowserLauncherDefaultErrorHandler;
 
 /**
- * BrowserLauncher is a class that provides a method, openURLinBrowser, which opens the default
- * web browser for the current user of the system to the given URL.  It may support other
- * protocols depending on the system -- mailto, ftp, etc. -- but that has not been rigorously
- * tested and is not guaranteed to work.
+ * BrowserLauncher provides an API to open browsers (default or
+ * targetted) from within a Java application.
  * <p>
- * Yes, this is platform-specific code, and yes, it may rely on classes on certain platforms
- * that are not part of the standard JDK.  What we're trying to do, though, is to take something
- * that's frequently desirable but inherently platform-specific -- opening a default browser --
- * and allow programmers (you, for example) to do so without worrying about dropping into native
- * code or doing anything else similarly evil.
+ * Primary API methods:
  * <p>
- * Anyway, this code is completely in Java and will run on all JDK 1.1-compliant systems without
- * modification or a need for additional libraries.  All classes that are required on certain
- * platforms to allow this to run are dynamically loaded at runtime via reflection and, if not
- * found, will not cause this to do anything other than returning an error when opening the
- * browser.
+ * {@link #openURLinBrowser(String, String) openURLinBrowser(browser, url)}
+ * Opens the url in the requested browser.
  * <p>
- * There are certain system requirements for this class, as it's running through Runtime.exec(),
- * which is Java's way of making a native system call.  Currently, this requires that a Macintosh
- * have a Finder which supports the GURL event, which is true for Mac OS 8.0 and 8.1 systems that
- * have the Internet Scripting AppleScript dictionary installed in the Scripting Additions folder
- * in the Extensions folder (which is installed by default as far as I know under Mac OS 8.0 and
- * 8.1), and for all Mac OS 8.5 and later systems.  On Windows, it only runs under Win32 systems
- * (Windows 95, 98, and NT 4.0, as well as later versions of all).  On other systems, this drops
- * back from the inherently platform-sensitive concept of a default browser and simply attempts
- * to launch Netscape via a shell command.
+ * {@link #openURLinBrowser(String) openURLinBrowser(url)}
+ * Opens the url in the default browser.
  * <p>
+ * {@link #getBrowserList getBrowserList()}
+ * Returns the list of browsers that are available for browser
+ * targetting.
+ * <p>
+ * The following protocols have been tested: http, mailto, and file.
+ * <p>
+ * This library is written completely in Java and will run on
+ * all JDK 4.x-compliant systems without modification or a need
+ * for additional libraries.
+ * <p>
+ * There are certain system requirements for this library, as
+ * it's running through Runtime.exec(), which is Java's way of
+ * making a native system call. Currently, Macintosh requires a
+ * Finder which supports the GURL event, which is true for Mac OS
+ * 8.0 and 8.1 systems that have the Internet Scripting
+ * AppleScript dictionary installed in the Scripting Additions
+ * folder in the Extensions folder (which is installed by default,
+ * as far as the library authors know, under Mac OS 8.0 and 8.1),
+ * and for all Mac OS 8.5 and later systems. On Windows, it only
+ * runs under Win32 systems (Windows 9x and NT 4.0, as well as
+ * later versions).
+ * <p>
+ * The browserlauncher2 project is based on the original
+ * browserlauncher project. It has been significantly altered
+ * and extended.</br/>
+ * <b>This is the original copyright notice and credits from the
+ * browserlauncher project:</b><br/>
  * This code is Copyright 1999-2001 by Eric Albert (ejalbert@cs.stanford.edu) and may be
  * redistributed or modified in any form without restrictions as long as the portion of this
  * comment from this paragraph through the end of the comment is not removed.  The author
@@ -75,9 +84,10 @@ import edu.stanford.ejalbert.exceptionhandler.
  * <br>Steven Spencer, JavaWorld magazine (<a href="http://www.javaworld.com/javaworld/javatips/jw-javatip66.html">Java Tip 66</a>)
  * <br>Thanks also to Ron B. Yeh, Eric Shapiro, Ben Engber, Paul Teitlebaum, Andrea Cantatore,
  * Larry Barowski, Trevor Bedzek, Frank Miedrich, and Ron Rabakukk
- *
- * @author Eric Albert (<a href="mailto:ejalbert@cs.stanford.edu">ejalbert@cs.stanford.edu</a>)
- * @version 1.0rc1
+ * <br/><b>End of the original copyright and credits.</b>
+ * @author Eric Albert
+ * @author Markus Gebhard
+ * @author Jeff Chapman
  */
 public class BrowserLauncher {
 
@@ -172,26 +182,6 @@ public class BrowserLauncher {
     }
 
     /**
-     * Returns the logger being used by this BrowserLauncher instance.
-     *
-     * @return AbstractLogger
-     */
-    public AbstractLogger getLogger() {
-        return logger;
-    }
-
-    /**
-     * Returns a list of browsers to be used for browser targetting.
-     * This list will always contain at least one item:
-     * {@link edu.stanford.ejalbert.launching.IBrowserLaunching#BROWSER_DEFAULT BROWSER_DEFAULT}.
-     * @see IBrowserLaunching
-     * @return List
-     */
-    public List getBrowserList() {
-        return launching.getBrowserList();
-    }
-
-    /**
      * Determines the operating system and loads the necessary runtime data.
      * <p>
      * If null is passed in as a logger, the default logger used will
@@ -214,45 +204,6 @@ public class BrowserLauncher {
                 BrowserLaunchingFactory.createSystemBrowserLaunching(logger);
         launching.initialize();
         return launching;
-    }
-
-    /**
-     * Attempts to open a browser and direct it to the passed url.
-     *
-     * @todo what to do if the url is null or empty?
-     * @param urlString String
-     */
-    public void openURLinBrowser(String urlString) {
-        Runnable runner = new BrowserLauncherRunner(
-                launching,
-                urlString,
-                logger,
-                errorHandler);
-        Thread launcherThread = new Thread(runner);
-        launcherThread.start();
-    }
-
-    /**
-     * Attempts to open a specific browser and direct it to the passed url. If
-     * the call to the requested browser fails, the code will fail over to the
-     * default browser.
-     * <p>
-     * The name for the targetted browser should come from the list
-     * returned from {@link #getBrowserList() getBrowserList}.
-     *
-     * @param browser String
-     * @param urlString String
-     */
-    public void openURLinBrowser(String browser,
-                                 String urlString) {
-        Runnable runner = new BrowserLauncherRunner(
-                launching,
-                browser,
-                urlString,
-                logger,
-                errorHandler);
-        Thread launcherThread = new Thread(runner);
-        launcherThread.start();
     }
 
     /**
@@ -298,5 +249,97 @@ public class BrowserLauncher {
                 ex.printStackTrace();
             }
         }
+    }
+
+    /* ---------------------- API Methods -------------------- */
+
+    /**
+     * Returns the logger being used by this BrowserLauncher instance.
+     *
+     * @return AbstractLogger
+     */
+    public AbstractLogger getLogger() {
+        return logger;
+    }
+
+    /**
+     * Returns a list of browsers to be used for browser targetting.
+     * This list will always contain at least one item:
+     * {@link edu.stanford.ejalbert.launching.IBrowserLaunching#BROWSER_DEFAULT BROWSER_DEFAULT}.
+     * @see IBrowserLaunching
+     * @return List
+     */
+    public List getBrowserList() {
+        return launching.getBrowserList();
+    }
+
+    /**
+     * Attempts to open a browser and direct it to the passed url.
+     *
+     * @todo what to do if the url is null or empty?
+     * @param urlString String
+     */
+    public void openURLinBrowser(String urlString) {
+        Runnable runner = new BrowserLauncherRunner(
+                launching,
+                urlString,
+                logger,
+                errorHandler);
+        Thread launcherThread = new Thread(runner);
+        launcherThread.start();
+    }
+
+    /**
+     * Attempts to open a specific browser and direct it to the passed url. If
+     * the call to the requested browser fails, the code will fail over to the
+     * default browser.
+     * <p>
+     * The name for the targetted browser should come from the list
+     * returned from {@link #getBrowserList() getBrowserList}.
+     *
+     * @param browser String
+     * @param urlString String
+     */
+    public void openURLinBrowser(String browser,
+                                 String urlString) {
+        Runnable runner = new BrowserLauncherRunner(
+                launching,
+                browser,
+                urlString,
+                logger,
+                errorHandler);
+        Thread launcherThread = new Thread(runner);
+        launcherThread.start();
+    }
+
+    /**
+     * Iterates through the list of browsers until it finds one
+     * that is available on the user's system. The method then
+     * opens the browser and directs it to the passed url. This
+     * method allows the caller to try multiple browsers in a
+     * specific order.
+     * <p>
+     * If the list is null or empty or none of the browsers in
+     * the list are available, the code will fail over to the
+     * default browser method
+     * {@link #openURLinBrowser(String) openURLinBrowser(url)}.
+     * <p>
+     * The name for the targetted browsers should come from the
+     * list returned from
+     * {@link #getBrowserList() getBrowserList}.
+     *
+     * @param browsers List
+     * @param urlString String
+     */
+    public void openURLinBrowser(List browsers,
+                                 String urlString) {
+        Runnable runner = new BrowserLauncherRunner(
+                launching,
+                browsers,
+                urlString,
+                logger,
+                errorHandler);
+        Thread launcherThread = new Thread(runner);
+        launcherThread.start();
     }
 }

@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004 Markus Gebhard, Jeff Chapman
+    Copyright 2004,2006 Markus Gebhard, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,9 +18,14 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: MacOsBrowserLaunching.java,v 1.1 2005/01/06 17:07:06 jchapman0 Exp $
+// $Id: MacOsBrowserLaunching.java,v 1.2 2006/04/11 13:36:48 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.macos;
 
+import java.util.List;
+
+import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
+import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
+import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 import edu.stanford.ejalbert.launching.IBrowserLaunching;
 
 /**
@@ -34,4 +39,42 @@ public abstract class MacOsBrowserLaunching
      * application.
      */
     protected static final String FINDER_CREATOR = "MACS";
+
+    /* ---------------- from IBrowserLaunching ---------------- */
+
+    /**
+     * Falls through to non-targetted openUrl method. Browser
+     * targetting has not been implemented for the Mac.
+     *
+     * @param browser String
+     * @param urlString String
+     * @throws UnsupportedOperatingSystemException
+     * @throws BrowserLaunchingExecutionException
+     * @throws BrowserLaunchingInitializingException
+     */
+    public void openUrl(String browser,
+                        String urlString)
+            throws UnsupportedOperatingSystemException,
+            BrowserLaunchingExecutionException,
+            BrowserLaunchingInitializingException {
+        openUrl(urlString);
+    }
+
+    /**
+     * Falls through to non-targetted openUrl method. Browser
+     * targetting has not been implemented for the Mac.
+     *
+     * @param browsers List
+     * @param urlString String
+     * @throws UnsupportedOperatingSystemException
+     * @throws BrowserLaunchingExecutionException
+     * @throws BrowserLaunchingInitializingException
+     */
+    public void openUrl(List browsers,
+                        String urlString)
+            throws UnsupportedOperatingSystemException,
+            BrowserLaunchingExecutionException,
+            BrowserLaunchingInitializingException {
+        openUrl(urlString);
+    }
 }

@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: UnixNetscapeBrowserLaunching.java,v 1.10 2006/03/23 20:54:04 jchapman0 Exp $
+// $Id: UnixNetscapeBrowserLaunching.java,v 1.11 2006/04/11 13:36:48 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.misc;
 
 import java.io.IOException;
@@ -86,6 +86,44 @@ public class UnixNetscapeBrowserLaunching
      */
     protected StandardUnixBrowser getBrowser(String key) {
         return (StandardUnixBrowser) unixBrowsers.get(key);
+    }
+
+    /**
+     * Attempts to open a url with the specified browser. This is
+     * a utility method called by the openUrl methods.
+     *
+     * @param unixBrowser UnixBrowser
+     * @param urlString String
+     * @return boolean
+     * @throws BrowserLaunchingExecutionException
+     */
+    protected boolean openUrlWithBrowser(UnixBrowser unixBrowser,
+                                         String urlString)
+            throws BrowserLaunchingExecutionException {
+        boolean success = false;
+        logger.info(unixBrowser.getBrowserDisplayName());
+        logger.info(urlString);
+        try {
+            Process process = Runtime.getRuntime().exec(
+                    unixBrowser.
+                    getArgsForOpenBrowser(urlString));
+            int exitCode = process.waitFor();
+            if (exitCode != 0) {
+                process = Runtime.getRuntime().exec(
+                        unixBrowser.
+                        getArgsForStartingBrowser(urlString));
+                exitCode = process.waitFor();
+            }
+            if (exitCode == 0) {
+                success = true;
+            }
+        }
+        // Runtimes may throw InterruptedException
+        // want to catch every possible exception and wrap it
+        catch (Exception e) {
+            throw new BrowserLaunchingExecutionException(e);
+        }
+        return success;
     }
 
     /* ---------------------- from IBrowserLaunching ----------------------- */
@@ -162,16 +200,8 @@ public class UnixNetscapeBrowserLaunching
             Process process;
             while (iter.hasNext() && !success) {
                 browser = (UnixBrowser) iter.next();
-                logger.info(browser.getBrowserDisplayName());
-                process = Runtime.getRuntime().exec(browser.
-                        getArgsForOpenBrowser(urlString));
-                int exitCode = process.waitFor();
-                if (exitCode != 0) {
-                    process = Runtime.getRuntime().exec(browser.
-                            getArgsForStartingBrowser(urlString));
-                    exitCode = process.waitFor();
-                }
-                success = exitCode == 0;
+                success = openUrlWithBrowser(browser,
+                                             urlString);
             }
         }
         catch (Exception e) {
@@ -202,25 +232,56 @@ public class UnixNetscapeBrowserLaunching
             openUrl(urlString);
         }
         else {
-            logger.info(unixBrowser.getBrowserDisplayName());
-            logger.info(urlString);
-            try {
-                Process process = Runtime.getRuntime().exec(unixBrowser.
-                        getArgsForOpenBrowser(urlString));
-                int exitCode = process.waitFor();
-                if (exitCode != 0) {
-                    process = Runtime.getRuntime().exec(unixBrowser.
-                            getArgsForStartingBrowser(urlString));
-                    exitCode = process.waitFor();
-                }
-                if (exitCode != 0) {
-                    logger.debug(
-                            "open browser failure, trying non-targetted openUrl");
-                    openUrl(urlString);
+            boolean success = openUrlWithBrowser(unixBrowser,
+                                                 urlString);
+            if (!success) {
+                logger.debug(
+                        "open browser failure, trying non-targetted openUrl");
+                openUrl(urlString);
+            }
+        }
+    }
+
+    /**
+     * Allows user to target several browsers. The names of
+     * potential browsers can be accessed via the
+     * {@link #getBrowserList() getBrowserList} method.
+     * <p>
+     * The browsers from the list will be tried in order
+     * (first to last) until one of the calls succeeds. If
+     * all the calls to the requested browsers fail, the code
+     * will fail over to the default browser.
+     *
+     * @param browsers List
+     * @param urlString String
+     * @throws UnsupportedOperatingSystemException
+     * @throws BrowserLaunchingExecutionException
+     * @throws BrowserLaunchingInitializingException
+     */
+    public void openUrl(List browsers,
+                        String urlString)
+            throws UnsupportedOperatingSystemException,
+            BrowserLaunchingExecutionException,
+            BrowserLaunchingInitializingException {
+        if (browsers == null || browsers.isEmpty()) {
+            logger.debug("falling through to non-targetted openUrl");
+            openUrl(urlString);
+        }
+        else {
+            boolean success = false;
+            Iterator iter = browsers.iterator();
+            while (iter.hasNext() && !success) {
+                UnixBrowser unixBrowser = (UnixBrowser) unixBrowsers.get(
+                        iter.next());
+                if(unixBrowser != null) {
+                    success = openUrlWithBrowser(unixBrowser,
+                                                 urlString);
                 }
             }
-            catch (Exception e) {
-                throw new BrowserLaunchingExecutionException(e);
+            if (!success) {
+                logger.debug(
+                        "none of listed browsers succeeded; falling through to non-targetted openUrl");
+                openUrl(urlString);
             }
         }
     }

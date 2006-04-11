@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004 Markus Gebhard, Jeff Chapman
+    Copyright 2004,2006 Markus Gebhard, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,19 +18,19 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: MacOs2_0BrowserLaunching.java,v 1.2 2005/10/07 20:01:08 jchapman0 Exp $
+// $Id: MacOs2_0BrowserLaunching.java,v 1.3 2006/04/11 13:36:48 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.macos;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 import edu.stanford.ejalbert.launching.IBrowserLaunching;
-import java.util.List;
-import java.util.ArrayList;
 
 /**
  * @author Markus Gebhard
@@ -137,14 +137,6 @@ public class MacOs2_0BrowserLaunching
             aeDesc = null; // Encourage it to get disposed if it was created
             browser = null; // Ditto
         }
-    }
-
-    public void openUrl(String browser, String urlString)
-            throws UnsupportedOperatingSystemException,
-            BrowserLaunchingExecutionException,
-            BrowserLaunchingInitializingException {
-        //logger.debug("falling through to non-targetted openUrl");
-        openUrl(urlString);
     }
 
     /**

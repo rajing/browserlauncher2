@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: WindowsBrowserLaunching.java,v 1.4 2006/03/23 20:54:32 jchapman0 Exp $
+// $Id: WindowsBrowserLaunching.java,v 1.5 2006/04/11 13:36:48 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
 
 import java.io.BufferedReader;
@@ -305,8 +305,48 @@ public class WindowsBrowserLaunching
         String commandArgs = commandsTargettedBrowser.replaceAll(
                 "<url>",
                 urlString);
-        commandArgs.replaceAll("<browser>", browserName);
+        commandArgs = commandArgs.replaceAll("<browser>", browserName);
         return commandArgs.split("[ ]");
+    }
+
+    /**
+     * Attempts to open a url with the specified browser. This is
+     * a utility method called by the openUrl methods.
+     *
+     * @param winBrowser WindowsBrowser
+     * @param protocol String
+     * @param urlString String
+     * @return boolean
+     * @throws BrowserLaunchingExecutionException
+     */
+    private boolean openUrlWithBrowser(WindowsBrowser winBrowser,
+                                       String protocol,
+                                       String urlString)
+            throws BrowserLaunchingExecutionException {
+        boolean success = false;
+        try {
+            logger.info(winBrowser.getBrowserDisplayName());
+            logger.info(urlString);
+            logger.info(protocol);
+            String[] args = getCommandArgs(
+                    protocol,
+                    winBrowser.getBrowserApplicationName(),
+                    urlString);
+            if (logger.isDebugEnabled()) {
+                logger.debug(getArrayAsString(args));
+            }
+            Process process = Runtime.getRuntime().exec(args);
+            // This avoids a memory leak on some versions of Java on Windows.
+            // That's hinted at in <http://developer.java.sun.com/developer/qow/archive/68/>.
+            process.waitFor();
+            success = process.exitValue() == 0;
+        }
+        // Runtimes may throw InterruptedException
+        // want to catch every possible exception and wrap it
+        catch (Exception e) {
+            throw new BrowserLaunchingExecutionException(e);
+        }
+        return success;
     }
 
     /* ----------------- from IBrowserLaunching -------------------- */
@@ -412,48 +452,92 @@ public class WindowsBrowserLaunching
             BrowserLaunchingInitializingException {
         if (IBrowserLaunching.BROWSER_DEFAULT.equals(browser) ||
             browser == null) {
-            logger.info("default or null browser target");
-            openUrl(urlString);
-            return; // exit the method
-        }
-        Map browserMap = getBrowserMap();
-        WindowsBrowser winBrowser = (WindowsBrowser) browserMap.get(browser);
-        if (winBrowser == null) {
-            logger.info("the available browsers list does not contain: " +
-                        browser);
-            logger.info("falling through to non-targetted openUrl");
+            logger.info(
+                    "default or null browser target; falling through to non-targetted openUrl");
             openUrl(urlString);
         }
         else {
-            boolean successfullLaunch = false;
-            try {
-                logger.info(winBrowser.getBrowserDisplayName());
-                logger.info(urlString);
-                String protocol = getProtocol(urlString);
-                logger.info(protocol);
-                String[] args = getCommandArgs(protocol,
-                                               winBrowser.
-                                               getBrowserApplicationName(),
-                                               urlString);
-                if (logger.isDebugEnabled()) {
-                    logger.debug(getArrayAsString(args));
+            Map browserMap = getBrowserMap();
+            WindowsBrowser winBrowser = (WindowsBrowser) browserMap.get(browser);
+            if (winBrowser == null) {
+                logger.info("the available browsers list does not contain: " +
+                            browser);
+                logger.info("falling through to non-targetted openUrl");
+                openUrl(urlString);
+            }
+            else {
+                String protocol = null;
+                try {
+                    protocol = getProtocol(urlString);
                 }
-                Process process = Runtime.getRuntime().exec(args);
-                // This avoids a memory leak on some versions of Java on Windows.
-                // That's hinted at in <http://developer.java.sun.com/developer/qow/archive/68/>.
-                process.waitFor();
-                successfullLaunch = process.exitValue() == 0;
+                catch (MalformedURLException malrulex) {
+                    throw new BrowserLaunchingExecutionException(malrulex);
+                }
+                boolean successfullLaunch = openUrlWithBrowser(
+                        winBrowser,
+                        protocol,
+                        urlString);
+                if (!successfullLaunch) {
+                    logger.debug("falling through to non-targetted openUrl");
+                    openUrl(urlString);
+                }
             }
-            catch (Exception e) {
-                logger.error("fatal exception", e);
-                successfullLaunch = false;
+        }
+    }
+
+    /**
+     * Allows user to target several browsers. The names of
+     * potential browsers can be accessed via the
+     * {@link #getBrowserList() getBrowserList} method.
+     * <p>
+     * The browsers from the list will be tried in order
+     * (first to last) until one of the calls succeeds. If
+     * all the calls to the requested browsers fail, the code
+     * will fail over to the default browser.
+     *
+     * @param browsers List
+     * @param urlString String
+     * @throws UnsupportedOperatingSystemException
+     * @throws BrowserLaunchingExecutionException
+     * @throws BrowserLaunchingInitializingException
+     */
+    public void openUrl(List browsers,
+                        String urlString)
+            throws UnsupportedOperatingSystemException,
+            BrowserLaunchingExecutionException,
+            BrowserLaunchingInitializingException {
+        if (browsers == null || browsers.isEmpty()) {
+            logger.debug("falling through to non-targetted openUrl");
+            openUrl(urlString);
+        }
+        else {
+            String protocol = null;
+            try {
+                protocol = getProtocol(urlString);
             }
-            if (!successfullLaunch) {
-                logger.debug("falling through to non-targetted openUrl");
+            catch (MalformedURLException malrulex) {
+                throw new BrowserLaunchingExecutionException(malrulex);
+            }
+            Map browserMap = getBrowserMap();
+            boolean success = false;
+            Iterator iter = browsers.iterator();
+            while (iter.hasNext() && !success) {
+                WindowsBrowser winBrowser = (WindowsBrowser) browserMap.get(
+                        iter.next());
+                if(winBrowser != null) {
+                    success = openUrlWithBrowser(winBrowser,
+                                                 protocol,
+                                                 urlString);
+                }
+            }
+            if (!success) {
+                logger.debug(
+                        "none of listed browsers succeeded; falling through to non-targetted openUrl");
                 openUrl(urlString);
             }
         }
     }
+
 
     /**
      * Returns a list of browsers to be used for browser targetting.

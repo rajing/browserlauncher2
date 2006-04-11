@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherTestApp.java,v 1.17 2006/03/23 20:55:14 jchapman0 Exp $
+// $Id: BrowserLauncherTestApp.java,v 1.18 2006/04/11 13:37:18 jchapman0 Exp $
 package edu.stanford.ejalbert.testing;
 
 import java.awt.BorderLayout;
@@ -30,6 +30,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
+import java.util.Arrays;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -47,6 +48,8 @@ import javax.swing.JTextField;
 
 import edu.stanford.ejalbert.BrowserLauncher;
 import edu.stanford.ejalbert.exceptionhandler.BrowserLauncherErrorHandler;
+import java.awt.GridLayout;
+import java.util.List;
 
 /**
  * Standalone gui that allows for testing the broserlauncher code and provides
@@ -71,8 +74,16 @@ public class BrowserLauncherTestApp
     private BorderLayout borderLayout1 = new BorderLayout();
     private JTextArea debugTextArea = new JTextArea();
     private JPanel debugTextBttnPanel = new JPanel();
-    private BoxLayout bttnBoxLayout = new BoxLayout(debugTextBttnPanel,
+    private JPanel browserListPanel = new JPanel();
+    private JPanel configPanel = new JPanel();
+    private BoxLayout bttnBoxLayout = new BoxLayout(
+            debugTextBttnPanel,
             BoxLayout.X_AXIS);
+    private BoxLayout browserListBoxLayout = new BoxLayout(
+            browserListPanel,
+            BoxLayout.X_AXIS);
+    private JTextField browserListField = new JTextField();
+    private JLabel browserListLabel = new JLabel();
     private JScrollPane debugTextScrollPane = new JScrollPane();
     private JButton copyButton = new JButton();
     private ResourceBundle bundle; // in ctor
@@ -173,6 +184,7 @@ public class BrowserLauncherTestApp
                 copyButton_actionPerformed(e);
             }
         });
+
         debugTextBttnPanel.setLayout(bttnBoxLayout);
         debugTextBttnPanel.add(Box.createHorizontalStrut(2));
         debugTextBttnPanel.add(browserBox);
@@ -187,12 +199,22 @@ public class BrowserLauncherTestApp
         debugTextBttnPanel.add(copyButton);
         debugTextBttnPanel.add(Box.createHorizontalStrut(2));
 
+        browserListLabel.setText(bundle.getString("label.browser.list"));
+        browserListPanel.setLayout(browserListBoxLayout);
+        browserListPanel.add(browserListLabel);
+        browserListPanel.add(Box.createHorizontalStrut(2));
+        browserListPanel.add(browserListField);
+
+        configPanel.setLayout(new GridLayout(2,1,0,2));
+        configPanel.add(browserListPanel);
+        configPanel.add(debugTextBttnPanel);
+
         this.getContentPane().setLayout(borderLayout1);
         this.getContentPane().add(debugTextScrollPane,
                                   java.awt.BorderLayout.CENTER);
         this.getContentPane().add(urlPanel,
                                   java.awt.BorderLayout.NORTH);
-        this.getContentPane().add(debugTextBttnPanel,
+        this.getContentPane().add(configPanel,
                                   java.awt.BorderLayout.SOUTH);
 
         getRootPane().setDefaultButton(browseButton);
@@ -222,9 +244,22 @@ public class BrowserLauncherTestApp
             new URL(urlString); // may throw MalformedURLException
             BrowserLauncherErrorHandler errorHandler = new TestAppErrorHandler(
                     debugTextArea);
-            String targetBrowser = browserBox.getSelectedItem().toString();
-            logger.debug(targetBrowser);
-            launcher.openURLinBrowser(targetBrowser, urlString);
+            // use browser list if browserListField has data
+            String browserItems = browserListField.getText();
+            if(browserItems != null && browserItems.length() > 0) {
+                logger.debug("using browser list");
+                String[] browserArray = browserItems.split("[ ]+");
+                List browserList = Arrays.asList(browserArray);
+                logger.debug(browserList.toString());
+                launcher.openURLinBrowser(browserList,
+                                          urlString);
+            }
+            else {
+                String targetBrowser = browserBox.getSelectedItem().toString();
+                logger.debug(targetBrowser);
+                launcher.openURLinBrowser(targetBrowser,
+                                          urlString);
+            }
         }
         catch (Exception ex) {
             // capture exception
