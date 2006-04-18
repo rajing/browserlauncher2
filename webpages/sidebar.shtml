@@ -1,55 +1,42 @@
-<!-- $Id: sidebar.shtml,v 1.4 2005/12/28 18:05:24 jchapman0 Exp $ -->
+<!-- $Id: sidebar.shtml,v 1.5 2006/04/18 19:46:29 jchapman0 Exp $ -->
 <!-- server side include for the sidebar menu that appears on each page -->
 <td width="130" valign="top">
     <span class="menu">
-        <a href="http://sourceforge.net/project/showfiles.php?group_id=127980"><b><font size="+2" color="#0000dd">Download 1.0rc4</font></b></a>
-            <br/><b>Latest Release:</b><br/>December 29, 2005
+        <a href="http://sourceforge.net/project/showfiles.php?group_id=127980"><b><font size="+2" color="#0000dd">Download 1.0</font></b></a>
+            <br/><b>Latest Release:</b><br/>April xx, 2006
 	    <br/><br/>
         <!--#set var="pagename" value="Home" -->
         <!--#if expr="\"$DOCUMENT_NAME\" = \"index.shtml\"" -->
-            <b><!--#echo var="pagename" --></b>
+            &#149;<b><!--#echo var="pagename" --></b>
         <!--#else -->
-            <a href="index.shtml"><!--#echo var="pagename" --></a>           
+            &#149;<a href="index.shtml"><!--#echo var="pagename" --></a>           
         <!--#endif -->
         <br/>
-        <a href="http://sourceforge.net/projects/browserlaunch2/">Project Page</a><br/>
-	    <br/><br/>           
+        &#149;<a href="http://sourceforge.net/projects/browserlaunch2/">Project Page</a>
+        <br/><br/>           
         <b>Documentation:</b><br/>
-        <!--#set var="pagename" value="Download Files" -->            
-        <!--#if expr="\"$DOCUMENT_NAME\" = \"docs.shtml\"" -->
-            <b><!--#echo var="pagename" --></b>
-        <!--#else -->
-            <a href="docs.shtml#files"><!--#echo var="pagename" --></a>           
-        <!--#endif -->
-		<br/>
-        <!--#set var="pagename" value="Test Application" -->            
-        <!--#if expr="\"$DOCUMENT_NAME\" = \"docs.shtml\"" -->
-            <b><!--#echo var="pagename" --></b>
-        <!--#else -->
-            <a href="docs.shtml#testapp"><!--#echo var="pagename" --></a>           
-        <!--#endif -->
-		<br/>
-        <!--#set var="pagename" value="General API Notes" -->            
-        <!--#if expr="\"$DOCUMENT_NAME\" = \"docs.shtml\"" -->
-            <b><!--#echo var="pagename" --></b>
-        <!--#else -->
-            <a href="docs.shtml#apinotes"><!--#echo var="pagename" --></a>           
-        <!--#endif -->
-		<br/>
-		<a href="api/index.html">API JavaDocs</a>
-        <br/><br/>
+            &#149;<a href="docs.shtml#qsguide">Quick Start Guide</a>
+             <br/>
+            &#149;<a href="docs.shtml#files">Download Files</a>
+             <br/>
+            &#149;<a href="docs.shtml#testapp">Test Application</a>           
+             <br/>
+            &#149;<a href="docs.shtml#apinotes">API Notes</a>
+            <br/>
+            &#149;<a href="api/index.html">API JavaDocs</a>
+            <br/><br/>
         <!--#set var="pagename" value="Projects Using BrowserLauncher2" -->
         <!--#if expr="\"$DOCUMENT_NAME\" = \"projectsusing.shtml\"" -->
-            <b><!--#echo var="pagename" --></b>
+            &#149;<b><!--#echo var="pagename" --></b>
         <!--#else -->
-            <a href="projectsusing.shtml"><!--#echo var="pagename" --></a>           
+            &#149;<a href="projectsusing.shtml"><!--#echo var="pagename" --></a>           
         <!--#endif -->
         <br/>
         <!--#set var="pagename" value="Platform Support" -->
         <!--#if expr="\"$DOCUMENT_NAME\" = \"platformsupport.shtml\"" -->
-            <b><!--#echo var="pagename" --></b>
+            &#149;<b><!--#echo var="pagename" --></b>
         <!--#else -->
-            <a href="platformsupport.shtml"><!--#echo var="pagename" --></a>           
+            &#149;<a href="platformsupport.shtml"><!--#echo var="pagename" --></a>           
         <!--#endif -->
         <br/><br/>
         <!-- open source icon/link -->

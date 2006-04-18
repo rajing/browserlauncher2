@@ -1,4 +1,4 @@
-<!-- $Id: platformsupport.shtml,v 1.4 2005/12/28 18:04:37 jchapman0 Exp $ -->
+<!-- $Id: platformsupport.shtml,v 1.5 2006/04/18 19:46:29 jchapman0 Exp $ -->
 <html>
 <head>
 	<title>Platform Support for BrowserLauncher2 Page</title>
@@ -42,35 +42,28 @@
 				</tr>
 				<tr class="paratext" valign="top">
 					<td>Windows 2000</td>
-					<td>Mozilla, Firefox, IE</td>
-					<td>Supported</td>
-					<td>Supported.</td>
-					<td></td>
-				</tr>
-				<tr class="paratext" valign="top">
-					<td>Windows 2003</td>
-					<td>Mozilla, Firefox, IE</td>
+					<td>Firefox, IE, Mozilla, Netscape, Opera</td>
 					<td>Supported</td>
 					<td>Supported.</td>
 					<td></td>
 				</tr>
 				<tr class="paratext" valign="top">
 					<td>Windows 98</td>
-					<td>Mozilla, Firefox, IE</td>
+					<td>Firefox, IE, Mozilla, Netscape, Opera</td>
 					<td>Supported</td>
 					<td>Supported.</td>
 					<td></td>
 				</tr>
 				<tr class="paratext" valign="top">
 					<td>Windows NT</td>
-					<td>Mozilla, Firefox, IE</td>
+					<td>Firefox, IE, Mozilla, Netscape, Opera</td>
 					<td>Supported</td>
 					<td>Supported.</td>
 					<td></td>
 				</tr>
 				<tr class="paratext" valign="top">
 					<td>Windows XP</td>
-					<td>Mozilla, Firefox, IE</td>
+					<td>Firefox, IE, Mozilla, Netscape, Opera</td>
 					<td>Supported</td>
 					<td>Supported.</td>
 					<td></td>
