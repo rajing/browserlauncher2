@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: WindowsBrowserLaunching.java,v 1.5 2006/04/11 13:36:48 jchapman0 Exp $
+// $Id: WindowsBrowserLaunching.java,v 1.6 2006/09/11 21:04:05 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
 
 import java.io.BufferedReader;
@@ -109,6 +109,11 @@ public class WindowsBrowserLaunching
      * @see WINKEY_WINNT
      */
     private final String windowsKey; // in ctor
+    /**
+     * new window policy to apply when opening a url. If true,
+     * try to force url into a new browser instance/window.
+     */
+    private boolean forceNewWindow = false;
 
     /**
      * Checks that the windows key is valid.
@@ -291,21 +296,31 @@ public class WindowsBrowserLaunching
 
     /**
      * Returns the windows arguments for launching a specified browser.
-     *
-     * @todo implement
+     * <p>
+     * Depending on the forceNewWindow boolean, the args may also contain the
+     * args to force a new window.
      *
      * @param protocol String
-     * @param browserName String
+     * @param winbrowser WindowsBrowser
      * @param urlString String
+     * @param forceNewWindow boolean
      * @return String[]
      */
     private String[] getCommandArgs(String protocol,
-                                    String browserName,
-                                    String urlString) {
+                                    WindowsBrowser winbrowser,
+                                    String urlString,
+                                    boolean forceNewWindow) {
         String commandArgs = commandsTargettedBrowser.replaceAll(
                 "<url>",
                 urlString);
-        commandArgs = commandArgs.replaceAll("<browser>", browserName);
+        commandArgs = commandArgs.replaceAll(
+            "<browser>",
+            winbrowser.getBrowserApplicationName());
+        String args = "";
+        if(forceNewWindow) {
+            args = winbrowser.getForceNewWindowArgs();
+        }
+        commandArgs = commandArgs.replaceAll("<args>", args);
         return commandArgs.split("[ ]");
     }
 
@@ -330,8 +345,9 @@ public class WindowsBrowserLaunching
             logger.info(protocol);
             String[] args = getCommandArgs(
                     protocol,
-                    winBrowser.getBrowserApplicationName(),
-                    urlString);
+                    winBrowser,
+                    urlString,
+                    forceNewWindow);
             if (logger.isDebugEnabled()) {
                 logger.debug(getArrayAsString(args));
             }
@@ -559,5 +575,33 @@ public class WindowsBrowserLaunching
             }
         }
         return browsers;
+    }
+
+    /**
+     * Returns the policy used for opening a url in a browser.
+     * <p>
+     * If the policy is true, an attempt will be made to force the
+     * url to be opened in a new instance (window) of the
+     * browser.
+     * <p>
+     * If the policy is false, the url may open in a new window or
+     * a new tab.
+     * <p>
+     * Some browsers on Windows systems have command line options to
+     * support this feature.
+     *
+     * @return boolean
+     */
+    public boolean getNewWindowPolicy() {
+        return forceNewWindow;
+    }
+
+    /**
+     * Sets the policy used for opening a url in a browser.
+     *
+     * @param forceNewWindow boolean
+     */
+    public void setNewWindowPolicy(boolean forceNewWindow) {
+        this.forceNewWindow = forceNewWindow;
     }
 }
