@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: UnixBrowser.java,v 1.3 2006/03/23 20:55:19 jchapman0 Exp $
+// $Id: UnixBrowser.java,v 1.4 2006/09/11 20:41:55 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.misc;
 
 import edu.stanford.ejalbert.launching.BrowserDescription;
@@ -47,6 +47,9 @@ public interface UnixBrowser
      * @return String[]
      */
     public String[] getArgsForStartingBrowser(String url);
+
+    public String[] getArgsForForcingNewBrowserWindow(String url);
+
 
     /**
      * Returns true if the browser is available on the user's system..
