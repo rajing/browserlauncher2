@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: WindowsBrowser.java,v 1.3 2006/03/23 20:54:32 jchapman0 Exp $
+// $Id: WindowsBrowser.java,v 1.4 2006/09/11 20:58:10 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
 
 import edu.stanford.ejalbert.launching.BrowserDescription;
@@ -39,6 +39,10 @@ public class WindowsBrowser
      * The name of the executable for the browser.
      */
     private final String exe; // in ctor
+    /**
+     * Arguments used in call to browser that will force the url to open in a new window rather than a new tab.
+     */
+    private final String forceWindowArgs; // in ctor
 
     /**
      * Splits the config string using the delimiter character and
@@ -53,6 +57,12 @@ public class WindowsBrowser
         String[] configItems = configInfo.split(delimChar);
         this.displayName = configItems[0];
         this.exe = configItems[1];
+        if(configItems.length == 3) {
+            this.forceWindowArgs = configItems[2];
+        }
+        else {
+            this.forceWindowArgs = "";
+        }
     }
 
     /**
@@ -63,6 +73,8 @@ public class WindowsBrowser
     public String toString() {
         StringBuffer buf = new StringBuffer();
         buf.append(displayName);
+        buf.append(' ');
+        buf.append(forceWindowArgs);
         buf.append(' ');
         buf.append(exe);
         return buf.toString();
@@ -86,5 +98,14 @@ public class WindowsBrowser
      */
     public String getBrowserApplicationName() {
         return exe;
+    }
+
+    /**
+     * Returns arguments used for forcing a new window. May be an empty String.
+     *
+     * @return String
+     */
+    public String getForceNewWindowArgs() {
+        return forceWindowArgs;
     }
 }
