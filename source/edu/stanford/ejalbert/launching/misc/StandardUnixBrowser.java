@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: StandardUnixBrowser.java,v 1.6 2006/03/23 20:54:04 jchapman0 Exp $
+// $Id: StandardUnixBrowser.java,v 1.7 2006/09/11 20:39:48 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.misc;
 
 import java.io.BufferedReader;
@@ -50,6 +50,8 @@ class StandardUnixBrowser
      */
     private final String argsForStartBrowser; // in ctor
 
+    private final String argsForForcedBrowserWindow; // in ctor
+
     /**
      * Splits the config string using the configSep character.
      * The resulting config items are used to set the
@@ -67,6 +69,12 @@ class StandardUnixBrowser
         this.browserArgName = configItems[1];
         this.argsForStartBrowser = configItems[2];
         this.argsForOpenBrowser = configItems[3];
+        if(configItems.length == 5) {
+            this.argsForForcedBrowserWindow = configItems[4];
+        }
+        else {
+            this.argsForForcedBrowserWindow = configItems[2];
+        }
     }
 
     /**
@@ -148,6 +156,10 @@ class StandardUnixBrowser
      */
     public String[] getArgsForStartingBrowser(String urlString) {
         return getCommandLineArgs(argsForStartBrowser, urlString);
+    }
+
+    public String[] getArgsForForcingNewBrowserWindow(String urlString) {
+        return getCommandLineArgs(argsForForcedBrowserWindow, urlString);
     }
 
     /**
