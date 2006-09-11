@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: MacOsBrowserLaunching.java,v 1.2 2006/04/11 13:36:48 jchapman0 Exp $
+// $Id: MacOsBrowserLaunching.java,v 1.3 2006/09/11 20:38:13 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.macos;
 
 import java.util.List;
@@ -33,6 +33,11 @@ import edu.stanford.ejalbert.launching.IBrowserLaunching;
  */
 public abstract class MacOsBrowserLaunching
         implements IBrowserLaunching {
+    /**
+     * new window policy to apply when opening a url. If true,
+     * try to force url into a new browser instance/window.
+     */
+    private boolean forceNewWindow = false;
 
     /**
      * The creator code of the Finder on a Macintosh, which is needed to send AppleEvents to the
@@ -76,5 +81,33 @@ public abstract class MacOsBrowserLaunching
             BrowserLaunchingExecutionException,
             BrowserLaunchingInitializingException {
         openUrl(urlString);
+    }
+
+    /**
+     * Returns the policy used for opening a url in a browser.
+     * <p>
+     * If the policy is true, an attempt will be made to force the
+     * url to be opened in a new instance (window) of the
+     * browser.
+     * <p>
+     * If the policy is false, the url may open in a new window or
+     * a new tab.
+     * <p>
+     * This is not supported on the Mac OS.
+     *
+     * @return boolean
+     */
+    public boolean getNewWindowPolicy() {
+        return forceNewWindow;
+    }
+
+    /**
+     * Sets the policy used for opening a url in a browser.
+     * This is not supported on the Mac OS.
+     *
+     * @param forceNewWindow boolean
+     */
+    public void setNewWindowPolicy(boolean forceNewWindow) {
+        this.forceNewWindow = forceNewWindow;
     }
 }
