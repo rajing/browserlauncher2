@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: IBrowserLaunching.java,v 1.6 2006/04/11 13:36:48 jchapman0 Exp $
+// $Id: IBrowserLaunching.java,v 1.7 2006/09/11 19:58:08 jchapman0 Exp $
 package edu.stanford.ejalbert.launching;
 
 import java.util.List;
@@ -129,4 +129,27 @@ public interface IBrowserLaunching {
      * @return List
      */
     public List getBrowserList();
+
+    /**
+     * Returns the policy used for opening a url in a browser.
+     * <p>
+     * If the policy is true, an attempt will be made to force the
+     * url to be opened in a new instance (window) of the
+     * browser.
+     * <p>
+     * If the policy is false, the url may open in a new window or
+     * a new tab.
+     * <p>
+     * Results will vary based on the O/S and browser being targetted.
+     *
+     * @return boolean
+     */
+    public boolean getNewWindowPolicy();
+
+    /**
+     * Sets the policy used for opening a url in a browser.
+     *
+     * @param forceNewWindow boolean
+     */
+    public void setNewWindowPolicy(boolean forceNewWindow);
 }
