@@ -18,12 +18,13 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: UnixNetscapeBrowserLaunching.java,v 1.11 2006/04/11 13:36:48 jchapman0 Exp $
+// $Id: UnixNetscapeBrowserLaunching.java,v 1.12 2006/09/11 20:56:24 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.misc;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -62,6 +63,11 @@ public class UnixNetscapeBrowserLaunching
      * name of config file passed into constructor
      */
     private final String configFileName; // in ctor
+    /**
+     * new window policy to apply when opening a url. If true,
+     * try to force url into a new browser instance/window.
+     */
+    private boolean forceNewWindow = false;
 
     /**
      * Sets the logger and config file name.
@@ -104,14 +110,35 @@ public class UnixNetscapeBrowserLaunching
         logger.info(unixBrowser.getBrowserDisplayName());
         logger.info(urlString);
         try {
-            Process process = Runtime.getRuntime().exec(
-                    unixBrowser.
-                    getArgsForOpenBrowser(urlString));
-            int exitCode = process.waitFor();
+            int exitCode = -1;
+            Process process = null;
+            String[] args;
+            // try to open in a new tab/current instance
+            // skip this attempt if force new window is set to true
+            if(!forceNewWindow) {
+                args = unixBrowser.getArgsForOpenBrowser(urlString);
+                if (logger.isDebugEnabled()) {
+                    logger.debug(Arrays.asList(args).toString());
+                }
+                process = Runtime.getRuntime().exec(args);
+                exitCode = process.waitFor();
+            }
+            // try call to force a new window if requested
+            if(forceNewWindow && exitCode != 0) {
+                args = unixBrowser.getArgsForForcingNewBrowserWindow(urlString);
+                if (logger.isDebugEnabled()) {
+                    logger.debug(Arrays.asList(args).toString());
+                }
+                process = Runtime.getRuntime().exec(args);
+                exitCode = process.waitFor();
+            }
+            // open in a new window
             if (exitCode != 0) {
-                process = Runtime.getRuntime().exec(
-                        unixBrowser.
-                        getArgsForStartingBrowser(urlString));
+                args = unixBrowser.getArgsForStartingBrowser(urlString);
+                if (logger.isDebugEnabled()) {
+                    logger.debug(Arrays.asList(args).toString());
+                }
+                process = Runtime.getRuntime().exec(args);
                 exitCode = process.waitFor();
             }
             if (exitCode == 0) {
@@ -273,7 +300,7 @@ public class UnixNetscapeBrowserLaunching
             while (iter.hasNext() && !success) {
                 UnixBrowser unixBrowser = (UnixBrowser) unixBrowsers.get(
                         iter.next());
-                if(unixBrowser != null) {
+                if (unixBrowser != null) {
                     success = openUrlWithBrowser(unixBrowser,
                                                  urlString);
                 }
@@ -301,5 +328,33 @@ public class UnixNetscapeBrowserLaunching
         }
         browsers.addAll(unixBrowsers.keySet());
         return browsers;
+    }
+
+    /**
+     * Returns the policy used for opening a url in a browser.
+     * <p>
+     * If the policy is true, an attempt will be made to force the
+     * url to be opened in a new instance (window) of the
+     * browser.
+     * <p>
+     * If the policy is false, the url may open in a new window or
+     * a new tab.
+     * <p>
+     * Most browsers on Unix/Linux systems have command line options to
+     * support this feature.
+     *
+     * @return boolean
+     */
+    public boolean getNewWindowPolicy() {
+        return forceNewWindow;
+    }
+
+    /**
+     * Sets the policy used for opening a url in a browser.
+     *
+     * @param forceNewWindow boolean
+     */
+    public void setNewWindowPolicy(boolean forceNewWindow) {
+        this.forceNewWindow = forceNewWindow;
     }
 }
