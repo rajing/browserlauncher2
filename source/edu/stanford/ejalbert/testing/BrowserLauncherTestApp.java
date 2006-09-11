@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherTestApp.java,v 1.18 2006/04/11 13:37:18 jchapman0 Exp $
+// $Id: BrowserLauncherTestApp.java,v 1.19 2006/09/11 21:05:37 jchapman0 Exp $
 package edu.stanford.ejalbert.testing;
 
 import java.awt.BorderLayout;
@@ -50,6 +50,9 @@ import edu.stanford.ejalbert.BrowserLauncher;
 import edu.stanford.ejalbert.exceptionhandler.BrowserLauncherErrorHandler;
 import java.awt.GridLayout;
 import java.util.List;
+import javax.swing.JCheckBox;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 /**
  * Standalone gui that allows for testing the broserlauncher code and provides
@@ -88,6 +91,7 @@ public class BrowserLauncherTestApp
     private JButton copyButton = new JButton();
     private ResourceBundle bundle; // in ctor
     private BorderLayout urlPaneLayout = new BorderLayout();
+    private JCheckBox windowPolicyCBox = new JCheckBox();
 
     public BrowserLauncherTestApp() {
         super();
@@ -108,6 +112,7 @@ public class BrowserLauncherTestApp
             ComboBoxModel cbModel = new DefaultComboBoxModel(launcher.
                     getBrowserList().toArray());
             browserBox.setModel(cbModel);
+            windowPolicyCBox.setSelected(launcher.getNewWindowPolicy());
         }
         catch (Exception ex) {
             ex.printStackTrace();
@@ -118,6 +123,10 @@ public class BrowserLauncherTestApp
         BrowserLauncherTestApp app = new BrowserLauncherTestApp();
         app.pack();
         app.setVisible(true);
+    }
+
+    private void windowPolicyItemStateChange(ItemEvent e) {
+        launcher.setNewWindowPolicy(e.getStateChange() == ItemEvent.SELECTED);
     }
 
     private void populateDebugInfo(ResourceBundle bundle,
@@ -199,11 +208,19 @@ public class BrowserLauncherTestApp
         debugTextBttnPanel.add(copyButton);
         debugTextBttnPanel.add(Box.createHorizontalStrut(2));
 
+        windowPolicyCBox.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                windowPolicyItemStateChange(e);
+            }
+        });
+        windowPolicyCBox.setText(bundle.getString("label.window.policy"));
         browserListLabel.setText(bundle.getString("label.browser.list"));
         browserListPanel.setLayout(browserListBoxLayout);
         browserListPanel.add(browserListLabel);
         browserListPanel.add(Box.createHorizontalStrut(2));
         browserListPanel.add(browserListField);
+        browserListPanel.add(Box.createHorizontalStrut(2));
+        browserListPanel.add(windowPolicyCBox);
 
         configPanel.setLayout(new GridLayout(2,1,0,2));
         configPanel.add(browserListPanel);
