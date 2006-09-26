@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: WindowsBrowser.java,v 1.4 2006/09/11 20:58:10 jchapman0 Exp $
+// $Id: WindowsBrowser.java,v 1.5 2006/09/26 19:48:56 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
 
 import edu.stanford.ejalbert.launching.BrowserDescription;
@@ -43,6 +43,8 @@ public class WindowsBrowser
      * Arguments used in call to browser that will force the url to open in a new window rather than a new tab.
      */
     private final String forceWindowArgs; // in ctor
+
+    private String pathToExe = null;
 
     /**
      * Splits the config string using the delimiter character and
@@ -78,6 +80,14 @@ public class WindowsBrowser
         buf.append(' ');
         buf.append(exe);
         return buf.toString();
+    }
+
+    void setPathToExe(String path) {
+        pathToExe = path;
+    }
+
+    String getPathToExe() {
+        return pathToExe;
     }
 
     /* -------------------- from BrowserDescription ---------------------- */
