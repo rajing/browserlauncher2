@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: IBrowserLaunching.java,v 1.7 2006/09/11 19:58:08 jchapman0 Exp $
+// $Id: IBrowserLaunching.java,v 1.8 2006/09/26 19:43:50 jchapman0 Exp $
 package edu.stanford.ejalbert.launching;
 
 import java.util.List;
@@ -33,6 +33,12 @@ import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
  * @author Markus Gebhard
  */
 public interface IBrowserLaunching {
+    /**
+     * Key to system property containing name of users
+     * preferred browser.
+     */
+    public static final String BROWSER_SYSTEM_PROPERTY =
+            "edu.stanford.ejalbert.preferred.browser";
     /**
      * property file key for delimiter character used in other properties.
      */

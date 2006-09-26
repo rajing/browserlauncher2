@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherTestApp.java,v 1.19 2006/09/11 21:05:37 jchapman0 Exp $
+// $Id: BrowserLauncherTestApp.java,v 1.20 2006/09/26 19:46:38 jchapman0 Exp $
 package edu.stanford.ejalbert.testing;
 
 import java.awt.BorderLayout;
@@ -53,6 +53,7 @@ import java.util.List;
 import javax.swing.JCheckBox;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+import edu.stanford.ejalbert.browserprefui.BrowserPrefAction;
 
 /**
  * Standalone gui that allows for testing the broserlauncher code and provides
@@ -65,32 +66,13 @@ public class BrowserLauncherTestApp
     private static final String debugResources =
             "edu.stanford.ejalbert.resources.Debugging";
     private TestAppLogger logger; // in ctor
-    private JPanel urlPanel = new JPanel();
     private JComboBox browserBox = new JComboBox();
-    private JButton browseButton = new JButton();
-    private JLabel enterUrlLabel = new JLabel();
-    private JLabel debugLevelLabel = new JLabel();
-    private JButton loggingLevelBttn = new JButton();
     private JLabel loggingLevelTxtFld = new JLabel();
     private JTextField urlTextField = new JTextField();
     private BrowserLauncher launcher; // in ctor
-    private BorderLayout borderLayout1 = new BorderLayout();
     private JTextArea debugTextArea = new JTextArea();
-    private JPanel debugTextBttnPanel = new JPanel();
-    private JPanel browserListPanel = new JPanel();
-    private JPanel configPanel = new JPanel();
-    private BoxLayout bttnBoxLayout = new BoxLayout(
-            debugTextBttnPanel,
-            BoxLayout.X_AXIS);
-    private BoxLayout browserListBoxLayout = new BoxLayout(
-            browserListPanel,
-            BoxLayout.X_AXIS);
     private JTextField browserListField = new JTextField();
-    private JLabel browserListLabel = new JLabel();
-    private JScrollPane debugTextScrollPane = new JScrollPane();
-    private JButton copyButton = new JButton();
     private ResourceBundle bundle; // in ctor
-    private BorderLayout urlPaneLayout = new BorderLayout();
     private JCheckBox windowPolicyCBox = new JCheckBox();
 
     public BrowserLauncherTestApp() {
@@ -104,7 +86,6 @@ public class BrowserLauncherTestApp
                                        bundle.getString("logging.dateformat"));
             loggingLevelTxtFld.setText(logger.getLevelText());
             super.setTitle(bundle.getString("label.app.title"));
-            jbInit();
             populateDebugInfo(bundle, debugTextArea);
             launcher = new BrowserLauncher(
                     logger,
@@ -113,6 +94,7 @@ public class BrowserLauncherTestApp
                     getBrowserList().toArray());
             browserBox.setModel(cbModel);
             windowPolicyCBox.setSelected(launcher.getNewWindowPolicy());
+            jbInit();
         }
         catch (Exception ex) {
             ex.printStackTrace();
@@ -157,17 +139,23 @@ public class BrowserLauncherTestApp
 
     private void jbInit()
             throws Exception {
+        // button and action for setting the browser preference
+        BrowserPrefAction browserPrefAction = new BrowserPrefAction(
+            bundle.getString("bttn.set.preference"),
+            launcher,
+            this);
+        JButton prefBrowserBttn = new JButton(browserPrefAction);
+
+        JButton browseButton = new JButton(bundle.getString("bttn.browse"));
         browseButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 browseButton_actionPerformed(e);
             }
         });
-        browseButton.setText(bundle.getString("bttn.browse"));
-        enterUrlLabel.setText(bundle.getString("label.url"));
+        JLabel enterUrlLabel = new JLabel(bundle.getString("label.url"));
         urlTextField.setText(bundle.getString("url.default"));
         urlTextField.setColumns(25);
-        urlPanel.setLayout(urlPaneLayout);
-
+        JPanel urlPanel = new JPanel(new BorderLayout());
         urlPanel.add(enterUrlLabel, BorderLayout.LINE_START);
         urlPanel.add(urlTextField, BorderLayout.CENTER);
         urlPanel.add(browseButton, BorderLayout.LINE_END);
@@ -176,24 +164,27 @@ public class BrowserLauncherTestApp
         debugTextArea.setLineWrap(true);
         debugTextArea.setWrapStyleWord(true);
         debugTextArea.setText("");
-        debugTextScrollPane.getViewport().add(debugTextArea);
+        JScrollPane debugTextScrollPane = new JScrollPane(debugTextArea);
+        //debugTextScrollPane.getViewport().add(debugTextArea);
 
-        //loggingLevelTxtFld.setAlignmentX((float) 0.0);
-        //loggingLevelTxtFld.setEditable(false);
-        debugLevelLabel.setText(bundle.getString("label.logging.level"));
-        loggingLevelBttn.setText(bundle.getString("bttn.set.logging"));
+        JLabel debugLevelLabel = new JLabel(bundle.getString("label.logging.level"));
+        JButton loggingLevelBttn = new JButton(bundle.getString(
+                "bttn.set.logging"));
         loggingLevelBttn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 loggingLevelBttn_actionPerformed(e);
             }
         });
-        copyButton.setText(bundle.getString("bttn.copy"));
+        JButton copyButton = new JButton(bundle.getString("bttn.copy"));
         copyButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 copyButton_actionPerformed(e);
             }
         });
-
+        JPanel debugTextBttnPanel = new JPanel();
+        BoxLayout bttnBoxLayout = new BoxLayout(
+                debugTextBttnPanel,
+                BoxLayout.X_AXIS);
         debugTextBttnPanel.setLayout(bttnBoxLayout);
         debugTextBttnPanel.add(Box.createHorizontalStrut(2));
         debugTextBttnPanel.add(browserBox);
@@ -214,19 +205,25 @@ public class BrowserLauncherTestApp
             }
         });
         windowPolicyCBox.setText(bundle.getString("label.window.policy"));
-        browserListLabel.setText(bundle.getString("label.browser.list"));
+        JLabel browserListLabel = new JLabel(bundle.getString("label.browser.list"));
+        JPanel browserListPanel = new JPanel();
+        BoxLayout browserListBoxLayout = new BoxLayout(
+                browserListPanel,
+                BoxLayout.X_AXIS);
         browserListPanel.setLayout(browserListBoxLayout);
         browserListPanel.add(browserListLabel);
         browserListPanel.add(Box.createHorizontalStrut(2));
         browserListPanel.add(browserListField);
         browserListPanel.add(Box.createHorizontalStrut(2));
         browserListPanel.add(windowPolicyCBox);
+        browserListPanel.add(Box.createHorizontalStrut(2));
+        browserListPanel.add(prefBrowserBttn);
 
-        configPanel.setLayout(new GridLayout(2,1,0,2));
+        JPanel configPanel = new JPanel(new GridLayout(2, 1, 0, 2));
         configPanel.add(browserListPanel);
         configPanel.add(debugTextBttnPanel);
 
-        this.getContentPane().setLayout(borderLayout1);
+        this.getContentPane().setLayout(new BorderLayout());
         this.getContentPane().add(debugTextScrollPane,
                                   java.awt.BorderLayout.CENTER);
         this.getContentPane().add(urlPanel,
@@ -263,7 +260,7 @@ public class BrowserLauncherTestApp
                     debugTextArea);
             // use browser list if browserListField has data
             String browserItems = browserListField.getText();
-            if(browserItems != null && browserItems.length() > 0) {
+            if (browserItems != null && browserItems.length() > 0) {
                 logger.debug("using browser list");
                 String[] browserArray = browserItems.split("[ ]+");
                 List browserList = Arrays.asList(browserArray);

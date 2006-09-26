@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncher.java,v 1.11 2006/09/11 19:56:57 jchapman0 Exp $
+// $Id: BrowserLauncher.java,v 1.12 2006/09/26 19:41:51 jchapman0 Exp $
 package edu.stanford.ejalbert;
 
 import java.util.List;
@@ -90,6 +90,15 @@ import net.sf.wraplog.NoneLogger;
  * @author Jeff Chapman
  */
 public class BrowserLauncher {
+    /**
+     * Key to system property containing name of users
+     * preferred browser.
+     * <p>
+     * The value is defined in IBrowserLaunching but exposed for
+     * general API usage from the BrowserLauncher class.
+     */
+    public static final String BROWSER_SYSTEM_PROPERTY =
+            IBrowserLaunching.BROWSER_SYSTEM_PROPERTY;;
 
     private final IBrowserLaunching launching; // in ctor
     private AbstractLogger logger; // in init method
@@ -244,7 +253,7 @@ public class BrowserLauncher {
             }
             //catch (BrowserLaunchingExecutionException ex) {
             //    ex.printStackTrace();
-           // }
+            // }
             catch (UnsupportedOperatingSystemException ex) {
                 ex.printStackTrace();
             }

@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: UnixNetscapeBrowserLaunching.java,v 1.12 2006/09/11 20:56:24 jchapman0 Exp $
+// $Id: UnixNetscapeBrowserLaunching.java,v 1.13 2006/09/26 19:45:18 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.misc;
 
 import java.io.IOException;
@@ -115,7 +115,7 @@ public class UnixNetscapeBrowserLaunching
             String[] args;
             // try to open in a new tab/current instance
             // skip this attempt if force new window is set to true
-            if(!forceNewWindow) {
+            if (!forceNewWindow) {
                 args = unixBrowser.getArgsForOpenBrowser(urlString);
                 if (logger.isDebugEnabled()) {
                     logger.debug(Arrays.asList(args).toString());
@@ -124,7 +124,7 @@ public class UnixNetscapeBrowserLaunching
                 exitCode = process.waitFor();
             }
             // try call to force a new window if requested
-            if(forceNewWindow && exitCode != 0) {
+            if (forceNewWindow && exitCode != 0) {
                 args = unixBrowser.getArgsForForcingNewBrowserWindow(urlString);
                 if (logger.isDebugEnabled()) {
                     logger.debug(Arrays.asList(args).toString());
@@ -222,7 +222,19 @@ public class UnixNetscapeBrowserLaunching
         try {
             logger.info(urlString);
             boolean success = false;
-            Iterator iter = unixBrowsers.values().iterator();
+            // get list of browsers to try
+            List unixBrowsersList = new ArrayList(unixBrowsers.values());
+            // check system property which may contain user's preferred browser
+            String browserId = System.getProperty(
+                    IBrowserLaunching.BROWSER_SYSTEM_PROPERTY,
+                    null);
+            UnixBrowser unixBrowser = (UnixBrowser) unixBrowsers.get(browserId);
+            if(unixBrowser != null) {
+                // if user has preferred browser, place at start of list
+                unixBrowsersList.add(0, unixBrowser);
+            }
+            // iterate over browsers until one works
+            Iterator iter = unixBrowsersList.iterator();
             UnixBrowser browser;
             Process process;
             while (iter.hasNext() && !success) {
