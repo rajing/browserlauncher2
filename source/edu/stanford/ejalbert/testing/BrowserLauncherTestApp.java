@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherTestApp.java,v 1.20 2006/09/26 19:46:38 jchapman0 Exp $
+// $Id: BrowserLauncherTestApp.java,v 1.21 2006/10/26 20:00:16 jchapman0 Exp $
 package edu.stanford.ejalbert.testing;
 
 import java.awt.BorderLayout;
@@ -79,11 +79,7 @@ public class BrowserLauncherTestApp
         super();
         try {
             bundle = ResourceBundle.getBundle(debugResources);
-            String[] levelLabels =
-                    bundle.getString("logging.level.labels").split(";");
-            logger = new TestAppLogger(debugTextArea,
-                                       levelLabels,
-                                       bundle.getString("logging.dateformat"));
+            logger = initDebugLogging();
             loggingLevelTxtFld.setText(logger.getLevelText());
             super.setTitle(bundle.getString("label.app.title"));
             populateDebugInfo(bundle, debugTextArea);
@@ -99,6 +95,18 @@ public class BrowserLauncherTestApp
         catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    private TestAppLogger initDebugLogging() {
+        String[] levelLabels =
+                bundle.getString("logging.level.labels").split(";");
+        debugTextArea.setEditable(false);
+        debugTextArea.setLineWrap(true);
+        debugTextArea.setWrapStyleWord(true);
+        debugTextArea.setText("");
+        return new TestAppLogger(debugTextArea,
+                                 levelLabels,
+                                 bundle.getString("logging.dateformat"));
     }
 
     public static void main(String[] args) {
@@ -141,9 +149,9 @@ public class BrowserLauncherTestApp
             throws Exception {
         // button and action for setting the browser preference
         BrowserPrefAction browserPrefAction = new BrowserPrefAction(
-            bundle.getString("bttn.set.preference"),
-            launcher,
-            this);
+                bundle.getString("bttn.set.preference"),
+                launcher,
+                this);
         JButton prefBrowserBttn = new JButton(browserPrefAction);
 
         JButton browseButton = new JButton(bundle.getString("bttn.browse"));
@@ -160,14 +168,11 @@ public class BrowserLauncherTestApp
         urlPanel.add(urlTextField, BorderLayout.CENTER);
         urlPanel.add(browseButton, BorderLayout.LINE_END);
 
-        debugTextArea.setEditable(false);
-        debugTextArea.setLineWrap(true);
-        debugTextArea.setWrapStyleWord(true);
-        debugTextArea.setText("");
         JScrollPane debugTextScrollPane = new JScrollPane(debugTextArea);
         //debugTextScrollPane.getViewport().add(debugTextArea);
 
-        JLabel debugLevelLabel = new JLabel(bundle.getString("label.logging.level"));
+        JLabel debugLevelLabel = new JLabel(bundle.getString(
+                "label.logging.level"));
         JButton loggingLevelBttn = new JButton(bundle.getString(
                 "bttn.set.logging"));
         loggingLevelBttn.addActionListener(new ActionListener() {
@@ -205,7 +210,8 @@ public class BrowserLauncherTestApp
             }
         });
         windowPolicyCBox.setText(bundle.getString("label.window.policy"));
-        JLabel browserListLabel = new JLabel(bundle.getString("label.browser.list"));
+        JLabel browserListLabel = new JLabel(bundle.getString(
+                "label.browser.list"));
         JPanel browserListPanel = new JPanel();
         BoxLayout browserListBoxLayout = new BoxLayout(
                 browserListPanel,
