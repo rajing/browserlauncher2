@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: SunOSBrowserLaunching.java,v 1.2 2006/03/23 20:54:04 jchapman0 Exp $
+// $Id: SunOSBrowserLaunching.java,v 1.3 2006/10/26 20:02:18 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.misc;
 
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
@@ -66,11 +66,20 @@ public class SunOSBrowserLaunching
             BrowserLaunchingInitializingException {
         try {
             logger.info(urlString);
+            // check system property which may contain user's preferred browser
+            String browserId = System.getProperty(
+                    IBrowserLaunching.BROWSER_SYSTEM_PROPERTY,
+                    null);
             StandardUnixBrowser defBrowser = getBrowser(
                     IBrowserLaunching.BROWSER_DEFAULT);
+            if (browserId != null) {
+                logger.info(
+                        "browser pref defined in system prop. Failing over to super.openUrl() method");
+                super.openUrl(urlString);
+            }
             // we should always have a default browser defined for
             // SunOS but if not, fail over to super class method
-            if (defBrowser == null) {
+            else if (defBrowser == null) {
                 logger.info(
                         "no default browser defined. Failing over to super.openUrl() method");
                 super.openUrl(urlString);
