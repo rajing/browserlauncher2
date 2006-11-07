@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: UnixNetscapeBrowserLaunching.java,v 1.13 2006/09/26 19:45:18 jchapman0 Exp $
+// $Id: UnixNetscapeBrowserLaunching.java,v 1.14 2006/11/07 14:08:31 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.misc;
 
 import java.io.IOException;
@@ -228,10 +228,13 @@ public class UnixNetscapeBrowserLaunching
             String browserId = System.getProperty(
                     IBrowserLaunching.BROWSER_SYSTEM_PROPERTY,
                     null);
-            UnixBrowser unixBrowser = (UnixBrowser) unixBrowsers.get(browserId);
-            if(unixBrowser != null) {
-                // if user has preferred browser, place at start of list
-                unixBrowsersList.add(0, unixBrowser);
+            if (browserId != null) {
+                UnixBrowser unixBrowser =
+                        (UnixBrowser) unixBrowsers.get(browserId);
+                if (unixBrowser != null) {
+                    // if user has preferred browser, place at start of list
+                    unixBrowsersList.add(0, unixBrowser);
+                }
             }
             // iterate over browsers until one works
             Iterator iter = unixBrowsersList.iterator();
