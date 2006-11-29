@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: WindowsBrowserLaunching.java,v 1.7 2006/09/26 19:52:08 jchapman0 Exp $
+// $Id: WindowsBrowserLaunching.java,v 1.8 2006/11/29 21:42:35 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
 
 import java.io.BufferedReader;
@@ -264,9 +264,11 @@ public class WindowsBrowserLaunching
                 boolean foundBrowser = false;
                 while (iter.hasNext() && !foundBrowser) {
                     WindowsBrowser winBrowser = (WindowsBrowser) iter.next();
-                    String browserName = winBrowser.getBrowserDisplayName().
-                                         toLowerCase();
-                    if (linePath.toLowerCase().indexOf(browserName) > 0) {
+                    StringBuffer bnameBuf = new StringBuffer();
+                    bnameBuf.append("\\\\");
+                    bnameBuf.append(winBrowser.getBrowserDisplayName().toLowerCase());
+                    bnameBuf.append("\\\\");
+                    if (linePath.toLowerCase().indexOf(bnameBuf.toString()) > 0) {
                         if (logger.isDebugEnabled()) {
                             logger.debug(line);
                             logger.debug(linePath);
