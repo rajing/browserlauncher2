@@ -1,0 +1,30 @@
+<!-- $Id: problems.shtml,v 1.1 2007/01/30 21:45:13 jchapman0 Exp $ -->
+<html>
+<head>
+	<title>BrowserLauncher2 Problems and Workarounds</title>
+    <link rel="stylesheet" href="browserlauncherweb.css" type="text/css" media="screen">
+</head>
+<body>
+<!--#include virtual="header.shtml" -->
+<div class="content">
+<!--#include virtual="sidebar.shtml" -->
+<div class="contentText">
+<h1>Problems and Workarounds</h1>
+<p>If you find a problem using BrowserLauncher2, please report it. If <b>YOU</b> don't report it, we don't know about it, and we can't fix it.</p>
+<h2>Windows Problems</h2>
+<ul>
+	<li><a href="#win_anchors">Anchors and Local Files with Default Browser</a></li>
+	<li><a href="#win_anchors_ie7">Anchors and Local Files with IE 7</a></li>
+</ul>
+<hr/>
+<h3><a name="win_anchors">Anchors and Local Files with Default Browser</a></h3>
+<p>Windows strips anchors from local file urls when you request the url using the default browser. This problem only affects local file urls. Http urls do not suffer from this problem. You can get around this problem by using <a href="docs.shtml#browsertargetting">browser targetting.</a></p>
+<hr/>
+<h3><a name="win_anchors_ie7">Anchors and Local Files with IE 7</a></h3>
+<p>It has been reported that IE 7 does not support/honor anchors on local file urls. There is no workaround for this other than using a different browser.</p>
+<br/><br/><br/>
+</div> <!-- end of contentText div -->
+<!--#include virtual="footer.shtml" -->
+</div> <!-- end of content div -->
+</body>
+</html>

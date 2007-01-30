@@ -1,0 +1,7 @@
+<!-- $Id: header.shtml,v 1.1 2007/01/30 21:45:13 jchapman0 Exp $ -->
+<div id="header">
+<div class="headerText">
+<h1>BrowserLauncher2</h1>
+<h2>A Java Library for Opening a Browser</h2>
+</div>
+</div>
