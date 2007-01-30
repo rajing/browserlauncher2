@@ -1,53 +1,25 @@
-<!-- $Id: sidebar.shtml,v 1.5 2006/04/18 19:46:29 jchapman0 Exp $ -->
-<!-- server side include for the sidebar menu that appears on each page -->
-<td width="130" valign="top">
-    <span class="menu">
-        <a href="http://sourceforge.net/project/showfiles.php?group_id=127980"><b><font size="+2" color="#0000dd">Download 1.0</font></b></a>
-            <br/><b>Latest Release:</b><br/>April xx, 2006
-	    <br/><br/>
-        <!--#set var="pagename" value="Home" -->
-        <!--#if expr="\"$DOCUMENT_NAME\" = \"index.shtml\"" -->
-            &#149;<b><!--#echo var="pagename" --></b>
-        <!--#else -->
-            &#149;<a href="index.shtml"><!--#echo var="pagename" --></a>           
-        <!--#endif -->
-        <br/>
-        &#149;<a href="http://sourceforge.net/projects/browserlaunch2/">Project Page</a>
-        <br/><br/>           
-        <b>Documentation:</b><br/>
-            &#149;<a href="docs.shtml#qsguide">Quick Start Guide</a>
-             <br/>
-            &#149;<a href="docs.shtml#files">Download Files</a>
-             <br/>
-            &#149;<a href="docs.shtml#testapp">Test Application</a>           
-             <br/>
-            &#149;<a href="docs.shtml#apinotes">API Notes</a>
-            <br/>
-            &#149;<a href="api/index.html">API JavaDocs</a>
-            <br/><br/>
-        <!--#set var="pagename" value="Projects Using BrowserLauncher2" -->
-        <!--#if expr="\"$DOCUMENT_NAME\" = \"projectsusing.shtml\"" -->
-            &#149;<b><!--#echo var="pagename" --></b>
-        <!--#else -->
-            &#149;<a href="projectsusing.shtml"><!--#echo var="pagename" --></a>           
-        <!--#endif -->
-        <br/>
-        <!--#set var="pagename" value="Platform Support" -->
-        <!--#if expr="\"$DOCUMENT_NAME\" = \"platformsupport.shtml\"" -->
-            &#149;<b><!--#echo var="pagename" --></b>
-        <!--#else -->
-            &#149;<a href="platformsupport.shtml"><!--#echo var="pagename" --></a>           
-        <!--#endif -->
-        <br/><br/>
-        <!-- open source icon/link -->
-        <a href="http://www.opensource.org/docs/definition.php"><img 
-		src="http://www.opensource.org/trademarks/opensource/web/opensource-110x95.png" 
-            	border="0" width="110" height="95"></a>
-		<br/><br/>
-        <!-- source forge icon/link -->
-		<a href="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=127980&amp;type=1" 
-		width="88" height="31" border="0" alt="SourceForge.net Logo" /></a>
-     </span>
-</td>
-<td width="10" background="images/vertdivider.gif"></td>
-<!-- end of server side include for the sidebar menu -->
+<!-- $Id: sidebar.shtml,v 1.6 2007/01/30 21:50:25 jchapman0 Exp $ -->
+<div class="sidebar">
+<a href="http://sourceforge.net/project/showfiles.php?group_id=127980"><b><font size="+2" color="#0000dd">Download 1.0</font></b></a>
+<br/><b>Latest Release:</b><br/>January xx, 2007
+<ul>
+	<li><a href="index.shtml">Home</a></li>		
+	<li><a href="http://sourceforge.net/projects/browserlaunch2/">Project Page</a></li>
+	<li><a href="platformsupport.shtml">Platform Support</a></li>
+	<li><a href="projectsusing.shtml">Projects Using BrowserLauncher2</a></li>
+</ul>
+<br/>
+<b>Documentation:</b>
+<ul>
+<li><a href="docs.shtml#qsguide">Quick Start Guide</a></li>
+<li><a href="docs.shtml#files">Download Files</a></li>
+<li><a href="docs.shtml#testapp">Test Application</a></li>
+<li><a href="docs.shtml#apinotes">API Notes</a></li>
+<li><a href="docs.shtml#browsertargetting">Browser Targetting</a></li>
+<li><a href="docs.shtml#forcing_new_browser_win">Forcing a New Browser Window</a></li>
+<li><a href="docs.shtml#defbrowserfromsysprop">Default Browser from System Property</a></li>
+<li><a href="docs.shtml#logging">Logging</a></li>
+<li><a href="api/index.html">API JavaDocs</a></li>
+<li><a href="problems.shtml">Problems and Workarounds</a></li>
+</ul>            
+</div>
