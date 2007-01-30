@@ -1,76 +1,128 @@
-<!-- $Id: platformsupport.shtml,v 1.5 2006/04/18 19:46:29 jchapman0 Exp $ -->
+<!-- $Id: platformsupport.shtml,v 1.6 2007/01/30 21:49:30 jchapman0 Exp $ -->
 <html>
 <head>
 	<title>Platform Support for BrowserLauncher2 Page</title>
-    <link rel="stylesheet" href="browserlauncherweb.css" type="text/css">
+    <link rel="stylesheet" href="browserlauncherweb.css" type="text/css" media="screen">
 </head>
-<body bgcolor="#ffffff">
-<table border="0" width="80%">
-    <tr valign="top">
-        <!--#include virtual="sidebar.shtml" -->
-        <td>
-            <span class="header1">Platform Support for BrowserLauncher2</span>
-			<br/><br/>
-			<table border="1" cellpadding="2" cellspacing="2">
-				<tr class="header2" valign="top">
-					<td>OS Name</td>
-					<td>Browsers</td>
-					<td>Status</td>
-					<td>Browser Targetting</td>
-					<td>Notes</td>
-				</tr>
-				<tr class="paratext" valign="top">
-					<td>Linux (2.4.x or higher)</td>
-					<td>FireFox, Mozilla, Netscape, Konqueror, Opera</td>
-					<td>Supported</td>
-					<td>Supported</td>
-					<td>If more than one of the supported browsers is available, the first one in alpha order will be invoked as the default.</td>
-				</tr>
-				<tr class="paratext" valign="top">
-					<td>Mac OS X (10.2 or higher)</td>
-					<td></td>
-					<td>Supported</td>
-					<td>Not supported, calls default</td>
-					<td></td>
-				</tr>
-				<tr class="paratext" valign="top">
-					<td>SunOS</td>
-					<td>Mozilla, Firefox, Netscape</td>
-					<td>Supported</td>
-					<td>Supported</td>
-					<td>The default browser is invoked using the sdtwebclient command.</td>
-				</tr>
-				<tr class="paratext" valign="top">
-					<td>Windows 2000</td>
-					<td>Firefox, IE, Mozilla, Netscape, Opera</td>
-					<td>Supported</td>
-					<td>Supported.</td>
-					<td></td>
-				</tr>
-				<tr class="paratext" valign="top">
-					<td>Windows 98</td>
-					<td>Firefox, IE, Mozilla, Netscape, Opera</td>
-					<td>Supported</td>
-					<td>Supported.</td>
-					<td></td>
-				</tr>
-				<tr class="paratext" valign="top">
-					<td>Windows NT</td>
-					<td>Firefox, IE, Mozilla, Netscape, Opera</td>
-					<td>Supported</td>
-					<td>Supported.</td>
-					<td></td>
-				</tr>
-				<tr class="paratext" valign="top">
-					<td>Windows XP</td>
-					<td>Firefox, IE, Mozilla, Netscape, Opera</td>
-					<td>Supported</td>
-					<td>Supported.</td>
-					<td></td>
-				</tr>
-			</table>
-        </td>
-    </tr>
+<body>
+<!--#include virtual="header.shtml" -->
+<div class="content">
+<!--#include virtual="sidebar.shtml" -->
+<div class="contentText">
+<h1>Platform Support for BrowserLauncher2</h1>
+<h3><a href="#linux">Linux</a>&nbsp;&nbsp;&nbsp;<a href="#mac">Mac</a>&nbsp;&nbsp;&nbsp;<a href="#sunos">SunOS</a>&nbsp;&nbsp;&nbsp;<a href="#windows">Windows</a></h3>
+<h2><a name="linux">Linux (2.4.x or higher)</a></h2>
+<p>
+<b>Browsers:</b> Epiphany, FireFox, Konqueror, Mozilla, Netscape, Opera<br/>
+<b>Browser Targetting:</b> Supported<br/>
+<b>Forcing a New Window:</b> Supported (see <a href="#linux_browser_behavior">browser behavior</a>)<br/>
+<b>Default Browser from System Property:</b> Supported<br/>
+<b>Notes:</b> If more than one of the supported browsers is available, the first one in alpha order will be invoked as the default.
+</p>
+<h2><a name="mac">Mac OS X (10.2 or higher)</a></h2>
+<p>
+<b>Browsers:</b><br/>
+<b>Browser Targetting:</b> Not supported, calls default<br/>
+<b>Forcing a New Window:</b> Not supported<br/>
+<b>Default Browser from System Property:</b> Not supported
+</p>
+<h2><a name="sunos">SunOS</a></h2>
+<p>
+<b>Browsers:</b> Firefox, Mozilla, Netscape<br/>
+<b>Browser Targetting:</b> Supported<br/>
+<b>Forcing a New Window:</b> Supported (see <a href="#linux_browser_behavior">browser behavior</a>)<br/>
+<b>Default Browser from System Property:</b> Supported<br/>
+<b>Notes:</b> The default browser is invoked using the sdtwebclient command.
+</p>
+<h2><a name="windows">Windows (98, NT, 2000, XP)</a></h2>
+<p>
+<b>Browsers:</b> Firefox, IE, K-Meleon, Mozilla, Netscape, Opera<br/>
+<b>Browser Targetting:</b> Supported<br/>
+<b>Forcing a New Window:</b> Supported (see <a href="#windows_browser_behavior">browser behavior</a>)<br/>
+<b>Default Browser from System Property:</b> Supported
+</p>
+<hr/>
+<h1><a name="browser_behavior">Browser Behavior</a></h1>
+<p>The tables below detail the behavior of different browsers when invoking a url through BrowserLauncher2. The first column covers the behavior when an instance of the browser is already running. The second column notes if the browser supports forcing urls to be handled in a new window.</p>
+<a name="linux_browser_behavior"><h2>Linux/Unix</h2></a>
+<table border="1" cellpadding="2" cellspacing="2">
+	<tr class="header2" valign="top">
+		<td>Browser</td>
+		<td>Instance Running</td>
+		<td>Force a New Window</td>
+	</tr>
+	<tr class="paratext" valign="top">
+		<td>Epiphany</td>
+		<td>New Tab</td>
+		<td>Supported</td>
+	</tr>
+	<tr class="paratext" valign="top">
+		<td>FireFox</td>
+		<td>New Tab</td>
+		<td>Supported</td>
+	</tr>
+	<tr class="paratext" valign="top">
+		<td>Konqueror</td>
+		<td>New Tab</td>
+		<td>Supported</td>
+	</tr>
+	<tr class="paratext" valign="top">
+		<td>Mozilla</td>
+		<td>Same Instance</td>
+		<td>Supported</td>
+	</tr>	
+	<tr class="paratext" valign="top">
+		<td>Netscape</td>
+		<td>Same Instance</td>
+		<td>Supported</td>
+	</tr>
+	<tr class="paratext" valign="top">
+		<td>Opera</td>
+		<td>New Tab</td>
+		<td>Supported</td>
+	</tr>		
 </table>
+<a name="windows_browser_behavior"><h2>Windows</h2></a>
+<table border="1" cellpadding="2" cellspacing="2">
+	<tr class="header2" valign="top">
+		<td>Browser</td>
+		<td>Instance Running</td>
+		<td>Force a New Window</td>
+	</tr>
+	<tr class="paratext" valign="top">
+		<td>Firefox</td>
+		<td>New Tab</td>
+		<td>Supported</td>
+	</tr>
+	<tr class="paratext" valign="top">
+		<td>IE</td>
+		<td>New Window</td>
+		<td>*Not Supported</td>
+	</tr>
+	<tr class="paratext" valign="top">
+		<td>K-Meleon</td>
+		<td>New Window</td>
+		<td>*Not Supported</td>
+	</tr>
+	<tr class="paratext" valign="top">
+		<td>Mozilla</td>
+		<td>New Window</td>
+		<td>*Not Supported</td>
+	</tr>
+	<tr class="paratext" valign="top">
+		<td>Netscape</td>
+		<td>New Tab</td>
+		<td>Not Supported</td>
+	</tr>
+	<tr class="paratext" valign="top">
+		<td>Opera</td>
+		<td>New Tab</td>
+		<td>Not Supported</td>
+	</tr>
+</table>
+<p>*Users will always get a new window so trying to force a new window will succeed but the browser does not support arguments to force a new window.</p>
+</div> <!-- end of contentText div -->
+<!--#include virtual="footer.shtml" -->
+</div> <!-- end of content div -->
 </body>
 </html>
