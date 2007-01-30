@@ -1,37 +1,41 @@
-<!-- $Id: projectsusing.shtml,v 1.3 2005/12/28 18:05:00 jchapman0 Exp $ -->
+<!-- $Id: projectsusing.shtml,v 1.4 2007/01/30 21:50:05 jchapman0 Exp $ -->
 <html>
 <head>
 	<title>Projects Using BrowserLauncher2 Page</title>
-    <link rel="stylesheet" href="browserlauncherweb.css" type="text/css">
+    <link rel="stylesheet" href="browserlauncherweb.css" type="text/css" media="screen">
 </head>
-<body bgcolor="#ffffff">
-<table border="0" width="80%">
-    <tr valign="top">
-        <!--#include virtual="sidebar.shtml" -->
-        <td>
-            <span class="header1">Projects Using BrowserLauncher2</span>
-			<br/><br/>
-			<p class="paratext">Is your project using the BrowserLauncher2 library?</p>
-			<p class="paratext">Let us know and we will list it below. E-mail the project 
-			administrator at <a href="mailto:jchapman0@users.sourceforge.net">jchapman0@users.sourceforge.net</a>. 
-			Please provide a link to your project page and a brief description.</p>
-			<br/>
-			<table border="1" cellpadding="2" cellspacing="2">
-				<tr class="header2" valign="top">
-					<td>Project Name</td>
-					<td>Description</td>
-				</tr>
-				<tr class="paratext" valign="top">
-					<td><a href="http://www.papercut.biz/">PaperCut NG - Print Quotas (http://www.papercut.biz/)</a></td>
-					<td>PaperCut NG is a cross-platform print quota system used to manage printing on academic networks such as schools and Universities.  Most education networks are a heterogeneous mix of Windows, Mac and Linux systems.  PaperCut NG uses BrowserLauncher2 in its cross-platform client tool.  It's a great help as it ensures as much code as possible is shared between platforms.</td>
-				</tr>
-				<tr class="paratext" valign="top">
-					<td><a href="http://sourceforge.net/projects/sdvalidator/">Structured Document Validator</a></td>
-					<td>SDValidator implements a generalized method for validating document structure and content. The application validates based on user-defined Structured Document Definitions and provides an environment for validation, SDD development, and document editting.</td>
-				</tr>
-			</table>
-        </td>
-    </tr>
-</table>
+<body>
+<!--#include virtual="header.shtml" -->
+<div class="content">
+<!--#include virtual="sidebar.shtml" -->
+<div class="contentText">
+<h1>Projects Using BrowserLauncher2</h1>
+<p>Is your project using the BrowserLauncher2 library?</p>
+<p>Let us know and we will list it below. E-mail the project administrator at <a href="mailto:jchapman0@users.sourceforge.net">jchapman0@users.sourceforge.net</a>. Please provide a link to your project page and a brief description.</p>
+
+<h2>Buddi: Personal budget software for the rest of us</h2>
+(<a href="http://buddi.sourceforge.net">http://buddi.sourceforge.net</a>)
+<p>Buddi is a personal finance and budgeting program, aimed at those who have little or no financial background.</p>
+
+<h2>Java Lemonade Stand</h2>
+(<a href="http://jlemonadestand.sourceforge.net">http://jlemonadestand.sourceforge.net</a>)
+<p>Java Lemonade Stand is a simulation of a lemonade stand. It is distributed as a desktop application and an applet.</p>
+
+<h2>PaperCut NG - Print Quotas</h2>
+(<a href="http://www.papercut.biz">http://www.papercut.biz</a>)
+<p>PaperCut NG is a cross-platform print quota system used to manage printing on academic networks such as schools and Universities.  Most education networks are a heterogeneous mix of Windows, Mac and Linux systems. PaperCut NG uses BrowserLauncher2 in its cross-platform client tool. It's a great help as it ensures as much code as possible is shared between platforms.</p>
+
+<h2>Structured Document Validator</h2>
+(<a href="http://sdvalidator.sourceforge.net">http://sdvalidator.sourceforge.net</a>)
+<p>SDValidator implements a generalized method for validating document structure and content. The application validates based on user-defined Structured Document Definitions and provides an environment for validation, SDD development, and document editting.</p>
+
+<!--
+<h2></h2>
+()
+<p></p>
+-->
+</div> <!-- end of contentText div -->
+<!--#include virtual="footer.shtml" -->
+</div> <!-- end of content div -->
 </body>
 </html>
