@@ -1,76 +1,177 @@
-<!-- $Id: browserlauncherweb.css,v 1.3 2006/04/18 19:46:29 jchapman0 Exp $ -->
+<!-- $Id: browserlauncherweb.css,v 1.4 2007/01/30 21:48:24 jchapman0 Exp $ -->
 
-.menu {
-	font-family: "Times New Roman", Arial, Helvetica, sans-serif;
-	font-variant: normal;
-	text-indent: 0in;
-	widows: 2;
-	font-style: normal;
-	font-weight: normal;
-	text-decoration: none;
-	color: #000000;
-	text-align: left;
-	font-size: 12pt;
-	font-stretch: normal;
+/* --------------------- General ---------------------- */
+body {
 	background-color: #ffffff;
+	border-top: 0.5em solid black;
+	color: #222;
+	min-width: 600px;
 }
 
-.codetext {
-	font-family: courier, monospace;
-	font-variant: normal;
-	text-indent: 0in;
-	widows: 2;
-	font-style: normal;
-	font-weight: normal;
-	text-decoration: none;
-	color: #000000;
-	text-align: left;
-	font-size: 10t;
-	font-stretch: normal;
-	background-color: #ffffff;
+/* --------------------- Header ---------------------- */
+#header {
+	background-position: 50px center;
+	background-color: #236bc3;
+	height: 125px;
+	border-bottom: 3px solid #8e92ac;
+	border-left: 5px solid black;
+	border-top: 3px solid black;
+	border-right: 5px solid black;
 }
 
-.paratext {
-	font-family: "Times New Roman", Arial, Helvetica, sans-serif;
-	font-variant: normal;
-	text-indent: 0in;
-	widows: 2;
-	font-style: normal;
-	font-weight: normal;
-	text-decoration: none;
-	color: #000000;
-	text-align: left;
-	font-size: 13pt;
-	font-stretch: normal;
-	background-color: #ffffff;
+.headerText {
+	font-family: Arial, Helvetica, Sans-Serif;
+	color: #111;
+	background-color: transparent;
+	float: right;
+	margin-top: 2px;
+	margin-right: 20px;
 }
 
-.header1 {
-	font-family: "Times New Roman", Arial, Helvetica, sans-serif;
-	font-variant: normal;
-	text-indent: 0in;
-	widows: 2;
-	font-style: normal;
+.headerText h1 {
+	font-size: 2em;
+	border-bottom: 0.1em solid black;
+}
+.headerText h2 {
+	font-size: 1em;
+}
+
+/* ---------------------- Content ------------------------ */
+.content {
+	background-color: white;
+	margin-bottom: 5px;
+	float: left;
+	border-top: 0.5em solid black;
+	border-right: 5px solid black;
+	border-left: 5px solid black;
+}
+
+.contentText {
+	margin: 1em;
+	padding-top: 0.5em;
+	min-height: 30em;
+}
+
+.contentText h2 {
+	margin-top: 1em;
+}
+
+/* ------------------------ Footer ------------------- */
+.footer {
+	color: black;
+	background-color: white;
+	background-position: bottom center;
+	height: 1em;
+	width: 100%;
+	border-bottom: .5em solid black;
+}
+
+.footerText {
+	position: relative;
+	text-align: left;
+	padding: 2.5em;
+	padding-left: 1em;
+	font-size: x-small;
+	color: #333;
+	background-color: transparent;
+}
+
+/* ------------------------ Sidebar ------------------------ */
+.sidebar {
+	float: left;
+	display: inline;
+	width: 13em;
+	background-color: #80b4ea;
+	border-left: 2px solid black;
+	padding-left: 10px;
+	margin-left: 0px;
+	margin-right: 2em;
+	margin-bottom: 1em;
+	border-top: 3px solid black;
+	border-bottom: 0.15em solid black;
+	border-right: 0.3em solid black;	
+	font-family: Arial, Helvetica, Sans-Serif;
+	font-size: small;
+}	
+
+.sidebar ul {
+	position: relative;
+	margin-top: 0px;
+	padding-left: 10px;
+	padding-top: 0px;
+	padding-bottom: 5px;
+	font-size: small;
+	text-align: left;
+}
+
+.sidebar li {
+	list-style: circle;
+	margin-top: 0px;
+}
+
+/* ------------------ Text -------------------- */
+h1, h2, h3 {
+	font-family: Arial, Helvetica, Sans-Serif;
 	font-weight: bold;
-	text-decoration: none;
-	color: #0000dd;
-	text-align: left;
-	font-size: 20pt;
-	font-stretch: normal;
-	background-color: #ffffff;
+	padding: 0em;
+	margin: 0px;
 }
 
 .header2 {
-	font-family: "Times New Roman", Arial, Helvetica, sans-serif;
-	font-variant: normal;
-	text-indent: 0in;
-	widows: 2;
-	font-style: normal;
+	font-family: Arial, Helvetica, Sans-Serif;
 	font-weight: bold;
-	text-decoration: none;
-	color: #000000;
+	padding: 0em;
+	margin: 0px;
+	font-size: large;
+}
+
+.contentText h1 {
+	font-size: x-large;
+	color: #0000dd;
+}
+.contentText h2 {
+	font-size: large;
+}
+.contentText h3 {
+	font-size: medium;
+}
+
+p, ul, ol, tr {
+	font-family: 'Trebuchet MS', 'Lucida Grande', Verdana, Arial, Sans-Serif;
+	font-size: medium;
 	text-align: left;
-	font-size: 15pt;
-	font-stretch: normal;
-	background-color: #ffffff;
+	margin: 0px;
+	padding-top: 0.3cm;
+}
+
+/* ----------------- Code -------------------------- */
+.code {
+	font-family: Monospace;
+	font-size: medium;
+	color: #333
+	background-color: #ccc;
+	text-align: left;
+}
+
+/* ------------------------ links ------------------------ */
+.sidebar a:link, .sidebar a:visited, .sidebar a:active {
+	color: #022346;
+	background-color: transparent;
+	text-decoration: none;
+}
+.sidebar a:hover {
+	color: #022346;
+	background-color: transparent;
+	text-decoration: underline;
+}
+
+a:link, a:visited, a:active {
+	color: #236ab3;
+	background-color: transparent;
+	text-decoration: none;
+}
+a:hover {
+	color: #084788;
+	background-color: transparent;
+	text-decoration: underline;
 }
