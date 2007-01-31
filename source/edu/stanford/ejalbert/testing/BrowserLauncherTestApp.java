@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherTestApp.java,v 1.21 2006/10/26 20:00:16 jchapman0 Exp $
+// $Id: BrowserLauncherTestApp.java,v 1.22 2007/01/31 18:32:41 jchapman0 Exp $
 package edu.stanford.ejalbert.testing;
 
 import java.awt.BorderLayout;
@@ -31,7 +31,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.Arrays;
-
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ComboBoxModel;
@@ -229,14 +229,16 @@ public class BrowserLauncherTestApp
         configPanel.add(browserListPanel);
         configPanel.add(debugTextBttnPanel);
 
-        this.getContentPane().setLayout(new BorderLayout());
-        this.getContentPane().add(debugTextScrollPane,
-                                  java.awt.BorderLayout.CENTER);
-        this.getContentPane().add(urlPanel,
-                                  java.awt.BorderLayout.NORTH);
-        this.getContentPane().add(configPanel,
-                                  java.awt.BorderLayout.SOUTH);
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(2, 5, 2, 3));
+        mainPanel.add(debugTextScrollPane,
+                      java.awt.BorderLayout.CENTER);
+        mainPanel.add(urlPanel,
+                      java.awt.BorderLayout.NORTH);
+        mainPanel.add(configPanel,
+                      java.awt.BorderLayout.SOUTH);
 
+        this.getContentPane().add(mainPanel);
         getRootPane().setDefaultButton(browseButton);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
