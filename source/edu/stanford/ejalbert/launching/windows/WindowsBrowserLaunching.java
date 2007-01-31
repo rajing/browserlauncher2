@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004,2005,2006 Markus Gebhard, Jeff Chapman
+    Copyright 2004,2005,2006,2007 Markus Gebhard, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,11 +18,12 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: WindowsBrowserLaunching.java,v 1.8 2006/11/29 21:42:35 jchapman0 Exp $
+// $Id: WindowsBrowserLaunching.java,v 1.9 2007/01/31 18:28:38 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -32,6 +33,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -120,10 +122,10 @@ public class WindowsBrowserLaunching
 
     // constants defined for accessing and processing registry information
     private static final int REGEDIT_TYPE_APPPATHS = 0;
-    private static final int REGEDIT_TYPE_UNINSTALL = 1;
+    //private static final int REGEDIT_TYPE_UNINSTALL = 1;
     private static String[] regeditQueries = {
-    "\"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\"",
-    "\"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\""};
+                                             "\"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\""};
+    //"\"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\""};
 
     /**
      * Checks that the windows key is valid.
@@ -180,6 +182,66 @@ public class WindowsBrowserLaunching
     }
 
     /**
+     * Secondary method for browser discovery.
+     * <p>
+     * Uses IE to get the path to the Program Files directory;
+     * then gets a list of the sub dirs and checks them against
+     * the remaining browsers.
+     *
+     * @param iePath String
+     * @param browsersAvailable Map
+     * @param tmpBrowsersToCheck List
+     */
+    private void processFilePathsForBrowsers(String iePath,
+                                             Map browsersAvailable,
+                                             List tmpBrowsersToCheck) {
+        logger.debug("checking for browsers in program files path");
+        File exePath = new File(iePath);
+        File progFilesPath = exePath.getParentFile();
+        logger.debug("program files path: " + progFilesPath.getPath());
+        File[] subDirs = progFilesPath.listFiles(new DirFileFilter());
+        int subDirsCnt = subDirs != null ? subDirs.length : 0;
+        // create and populate map of dir names to win browser objects
+        Iterator iter = tmpBrowsersToCheck.iterator();
+        Map dirNameToBrowser = new HashMap();
+        while (iter.hasNext()) {
+            WindowsBrowser wBrowser = (WindowsBrowser) iter.next();
+            dirNameToBrowser.put(wBrowser.getSubDirName(), wBrowser);
+        }
+        // iterate over subdirs and compare to map entries
+        for (int idx = 0; idx < subDirsCnt && !tmpBrowsersToCheck.isEmpty();
+                       idx++) {
+            if (dirNameToBrowser.containsKey(subDirs[idx].getName())) {
+                WindowsBrowser wBrowser = (WindowsBrowser) dirNameToBrowser.get(
+                        subDirs[idx].getName());
+                logger.debug("Adding browser " +
+                             wBrowser.getBrowserDisplayName() +
+                             " to available list.");
+                wBrowser.setPathToExe(subDirs[idx].getPath());
+                logger.debug(wBrowser.getPathToExe());
+                // adding display and exe for backward compatibility and
+                // ease of use if someone passes in the name of an exe
+                browsersAvailable.put(wBrowser.getBrowserDisplayName(),
+                                      wBrowser);
+                browsersAvailable.put(wBrowser.
+                                      getBrowserApplicationName(),
+                                      wBrowser);
+                tmpBrowsersToCheck.remove(wBrowser);
+            }
+        }
+    }
+
+    /**
+     * Filter used to only select directories.
+     */
+    private static final class DirFileFilter
+            implements FileFilter {
+        public boolean accept(File pathname) {
+            return pathname.isDirectory();
+        }
+    }
+
+    /**
      *
      * @param tmpFile File
      * @param browsersAvailable Map
@@ -212,19 +274,29 @@ public class WindowsBrowserLaunching
         }
         BufferedReader reader = new BufferedReader(in);
         String line;
+        // create map of exe names to win browser objects
+        Map exeNamesToBrowsers = new HashMap();
+        Iterator iter = tmpBrowsersToCheck.iterator();
+        while (iter.hasNext()) {
+            WindowsBrowser winBrowser = (WindowsBrowser) iter.next();
+            String exeName = winBrowser.getBrowserApplicationName().
+                             toLowerCase() + ".exe";
+            exeNamesToBrowsers.put(exeName, winBrowser);
+        }
+        // iterate over lines in file
         while ((line = reader.readLine()) != null) {
             // only look at lines with form @="path/x.exe"
-            if (REGEDIT_TYPE_APPPATHS == regeditType &&
-                line.startsWith("@=")) {
+            if (REGEDIT_TYPE_APPPATHS == regeditType && line.startsWith("@=")) {
                 String linePath = line.substring(3, line.length() - 1);
-                Iterator iter = tmpBrowsersToCheck.iterator();
-                boolean foundBrowser = false;
-                while (iter.hasNext() && !foundBrowser) {
-                    WindowsBrowser winBrowser = (WindowsBrowser) iter.next();
-                    String exeName = winBrowser.getBrowserApplicationName().
-                                     toLowerCase() + ".exe";
-
-                    if (linePath.toLowerCase().lastIndexOf(exeName) >= 0) {
+                //Iterator iter = tmpBrowsersToCheck.iterator();
+                //boolean foundBrowser = false;
+                int lastItem = linePath.lastIndexOf('\\') + 1;
+                if (lastItem > 1 && lastItem < linePath.length()) {
+                    String lastItemName = linePath.toLowerCase().substring(
+                            lastItem);
+                    if (exeNamesToBrowsers.containsKey(lastItemName)) {
+                        WindowsBrowser winBrowser = (WindowsBrowser)
+                                exeNamesToBrowsers.get(lastItemName);
                         if (logger.isDebugEnabled()) {
                             logger.debug(line);
                             logger.debug(linePath);
@@ -251,13 +323,13 @@ public class WindowsBrowserLaunching
                         browsersAvailable.put(winBrowser.
                                               getBrowserApplicationName(),
                                               winBrowser);
-                        iter.remove(); // already found so remove from check list.
-                        foundBrowser = true;
+                        tmpBrowsersToCheck.remove(winBrowser);
                     }
                 }
             } // end of if for checking for correct line type for REGEDIT_TYPE_APPPATHS
-            // format is "InstallLocation"="path"
-            else if (REGEDIT_TYPE_UNINSTALL == regeditType &&
+            /*
+                         // format is "InstallLocation"="path"
+                         else if (REGEDIT_TYPE_UNINSTALL == regeditType &&
                      line.startsWith("\"InstallLocation\"=\"")) {
                 String linePath = line.substring(19, line.length() - 1);
                 Iterator iter = tmpBrowsersToCheck.iterator();
@@ -266,9 +338,9 @@ public class WindowsBrowserLaunching
                     WindowsBrowser winBrowser = (WindowsBrowser) iter.next();
                     StringBuffer bnameBuf = new StringBuffer();
                     bnameBuf.append("\\\\");
-                    bnameBuf.append(winBrowser.getBrowserDisplayName().toLowerCase());
+             bnameBuf.append(winBrowser.getBrowserDisplayName().toLowerCase());
                     bnameBuf.append("\\\\");
-                    if (linePath.toLowerCase().indexOf(bnameBuf.toString()) > 0) {
+             if (linePath.toLowerCase().indexOf(bnameBuf.toString()) > 0) {
                         if (logger.isDebugEnabled()) {
                             logger.debug(line);
                             logger.debug(linePath);
@@ -288,16 +360,17 @@ public class WindowsBrowserLaunching
                         logger.debug(winBrowser.getPathToExe());
                         // adding display and exe for backward compatibility and
                         // ease of use if someone passes in the name of an exe
-                        browsersAvailable.put(winBrowser.getBrowserDisplayName(),
+             browsersAvailable.put(winBrowser.getBrowserDisplayName(),
                                               winBrowser);
                         browsersAvailable.put(winBrowser.
                                               getBrowserApplicationName(),
                                               winBrowser);
-                        iter.remove(); // already found so remove from check list.
+             iter.remove(); // already found so remove from check list.
                         foundBrowser = true;
                     }
                 }
-            } // end of if for checking for correct line type for REGEDIT_TYPE_UNINSTALL
+             } // end of if for checking for correct line type for REGEDIT_TYPE_UNINSTALL
+             */
         } // end of while loop for reading lines from file
         in.close();
     }
@@ -367,6 +440,20 @@ public class WindowsBrowserLaunching
         }
         catch (IOException e) {
             logger.error("Error listing available browsers: " + e.getMessage());
+        }
+        // check to see if any browsers to check are still available
+        // if there are additional browsers to discover then try to find
+        // their parent dirs in the Program Files directory. K-Meleon and
+        // Opera usually don't appear in the Registry.
+        if (!tempBrowsersToCheck.isEmpty()) {
+            // get the path to IE
+            WindowsBrowser ieBrowser = (WindowsBrowser) browsersAvailable.get(
+                    "IE");
+            if (ieBrowser != null) {
+                processFilePathsForBrowsers(ieBrowser.getPathToExe(),
+                                            browsersAvailable,
+                                            tempBrowsersToCheck);
+            }
         }
         return browsersAvailable;
     }

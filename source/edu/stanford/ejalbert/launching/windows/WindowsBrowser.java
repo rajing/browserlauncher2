@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2005,2006 Jeff Chapman
+    Copyright 2005,2006,2007 Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: WindowsBrowser.java,v 1.5 2006/09/26 19:48:56 jchapman0 Exp $
+// $Id: WindowsBrowser.java,v 1.6 2007/01/31 18:27:26 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
 
 import edu.stanford.ejalbert.launching.BrowserDescription;
@@ -43,28 +43,38 @@ public class WindowsBrowser
      * Arguments used in call to browser that will force the url to open in a new window rather than a new tab.
      */
     private final String forceWindowArgs; // in ctor
-
+    /**
+     * The path to the browsers executable. This is used to
+     * invoke the browser directly when using browser targetting.
+     */
     private String pathToExe = null;
+    /**
+     * Name of the sub directory under Program Files in which
+     * the browser exe is typically installed.
+     * <p>
+     * This value is used as a secondary means of discovery if
+     * attempts with the Registry fail.
+     */
+    private final String subDirName;// in ctor
 
     /**
      * Splits the config string using the delimiter character and
-     * sets the display name and executable.
+     * sets the display name; executable; new window argument; and
+     * Program Files sub directory name.
      * <p>
      * Sample config string (with ; as the delim char): displayName;exeName
      *
      * @param delimChar String
      * @param configInfo String
      */
-    WindowsBrowser(String delimChar, String configInfo) {
-        String[] configItems = configInfo.split(delimChar);
+    WindowsBrowser(String delimChar,
+                   String configInfo) {
+        // we should always have four items in the config string
+        String[] configItems = configInfo.split(delimChar,4);
         this.displayName = configItems[0];
         this.exe = configItems[1];
-        if(configItems.length == 3) {
-            this.forceWindowArgs = configItems[2];
-        }
-        else {
-            this.forceWindowArgs = "";
-        }
+        this.forceWindowArgs = configItems[2];
+        this.subDirName = configItems[3];
     }
 
     /**
@@ -75,19 +85,35 @@ public class WindowsBrowser
     public String toString() {
         StringBuffer buf = new StringBuffer();
         buf.append(displayName);
-        buf.append(' ');
+        buf.append(": ForceWindowArg=");
         buf.append(forceWindowArgs);
-        buf.append(' ');
+        buf.append("; SubDir name=");
+        buf.append(subDirName);
+        buf.append("; Path to exe=");
+        if(pathToExe != null) {
+            buf.append(pathToExe);
+        }
+        buf.append("; Exe name=");
         buf.append(exe);
         return buf.toString();
     }
 
     void setPathToExe(String path) {
         pathToExe = path;
+        if(!pathToExe.endsWith("\\")) {
+            StringBuffer buf = new StringBuffer(pathToExe.length() + 2);
+            buf.append(pathToExe);
+            buf.append('\\');
+            pathToExe = buf.toString();
+        }
     }
 
     String getPathToExe() {
         return pathToExe;
+    }
+
+    String getSubDirName() {
+        return subDirName;
     }
 
     /* -------------------- from BrowserDescription ---------------------- */
