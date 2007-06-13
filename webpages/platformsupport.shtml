@@ -1,4 +1,4 @@
-<!-- $Id: platformsupport.shtml,v 1.6 2007/01/30 21:49:30 jchapman0 Exp $ -->
+<!-- $Id: platformsupport.shtml,v 1.7 2007/06/13 16:40:22 jchapman0 Exp $ -->
 <html>
 <head>
 	<title>Platform Support for BrowserLauncher2 Page</title>
@@ -34,7 +34,7 @@
 <b>Default Browser from System Property:</b> Supported<br/>
 <b>Notes:</b> The default browser is invoked using the sdtwebclient command.
 </p>
-<h2><a name="windows">Windows (98, NT, 2000, XP)</a></h2>
+<h2><a name="windows">Windows (98, NT, 2000, XP, Vista)</a></h2>
 <p>
 <b>Browsers:</b> Firefox, IE, K-Meleon, Mozilla, Netscape, Opera<br/>
 <b>Browser Targetting:</b> Supported<br/>
