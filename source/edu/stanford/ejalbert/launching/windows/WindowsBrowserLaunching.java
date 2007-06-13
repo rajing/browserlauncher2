@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: WindowsBrowserLaunching.java,v 1.9 2007/01/31 18:28:38 jchapman0 Exp $
+// $Id: WindowsBrowserLaunching.java,v 1.10 2007/06/13 16:36:50 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
 
 import java.io.BufferedReader;
@@ -26,10 +26,12 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -60,6 +62,10 @@ public class WindowsBrowserLaunching
     private static final String CONFIGFILE_WINDOWS =
             "/edu/stanford/ejalbert/launching/windows/windowsConfig.properties";
     /**
+     * config file key for Windows Vista
+     */
+    public static final String WINKEY_WINVISTA = "windows.winVista";
+    /**
      * config file key for Windows 2000
      */
     public static final String WINKEY_WIN2000 = "windows.win2000";
@@ -77,7 +83,8 @@ public class WindowsBrowserLaunching
     private static final String[] WIN_KEYS = {
                                              WINKEY_WIN2000,
                                              WINKEY_WIN9X,
-                                             WINKEY_WINNT};
+                                             WINKEY_WINNT,
+                                             WINKEY_WINVISTA};
     static {
         Arrays.sort(WIN_KEYS);
     }
@@ -119,6 +126,16 @@ public class WindowsBrowserLaunching
      * try to force url into a new browser instance/window.
      */
     private boolean forceNewWindow = false;
+
+    /**
+     * set from properties to determine if the registry
+     * should be consulted for available browsers.
+     * Vista does not allow universal access to the registry.
+     */
+    private boolean useRegistry = false;
+
+    private String programFilesFolderTemplate;
+    private String driveLetters;
 
     // constants defined for accessing and processing registry information
     private static final int REGEDIT_TYPE_APPPATHS = 0;
@@ -174,11 +191,50 @@ public class WindowsBrowserLaunching
         // Handles lazy instantiation of available browser map.
         synchronized (WindowsBrowserLaunching.class) {
             if (browserNameAndExeMap == null) {
+                browserNameAndExeMap = new HashMap();
                 // pull additional browsers from system property
-                browserNameAndExeMap = getAvailableBrowsers(browsersToCheck);
+                // ---------
+                // create temporary list of browsers to check to track which
+                // ones have been found
+                // we will remove items from this temp list
+                List tempBrowsersToCheck = new ArrayList(browsersToCheck);
+                // first try the registry
+                if (useRegistry) {
+                    browserNameAndExeMap.putAll(
+                            getAvailableBrowsers(tempBrowsersToCheck));
+                }
+                // if there are still browsers to find, try file path
+                if (!tempBrowsersToCheck.isEmpty()) {
+                    browserNameAndExeMap.putAll(
+                            processFilePathsForBrowsers(tempBrowsersToCheck));
+                }
             }
         }
         return browserNameAndExeMap;
+    }
+
+    /**
+     * Use program files folder template from properties file and
+     * the list of drive letters from that properties file
+     * @return File
+     */
+    private File getProgramFilesPath() {
+        File progFilesPath = null;
+        if(driveLetters != null && programFilesFolderTemplate != null) {
+            String[] drives = driveLetters.split(";");
+            for(int idx = 0; idx < drives.length && progFilesPath == null; idx++) {
+                String path = MessageFormat.format(
+                        programFilesFolderTemplate,
+                        new Object[] {drives[idx]});
+                File pfPath = new File(path);
+logger.debug(path);
+logger.debug(pfPath.getPath());
+                if(pfPath.exists()) {
+                    progFilesPath = pfPath;
+                }
+            }
+        }
+        return progFilesPath;
     }
 
     /**
@@ -192,43 +248,78 @@ public class WindowsBrowserLaunching
      * @param browsersAvailable Map
      * @param tmpBrowsersToCheck List
      */
-    private void processFilePathsForBrowsers(String iePath,
-                                             Map browsersAvailable,
-                                             List tmpBrowsersToCheck) {
-        logger.debug("checking for browsers in program files path");
-        File exePath = new File(iePath);
-        File progFilesPath = exePath.getParentFile();
-        logger.debug("program files path: " + progFilesPath.getPath());
-        File[] subDirs = progFilesPath.listFiles(new DirFileFilter());
-        int subDirsCnt = subDirs != null ? subDirs.length : 0;
-        // create and populate map of dir names to win browser objects
-        Iterator iter = tmpBrowsersToCheck.iterator();
-        Map dirNameToBrowser = new HashMap();
-        while (iter.hasNext()) {
-            WindowsBrowser wBrowser = (WindowsBrowser) iter.next();
-            dirNameToBrowser.put(wBrowser.getSubDirName(), wBrowser);
-        }
-        // iterate over subdirs and compare to map entries
-        for (int idx = 0; idx < subDirsCnt && !tmpBrowsersToCheck.isEmpty();
-                       idx++) {
-            if (dirNameToBrowser.containsKey(subDirs[idx].getName())) {
-                WindowsBrowser wBrowser = (WindowsBrowser) dirNameToBrowser.get(
-                        subDirs[idx].getName());
-                logger.debug("Adding browser " +
-                             wBrowser.getBrowserDisplayName() +
-                             " to available list.");
-                wBrowser.setPathToExe(subDirs[idx].getPath());
-                logger.debug(wBrowser.getPathToExe());
-                // adding display and exe for backward compatibility and
-                // ease of use if someone passes in the name of an exe
-                browsersAvailable.put(wBrowser.getBrowserDisplayName(),
-                                      wBrowser);
-                browsersAvailable.put(wBrowser.
-                                      getBrowserApplicationName(),
-                                      wBrowser);
-                tmpBrowsersToCheck.remove(wBrowser);
+    private Map processFilePathsForBrowsers(
+            List tmpBrowsersToCheck) {
+        logger.debug("finding available browsers in program files path");
+        logger.debug("browsers to check: " + tmpBrowsersToCheck);
+        Map browsersAvailable = new HashMap();
+        File progFilesPath = getProgramFilesPath();
+        if(progFilesPath != null) {
+            logger.debug("program files path: " + progFilesPath.getPath());
+            File[] subDirs = progFilesPath.listFiles(new DirFileFilter());
+            int subDirsCnt = subDirs != null ? subDirs.length : 0;
+            // create and populate map of dir names to win browser objects
+            Iterator iter = tmpBrowsersToCheck.iterator();
+            Map dirNameToBrowser = new HashMap();
+            while (iter.hasNext()) {
+                WindowsBrowser wBrowser = (WindowsBrowser) iter.next();
+                dirNameToBrowser.put(wBrowser.getSubDirName(), wBrowser);
+            }
+            // iterate over subdirs and compare to map entries
+            for (int idx = 0; idx < subDirsCnt && !tmpBrowsersToCheck.isEmpty();
+                           idx++) {
+                if (dirNameToBrowser.containsKey(subDirs[idx].getName())) {
+                    WindowsBrowser wBrowser = (WindowsBrowser) dirNameToBrowser.
+                                              get(
+                            subDirs[idx].getName());
+                    // need to search folder and sub-folders for exe to find
+                    // the full path
+                    String exeName = wBrowser.getBrowserApplicationName() + ".exe";
+                    File fullPathToExe = findExeFilePath(
+                            subDirs[idx],
+                            exeName);
+                    if(fullPathToExe != null) {
+                        logger.debug("Adding browser " +
+                                     wBrowser.getBrowserDisplayName() +
+                                     " to available list.");
+                        wBrowser.setPathToExe(fullPathToExe.getPath());
+                        logger.debug(wBrowser.getPathToExe());
+                        // adding display and exe for backward compatibility and
+                        // ease of use if someone passes in the name of an exe
+                        browsersAvailable.put(wBrowser.getBrowserDisplayName(),
+                                              wBrowser);
+                        browsersAvailable.put(wBrowser.
+                                              getBrowserApplicationName(),
+                                              wBrowser);
+                        tmpBrowsersToCheck.remove(wBrowser);
+                    }
+                }
             }
         }
+        return browsersAvailable;
+    }
+
+    private File findExeFilePath(File path, String exeName) {
+        File exePath = null;
+        File exeFiles[] = path.listFiles(new ExeFileNameFilter());
+        if(exeFiles != null && exeFiles.length > 0) {
+            for(int idx = 0; idx < exeFiles.length && exePath == null; idx++) {
+                if(exeFiles[idx].getName().equalsIgnoreCase(exeName)) {
+                    // found the exe, get parent
+                    exePath = exeFiles[idx].getParentFile();
+                }
+            }
+        }
+        // didn't find the exe
+        if(exePath == null) {
+            File[] subDirs = path.listFiles(new DirFileFilter());
+            if(subDirs != null && subDirs.length > 0) {
+                for(int idx = 0; idx < subDirs.length && exePath == null; idx++) {
+                    exePath = findExeFilePath(subDirs[idx], exeName);
+                }
+            }
+        }
+        return exePath;
     }
 
     /**
@@ -240,6 +331,17 @@ public class WindowsBrowserLaunching
             return pathname.isDirectory();
         }
     }
+
+    /**
+     * Filter used to only find exe files.
+     */
+    private static final class ExeFileNameFilter
+            implements FilenameFilter {
+        public boolean accept(File dir, String name) {
+            return name.toLowerCase().endsWith(".exe");
+        }
+    }
+
 
     /**
      *
@@ -384,11 +486,9 @@ public class WindowsBrowserLaunching
      * @param browsersToCheck List
      * @return Map
      */
-    private Map getAvailableBrowsers(List browsersToCheck) {
-        // we will remove items from this temp list
-        List tempBrowsersToCheck = new ArrayList(browsersToCheck);
-        logger.debug("entering getAvailableBrowsers");
-        logger.debug("browsers to check: " + browsersToCheck);
+    private Map getAvailableBrowsers(List tempBrowsersToCheck) {
+        logger.debug("finding available browsers using registry");
+        logger.debug("browsers to check: " + tempBrowsersToCheck);
         Map browsersAvailable = new TreeMap(String.CASE_INSENSITIVE_ORDER);
         /*
          * We determine the list of available browsers by looking for the browser
@@ -440,20 +540,6 @@ public class WindowsBrowserLaunching
         }
         catch (IOException e) {
             logger.error("Error listing available browsers: " + e.getMessage());
-        }
-        // check to see if any browsers to check are still available
-        // if there are additional browsers to discover then try to find
-        // their parent dirs in the Program Files directory. K-Meleon and
-        // Opera usually don't appear in the Registry.
-        if (!tempBrowsersToCheck.isEmpty()) {
-            // get the path to IE
-            WindowsBrowser ieBrowser = (WindowsBrowser) browsersAvailable.get(
-                    "IE");
-            if (ieBrowser != null) {
-                processFilePathsForBrowsers(ieBrowser.getPathToExe(),
-                                            browsersAvailable,
-                                            tempBrowsersToCheck);
-            }
         }
         return browsersAvailable;
     }
@@ -610,6 +696,15 @@ public class WindowsBrowserLaunching
             String[] winConfigItems = windowsConfigStr.split(sepChar);
             commandsDefaultBrowser = winConfigItems[0];
             commandsTargettedBrowser = winConfigItems[1];
+            Boolean boolVal = new Boolean(winConfigItems[2]);
+            useRegistry = boolVal.booleanValue();
+            // get info for checking Program Files folder
+            programFilesFolderTemplate = configProps.getProperty(
+                    "program.files.template",
+                    null);
+            driveLetters = configProps.getProperty(
+                    "drive.letters",
+                    null);
             // set brwosersToCheck to a non-modifiable list
             browsersToCheck = Collections.unmodifiableList(browsersToCheck);
         }
