@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!-- Build file for BrowserLauncher2 -->
-<!-- $Id: build.xml,v 1.7 2005/10/13 19:29:44 jchapman0 Exp $ -->
+<!-- $Id: build.xml,v 1.8 2007/06/13 16:48:44 jchapman0 Exp $ -->
 <project name="BrowserLauncher2" default="build" basedir=".">
     <property name="product.name" value="BrowserLauncher2" />
     <property name="output.dir" value="classes" />
@@ -23,6 +23,11 @@
         <mkdir dir="${deployment.dir}" />
     </target>
 
+    <target name="clean-deploy" description="does clean then deploy">
+      <antcall target="clean"/>
+      <antcall target="deploy"/>
+    </target>
+
     <target name="clean" description="remove all files created by build" depends="init">
         <delete>
             <fileset dir="${output.dir}" />
@@ -42,7 +47,7 @@
         <jar destfile="${archive.runtime}" basedir="${output.dir}" includes="**/*.class" />
     </target>
 
-    <target name="deploy" depends="build, api" description="create archives">
+    <target name="deploy" depends="build" description="create archives">
         <jar destfile="${archive.runtime}"
                index="true"
                update="overwrite"
@@ -59,6 +64,7 @@
 	           <fileset dir="." includes="build.xml, *.txt" />
 	           <fileset dir="." includes=".classpath, .project" />
 	           <fileset dir="." includes="**/*.java" />
+	           <fileset dir="." includes="**/*.properties" />
 	           <fileset dir="." includes="${api.dir}/**" />
 	           <fileset file="${gnu.copying}" />
 	           <fileset file="${readme}" />
