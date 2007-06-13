@@ -1,4 +1,4 @@
-<!-- $Id: projectsusing.shtml,v 1.4 2007/01/30 21:50:05 jchapman0 Exp $ -->
+<!-- $Id: projectsusing.shtml,v 1.5 2007/06/13 16:41:02 jchapman0 Exp $ -->
 <html>
 <head>
 	<title>Projects Using BrowserLauncher2 Page</title>
@@ -21,9 +21,17 @@
 (<a href="http://jlemonadestand.sourceforge.net">http://jlemonadestand.sourceforge.net</a>)
 <p>Java Lemonade Stand is a simulation of a lemonade stand. It is distributed as a desktop application and an applet.</p>
 
+<h2>Jreepad</h2>
+(<a href="http://jreepad.sourceforge.net">http://jreepad.sourceforge.net</a>)
+<p>Jreepad is an excellent free "personal database" program - it's a great way to organise all your personal notes, thoughts, tasks, recipes, memories...Jreepad is an excellent free "personal database" program - it's a great way to organise all your personal notes, thoughts, tasks, recipes, memories...</p>
+
 <h2>PaperCut NG - Print Quotas</h2>
 (<a href="http://www.papercut.biz">http://www.papercut.biz</a>)
 <p>PaperCut NG is a cross-platform print quota system used to manage printing on academic networks such as schools and Universities.  Most education networks are a heterogeneous mix of Windows, Mac and Linux systems. PaperCut NG uses BrowserLauncher2 in its cross-platform client tool. It's a great help as it ensures as much code as possible is shared between platforms.</p>
+
+<h2>Pauker</h2>
+(<a href="http://pauker.sourceforge.net">http://pauker.sourceforge.net</a>)
+<p>Pauker is a completely free (OpenSource, GPL) flash card based learning application that uses the leitner cardfile system.</p>
 
 <h2>Structured Document Validator</h2>
 (<a href="http://sdvalidator.sourceforge.net">http://sdvalidator.sourceforge.net</a>)
