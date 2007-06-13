@@ -1,7 +1,7 @@
-<!-- $Id: sidebar.shtml,v 1.6 2007/01/30 21:50:25 jchapman0 Exp $ -->
+<!-- $Id: sidebar.shtml,v 1.7 2007/06/13 18:52:28 jchapman0 Exp $ -->
 <div class="sidebar">
-<a href="http://sourceforge.net/project/showfiles.php?group_id=127980"><b><font size="+2" color="#0000dd">Download 1.0</font></b></a>
-<br/><b>Latest Release:</b><br/>January xx, 2007
+<a href="http://sourceforge.net/project/showfiles.php?group_id=127980"><b><font size="+2" color="#0000dd">Download 1.1</font></b></a>
+<br/><b>Latest Release:</b><br/>June 13, 2007
 <ul>
 	<li><a href="index.shtml">Home</a></li>		
 	<li><a href="http://sourceforge.net/projects/browserlaunch2/">Project Page</a></li>
