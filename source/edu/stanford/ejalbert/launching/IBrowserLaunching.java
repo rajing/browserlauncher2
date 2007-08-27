@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004,2005,2006 Markus Gebhard, Jeff Chapman
+    Copyright 2004,2005,2006,2007 Markus Gebhard, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: IBrowserLaunching.java,v 1.8 2006/09/26 19:43:50 jchapman0 Exp $
+// $Id: IBrowserLaunching.java,v 1.9 2007/08/27 14:15:20 jchapman0 Exp $
 package edu.stanford.ejalbert.launching;
 
 import java.util.List;
@@ -39,6 +39,22 @@ public interface IBrowserLaunching {
      */
     public static final String BROWSER_SYSTEM_PROPERTY =
             "edu.stanford.ejalbert.preferred.browser";
+    /**
+     * Key to system property that controls how browsers are discovered
+     * when running on a Windows O/S.
+     * <p>
+     * The values are registry and disk.
+     */
+    public static final String WINDOWS_BROWSER_DISC_POLICY_PROPERTY =
+            "win.browser.disc.policy";
+    /**
+     * Value associated with WINDOWS_BROWSER_DISC_POLICY_PROPERTY.
+     */
+    public static final String WINDOWS_BROWSER_DISC_POLICY_DISK = "disk";
+    /**
+     * Value associated with WINDOWS_BROWSER_DISC_POLICY_PROPERTY.
+     */
+    public static final String WINDOWS_BROWSER_DISC_POLICY_REGISTRY = "registry";
     /**
      * property file key for delimiter character used in other properties.
      */

@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004,2005,2006 Markus Gebhard, Jeff Chapman
+    Copyright 2004,2005,2006,2007 Markus Gebhard, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncher.java,v 1.12 2006/09/26 19:41:51 jchapman0 Exp $
+// $Id: BrowserLauncher.java,v 1.13 2007/08/27 14:12:51 jchapman0 Exp $
 package edu.stanford.ejalbert;
 
 import java.util.List;
@@ -26,7 +26,8 @@ import java.util.List;
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
-import edu.stanford.ejalbert.exceptionhandler.BrowserLauncherDefaultErrorHandler;
+import edu.stanford.ejalbert.exceptionhandler.
+        BrowserLauncherDefaultErrorHandler;
 import edu.stanford.ejalbert.exceptionhandler.BrowserLauncherErrorHandler;
 import edu.stanford.ejalbert.launching.BrowserLaunchingFactory;
 import edu.stanford.ejalbert.launching.IBrowserLaunching;
@@ -98,7 +99,32 @@ public class BrowserLauncher {
      * general API usage from the BrowserLauncher class.
      */
     public static final String BROWSER_SYSTEM_PROPERTY =
-            IBrowserLaunching.BROWSER_SYSTEM_PROPERTY;;
+            IBrowserLaunching.BROWSER_SYSTEM_PROPERTY;
+    /**
+     * Key to system property that controls how browsers are discovered
+     * when running on a Windows O/S. The values are registry and disk.
+     * <p>
+     * The value is defined in IBrowserLaunching but exposed for
+     * general API usage from the BrowserLauncher class.
+     */
+    public static final String WINDOWS_BROWSER_DISC_POLICY_PROPERTY =
+            IBrowserLaunching.WINDOWS_BROWSER_DISC_POLICY_PROPERTY;
+    /**
+     * Value associated with WINDOWS_BROWSER_DISC_POLICY_PROPERTY.
+     * <p>
+     * The value is defined in IBrowserLaunching but exposed for
+     * general API usage from the BrowserLauncher class.
+     */
+    public static final String WINDOWS_BROWSER_DISC_POLICY_DISK =
+            IBrowserLaunching.WINDOWS_BROWSER_DISC_POLICY_DISK;
+    /**
+     * Value associated with WINDOWS_BROWSER_DISC_POLICY_PROPERTY.
+     * <p>
+     * The value is defined in IBrowserLaunching but exposed for
+     * general API usage from the BrowserLauncher class.
+     */
+    public static final String WINDOWS_BROWSER_DISC_POLICY_REGISTRY =
+            IBrowserLaunching.WINDOWS_BROWSER_DISC_POLICY_REGISTRY;
 
     private final IBrowserLaunching launching; // in ctor
     private AbstractLogger logger; // in init method
