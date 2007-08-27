@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLaunchingFactory.java,v 1.6 2007/06/13 16:33:43 jchapman0 Exp $
+// $Id: BrowserLaunchingFactory.java,v 1.7 2007/08/27 14:14:10 jchapman0 Exp $
 package edu.stanford.ejalbert.launching;
 
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
@@ -90,7 +90,8 @@ public class BrowserLaunchingFactory {
         }
         else if (osName.startsWith("Windows")) {
             logger.info("Windows OS");
-            if (osName.indexOf("9") != -1) {
+            if (osName.indexOf("9") != -1 ||
+                osName.indexOf("Windows Me") != -1) {
                 return new WindowsBrowserLaunching(
                         logger,
                         WindowsBrowserLaunching.WINKEY_WIN9X);
