@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: WindowsBrowserLaunching.java,v 1.10 2007/06/13 16:36:50 jchapman0 Exp $
+// $Id: WindowsBrowserLaunching.java,v 1.11 2007/08/27 14:17:00 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
 
 import java.io.BufferedReader;
@@ -192,7 +192,7 @@ public class WindowsBrowserLaunching
         synchronized (WindowsBrowserLaunching.class) {
             if (browserNameAndExeMap == null) {
                 browserNameAndExeMap = new HashMap();
-                // pull additional browsers from system property
+                // pull additional browsers from system property??
                 // ---------
                 // create temporary list of browsers to check to track which
                 // ones have been found
@@ -220,16 +220,16 @@ public class WindowsBrowserLaunching
      */
     private File getProgramFilesPath() {
         File progFilesPath = null;
-        if(driveLetters != null && programFilesFolderTemplate != null) {
+        if (driveLetters != null && programFilesFolderTemplate != null) {
             String[] drives = driveLetters.split(";");
-            for(int idx = 0; idx < drives.length && progFilesPath == null; idx++) {
+            for (int idx = 0; idx < drives.length && progFilesPath == null; idx++) {
                 String path = MessageFormat.format(
                         programFilesFolderTemplate,
                         new Object[] {drives[idx]});
                 File pfPath = new File(path);
-logger.debug(path);
-logger.debug(pfPath.getPath());
-                if(pfPath.exists()) {
+                logger.debug(path);
+                logger.debug(pfPath.getPath());
+                if (pfPath.exists()) {
                     progFilesPath = pfPath;
                 }
             }
@@ -254,7 +254,7 @@ logger.debug(pfPath.getPath());
         logger.debug("browsers to check: " + tmpBrowsersToCheck);
         Map browsersAvailable = new HashMap();
         File progFilesPath = getProgramFilesPath();
-        if(progFilesPath != null) {
+        if (progFilesPath != null) {
             logger.debug("program files path: " + progFilesPath.getPath());
             File[] subDirs = progFilesPath.listFiles(new DirFileFilter());
             int subDirsCnt = subDirs != null ? subDirs.length : 0;
@@ -274,11 +274,12 @@ logger.debug(pfPath.getPath());
                             subDirs[idx].getName());
                     // need to search folder and sub-folders for exe to find
                     // the full path
-                    String exeName = wBrowser.getBrowserApplicationName() + ".exe";
+                    String exeName = wBrowser.getBrowserApplicationName() +
+                                     ".exe";
                     File fullPathToExe = findExeFilePath(
                             subDirs[idx],
                             exeName);
-                    if(fullPathToExe != null) {
+                    if (fullPathToExe != null) {
                         logger.debug("Adding browser " +
                                      wBrowser.getBrowserDisplayName() +
                                      " to available list.");
@@ -302,19 +303,19 @@ logger.debug(pfPath.getPath());
     private File findExeFilePath(File path, String exeName) {
         File exePath = null;
         File exeFiles[] = path.listFiles(new ExeFileNameFilter());
-        if(exeFiles != null && exeFiles.length > 0) {
-            for(int idx = 0; idx < exeFiles.length && exePath == null; idx++) {
-                if(exeFiles[idx].getName().equalsIgnoreCase(exeName)) {
+        if (exeFiles != null && exeFiles.length > 0) {
+            for (int idx = 0; idx < exeFiles.length && exePath == null; idx++) {
+                if (exeFiles[idx].getName().equalsIgnoreCase(exeName)) {
                     // found the exe, get parent
                     exePath = exeFiles[idx].getParentFile();
                 }
             }
         }
         // didn't find the exe
-        if(exePath == null) {
+        if (exePath == null) {
             File[] subDirs = path.listFiles(new DirFileFilter());
-            if(subDirs != null && subDirs.length > 0) {
-                for(int idx = 0; idx < subDirs.length && exePath == null; idx++) {
+            if (subDirs != null && subDirs.length > 0) {
+                for (int idx = 0; idx < subDirs.length && exePath == null; idx++) {
                     exePath = findExeFilePath(subDirs[idx], exeName);
                 }
             }
@@ -331,6 +332,7 @@ logger.debug(pfPath.getPath());
             return pathname.isDirectory();
         }
     }
+
 
     /**
      * Filter used to only find exe files.
@@ -698,6 +700,25 @@ logger.debug(pfPath.getPath());
             commandsTargettedBrowser = winConfigItems[1];
             Boolean boolVal = new Boolean(winConfigItems[2]);
             useRegistry = boolVal.booleanValue();
+            // check for override of useRegistry from system prop
+            // need to explicitly check BOTH values to filter out
+            // invalid prop values
+            String propValue = System.getProperty(
+                    IBrowserLaunching.WINDOWS_BROWSER_DISC_POLICY_PROPERTY,
+                    null);
+            if (IBrowserLaunching.WINDOWS_BROWSER_DISC_POLICY_DISK.equals(
+                    propValue)) {
+                useRegistry = false;
+            }
+            else if (IBrowserLaunching.WINDOWS_BROWSER_DISC_POLICY_REGISTRY.
+                     equals(propValue)) {
+                useRegistry = true;
+            }
+            if(logger.isDebugEnabled()) {
+                logger.debug("Browser discovery policy property value=" +
+                             (propValue == null ? "null" : propValue));
+                logger.debug("useRegistry=" + Boolean.toString(useRegistry));
+            }
             // get info for checking Program Files folder
             programFilesFolderTemplate = configProps.getProperty(
                     "program.files.template",
