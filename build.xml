@@ -1,15 +1,16 @@
 <?xml version="1.0"?>
 <!-- Build file for BrowserLauncher2 -->
-<!-- $Id: build.xml,v 1.8 2007/06/13 16:48:44 jchapman0 Exp $ -->
+<!-- $Id: build.xml,v 1.9 2007/08/30 19:47:37 jchapman0 Exp $ -->
 <project name="BrowserLauncher2" default="build" basedir=".">
+    <property name="release.number" value="1_3" /> <!-- 1.3 -->
     <property name="product.name" value="BrowserLauncher2" />
     <property name="output.dir" value="classes" />
     <property name="source.dir" value="source" />
     <property name="lib.dir" value="lib" />
     <property name="deployment.dir" value="deployment" />
     <property name="api.dir" value="api" />
-    <property name="archive.runtime" value="${deployment.dir}/BrowserLauncher2.jar" />
-    <property name="archive.all" value="${deployment.dir}/BrowserLauncher2-all.jar" />
+    <property name="archive.runtime" value="${deployment.dir}/BrowserLauncher2-${release.number}.jar" />
+    <property name="archive.all" value="${deployment.dir}/BrowserLauncher2-all-${release.number}.jar" />
     <property name="optimize" value="on" />
     <property name="app.manifest" value="${deployment.dir}/manifest.mf" />
     <property name="app.manifest.test" value="${deployment.dir}/manifest.test.mf" />
