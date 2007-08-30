@@ -18,17 +18,13 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: WindowsBrowserLaunching.java,v 1.11 2007/08/27 14:17:00 jchapman0 Exp $
+// $Id: WindowsBrowserLaunching.java,v 1.12 2007/08/30 19:36:43 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
@@ -43,6 +39,8 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
+import at.jta.RegistryErrorException;
+import at.jta.Regor;
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
@@ -138,10 +136,10 @@ public class WindowsBrowserLaunching
     private String driveLetters;
 
     // constants defined for accessing and processing registry information
-    private static final int REGEDIT_TYPE_APPPATHS = 0;
+    //private static final int REGEDIT_TYPE_APPPATHS = 0;
     //private static final int REGEDIT_TYPE_UNINSTALL = 1;
-    private static String[] regeditQueries = {
-                                             "\"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\""};
+    //private static String[] regeditQueries = {
+    //                                         "\"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\""};
     //"\"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\""};
 
     /**
@@ -344,139 +342,55 @@ public class WindowsBrowserLaunching
         }
     }
 
-
-    /**
-     *
-     * @param tmpFile File
-     * @param browsersAvailable Map
-     * @param browsersToCheck List
-     * @throws FileNotFoundException
-     * @throws IOException
-     */
-    private void processFileForBrowsers(File tmpFile,
-                                        Map browsersAvailable,
-                                        List tmpBrowsersToCheck,
-                                        int regeditType)
-            throws FileNotFoundException, IOException {
-        /*
-         * Open the newly created registry file.  First we read the first two bytes
-         * of the file to check format/encoding (i.e. look for UTF-16 magic number).
-         * Walk through the registry key App Paths looking for the browser executables
-         * defined on the path.
-         */
-        FileInputStream fis = new FileInputStream(tmpFile);
-        byte magic[] = new byte[2];
-        fis.read(magic);
-        fis.close();
-        InputStreamReader in = null;
-        if (magic[0] == -1 && magic[1] == -2) { // magic number 0xff 0xfe
-            in = new InputStreamReader(new FileInputStream(tmpFile),
-                                       "UTF-16");
-        }
-        else {
-            in = new InputStreamReader(new FileInputStream(tmpFile));
-        }
-        BufferedReader reader = new BufferedReader(in);
-        String line;
-        // create map of exe names to win browser objects
+    private Map getExeNamesToBrowsers(List tempBrowsersToCheck) {
         Map exeNamesToBrowsers = new HashMap();
-        Iterator iter = tmpBrowsersToCheck.iterator();
+        Iterator iter = tempBrowsersToCheck.iterator();
         while (iter.hasNext()) {
             WindowsBrowser winBrowser = (WindowsBrowser) iter.next();
             String exeName = winBrowser.getBrowserApplicationName().
                              toLowerCase() + ".exe";
             exeNamesToBrowsers.put(exeName, winBrowser);
         }
-        // iterate over lines in file
-        while ((line = reader.readLine()) != null) {
-            // only look at lines with form @="path/x.exe"
-            if (REGEDIT_TYPE_APPPATHS == regeditType && line.startsWith("@=")) {
-                String linePath = line.substring(3, line.length() - 1);
-                //Iterator iter = tmpBrowsersToCheck.iterator();
-                //boolean foundBrowser = false;
-                int lastItem = linePath.lastIndexOf('\\') + 1;
-                if (lastItem > 1 && lastItem < linePath.length()) {
-                    String lastItemName = linePath.toLowerCase().substring(
-                            lastItem);
-                    if (exeNamesToBrowsers.containsKey(lastItemName)) {
-                        WindowsBrowser winBrowser = (WindowsBrowser)
-                                exeNamesToBrowsers.get(lastItemName);
-                        if (logger.isDebugEnabled()) {
-                            logger.debug(line);
-                            logger.debug(linePath);
-                            logger.debug("Adding browser " +
-                                         winBrowser.getBrowserDisplayName() +
-                                         " to available list.");
-                        }
-                        // get path to exe and set it in winBrowser object
-                        StringTokenizer tokenizer =
-                                new StringTokenizer(linePath, "\\", false);
-                        StringBuffer pathBuf = new StringBuffer();
-                        int tokCnt = tokenizer.countTokens();
-                        // we want to ignore the last token
-                        for (int idx = 1; idx < tokCnt; idx++) {
-                            pathBuf.append(tokenizer.nextToken());
-                            pathBuf.append('\\');
-                        }
-                        winBrowser.setPathToExe(pathBuf.toString());
-                        logger.debug(winBrowser.getPathToExe());
-                        // adding display and exe for backward compatibility and
-                        // ease of use if someone passes in the name of an exe
-                        browsersAvailable.put(winBrowser.getBrowserDisplayName(),
-                                              winBrowser);
-                        browsersAvailable.put(winBrowser.
-                                              getBrowserApplicationName(),
-                                              winBrowser);
-                        tmpBrowsersToCheck.remove(winBrowser);
-                    }
+        return exeNamesToBrowsers;
+    }
+
+    private WindowsBrowser getBrowserFromRegistryEntry(
+            Regor regor,
+            int key,
+            String subKey,
+            String exeKey,
+            Map exesToBrowserObjs)
+            throws RegistryErrorException {
+        WindowsBrowser winBrowser = null;
+        int key2 = regor.openKey(key, subKey);
+        List values = regor.listValueNames(key2);
+        //boolean fndPath = false;
+        for (int x = 0;
+                     values != null && x < values.size() && winBrowser == null;
+                     x++) {
+            byte[] buf = regor.readValue(
+                    key2,
+                    (String) values.get(x));
+            String path = buf != null ? Regor.parseValue(buf) :
+                          "";
+            String lpath = path.toLowerCase();
+            if (lpath.endsWith(exeKey)) {
+                winBrowser = (WindowsBrowser)
+                             exesToBrowserObjs.get(exeKey);
+                // get path to exe and set it in winBrowser object
+                StringTokenizer tokenizer =
+                        new StringTokenizer(path, "\\", false);
+                StringBuffer pathBuf = new StringBuffer();
+                int tokCnt = tokenizer.countTokens();
+                // we want to ignore the last token
+                for (int idx = 1; idx < tokCnt; idx++) {
+                    pathBuf.append(tokenizer.nextToken());
+                    pathBuf.append('\\');
                 }
-            } // end of if for checking for correct line type for REGEDIT_TYPE_APPPATHS
-            /*
-                         // format is "InstallLocation"="path"
-                         else if (REGEDIT_TYPE_UNINSTALL == regeditType &&
-                     line.startsWith("\"InstallLocation\"=\"")) {
-                String linePath = line.substring(19, line.length() - 1);
-                Iterator iter = tmpBrowsersToCheck.iterator();
-                boolean foundBrowser = false;
-                while (iter.hasNext() && !foundBrowser) {
-                    WindowsBrowser winBrowser = (WindowsBrowser) iter.next();
-                    StringBuffer bnameBuf = new StringBuffer();
-                    bnameBuf.append("\\\\");
-             bnameBuf.append(winBrowser.getBrowserDisplayName().toLowerCase());
-                    bnameBuf.append("\\\\");
-             if (linePath.toLowerCase().indexOf(bnameBuf.toString()) > 0) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug(line);
-                            logger.debug(linePath);
-                            logger.debug("Adding browser " +
-                                         winBrowser.getBrowserDisplayName() +
-                                         " to available list.");
-                        }
-                        // get path to exe and set it in winBrowser object
-                        StringTokenizer tokenizer =
-                                new StringTokenizer(linePath, "\\", false);
-                        StringBuffer pathBuf = new StringBuffer();
-                        while (tokenizer.hasMoreTokens()) {
-                            pathBuf.append(tokenizer.nextToken());
-                            pathBuf.append('\\');
-                        }
-                        winBrowser.setPathToExe(pathBuf.toString());
-                        logger.debug(winBrowser.getPathToExe());
-                        // adding display and exe for backward compatibility and
-                        // ease of use if someone passes in the name of an exe
-             browsersAvailable.put(winBrowser.getBrowserDisplayName(),
-                                              winBrowser);
-                        browsersAvailable.put(winBrowser.
-                                              getBrowserApplicationName(),
-                                              winBrowser);
-             iter.remove(); // already found so remove from check list.
-                        foundBrowser = true;
-                    }
-                }
-             } // end of if for checking for correct line type for REGEDIT_TYPE_UNINSTALL
-             */
-        } // end of while loop for reading lines from file
-        in.close();
+                winBrowser.setPathToExe(pathBuf.toString());
+            }
+        }
+        return winBrowser;
     }
 
     /**
@@ -492,56 +406,56 @@ public class WindowsBrowserLaunching
         logger.debug("finding available browsers using registry");
         logger.debug("browsers to check: " + tempBrowsersToCheck);
         Map browsersAvailable = new TreeMap(String.CASE_INSENSITIVE_ORDER);
-        /*
-         * We determine the list of available browsers by looking for the browser
-         * executables defined on the path.  "cmd start" determines the location of the
-         * executable by looking at paths defined in the registry key:
-         *   HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\App Paths\
-         *
-         * To avoid native code we expect this section of the registry to a file using:
-         *   regedit.exe /E
-         * Not the most efficient method but works on all versions of Windows.
-         *
-         * Some browsers do not put entries in the registry under App Paths
-         * (Opera and K-Meleon). To find the paths to these apps, we
-         * need to use a different registry key.
-         */
         try {
-            for (int idx = 0;
-                           idx < regeditQueries.length &&
-                           !tempBrowsersToCheck.isEmpty();
-                           idx++) {
-                File tmpFile = File.createTempFile("bl2-app-paths", ".reg");
-                String[] cmdArgs = new String[] {
-                                   "regedit.exe",
-                                   "/E",
-                                   "\"" + tmpFile.getAbsolutePath() + "\"",
-                                   regeditQueries[idx]};
-                Process process = Runtime.getRuntime().exec(cmdArgs);
-                int exitCode = -1;
-                try {
-                    exitCode = process.waitFor();
+            // create map of exe names to win browser objects
+            Map exesToBrowserObjs = getExeNamesToBrowsers(tempBrowsersToCheck);
+            // access and look in registry
+            Regor regor = new Regor();
+            String subKeyName =
+                    "Software\\Microsoft\\Windows\\CurrentVersion\\App Paths";
+            int key = regor.openKey(Regor.HKEY_LOCAL_MACHINE,
+                                    subKeyName);
+            if (key > -1) {
+                List keys = regor.listKeys(key);
+                Collections.sort(keys, String.CASE_INSENSITIVE_ORDER);
+                Iterator keysIter = exesToBrowserObjs.keySet().iterator();
+                while (keysIter.hasNext()) {
+                    String exeKey = (String) keysIter.next();
+                    int index = Collections.binarySearch(
+                            keys,
+                            exeKey,
+                            String.CASE_INSENSITIVE_ORDER);
+                    if (index >= 0) {
+                        WindowsBrowser winBrowser = getBrowserFromRegistryEntry(
+                                regor,
+                                key,
+                                (String) keys.get(index),
+                                exeKey,
+                                exesToBrowserObjs);
+                        if (winBrowser != null) {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Adding browser " +
+                                             winBrowser.
+                                             getBrowserDisplayName() +
+                                             " to available list.");
+                                logger.debug(winBrowser.getPathToExe());
+                            }
+                            // adding display and exe for backward compatibility and
+                            // ease of use if someone passes in the name of an exe
+                            browsersAvailable.put(winBrowser.
+                                                  getBrowserDisplayName(),
+                                                  winBrowser);
+                            browsersAvailable.put(winBrowser.
+                                                  getBrowserApplicationName(),
+                                                  winBrowser);
+                            tempBrowsersToCheck.remove(winBrowser);
+                        }
+                    }
                 }
-                catch (InterruptedException e) {
-                    logger.error("InterruptedException exec'ing regedit.exe: " +
-                                 e.getMessage());
-                }
-
-                if (exitCode != 0) {
-                    logger.error(
-                            "Unable to exec regedit.exe to extract available browsers.");
-                    tmpFile.delete();
-                    return browsersAvailable;
-                }
-                processFileForBrowsers(tmpFile,
-                                       browsersAvailable,
-                                       tempBrowsersToCheck,
-                                       idx);
-                tmpFile.delete();
             }
         }
-        catch (IOException e) {
-            logger.error("Error listing available browsers: " + e.getMessage());
+        catch (RegistryErrorException ex) {
+            logger.error("problem accessing registry", ex);
         }
         return browsersAvailable;
     }
@@ -714,7 +628,7 @@ public class WindowsBrowserLaunching
                      equals(propValue)) {
                 useRegistry = true;
             }
-            if(logger.isDebugEnabled()) {
+            if (logger.isDebugEnabled()) {
                 logger.debug("Browser discovery policy property value=" +
                              (propValue == null ? "null" : propValue));
                 logger.debug("useRegistry=" + Boolean.toString(useRegistry));
