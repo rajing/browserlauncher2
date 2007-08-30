@@ -1,4 +1,4 @@
-<!-- $Id: docs.shtml,v 1.7 2007/01/30 21:48:47 jchapman0 Exp $ -->
+<!-- $Id: docs.shtml,v 1.8 2007/08/30 19:51:07 jchapman0 Exp $ -->
 <html>
 <head>
 	<title>BrowserLauncher2 Documentation Page</title>
@@ -65,6 +65,26 @@
 <p>Another option for selecting a browser is to let the user pick the browser. The name of the preferred browser can be stored in the System properties using the key <code>edu.stanford.ejalbert.preferred.browser</code>. This key should be referenced using <code>IBrowserLaunching.BROWSER_SYSTEM_PROPERTY</code>. When launching a url using the default browser (<code>public void openURLinBrowser(String urlString)</code>), the browser system property will be checked. If it is set to a valid browser, the library will direct the requested url to the specified browser.</p>
 <p>The <code>edu.stanford.ejalbert.browserprefui</code> package contains an action class and a dialog for offering browser choices to the user and storing the user's selection in the browser system property. This code can be called directly from your application or used as the basis for your own code. To call it directly, associate a menu item or button with the action class <code class="codetext">BrowserPrefAction</code>.</p>
 <p><img src="images/blauncherbrowserprefdlg.jpg"/><br/><b>Image 2: Preferred Browser Selection Dialog.</b></p>
+
+<h2><a name="browdiscprop">Browser Discovery Property (Windows only)</a></h2>
+<p>There are two ways to discover which browsers a user has on his system. The preferred method is to look in the registry. The secondary method is to look through the Program Files folder. Both methods have problems.</p>
+<p>For the registry method:
+<ul>
+<li>Access can be denied for security reasons.</li>
+<li>Applications do not consistently add entries to the registry.</li>
+</ul>
+</p>
+<p>We believe the access problems have been addressed. As of release 1.3, BrowserLaucher2 is using the <a href="http://sourceforge.net/projects/java-registry">Pure Java registry wrapper for Windows</a> library to read the registry.</p>
+<p>For the file path method:
+<ul>
+<li>Applications must be consistent with the folder names used in the Program Files folder.</li>
+</ul>
+</p>
+<p>The default behavior under all versions of Windows is to first search the registry for browsers then search the Program Files folder for any browsers that are not found in the registry. If a user has problems accessing the registry, the library can be told to skip the registry search. This behavior is controlled by the system property <code>win.browser.disc.policy</code> defined in <code>BrowserLauncher.WINDOWS_BROWSER_DISC_POLICY_PROPERTY</code>. BrowserLauncher2 recognizes two values for this property: <code>registry</code> (<code>BrowserLauncher.WINDOWS_BROWSER_DISC_POLICY_REGISTRY</code>) and <code>disk</code> (<code>BrowserLauncher.WINDOWS_BROWSER_DISC_POLICY_DISK</code>).
+</p>
+
+<p>The policy can be set at application start-up from the command line using: <code>-Dwin.browser.disc.policy=disk</code>. It can also be set in the code using <code>System.setProperty(BrowserLauncher.WINDOWS_BROWSER_DISC_POLICY_PROPERTY, BrowserLauncher.WINDOWS_BROWSER_DISC_POLICY_DISK)</code>. The call to <code>System.setProperty()</code> must be made <b>before</b> the call to create a browser launcher instance: <code>BrowserLauncher launcher = new BrowserLauncher();</code>.</p>
+
 <h2><a name="logging">Logging</a></h2>
 <p>BrowserLauncher2 uses a subset of WrapLog 1.1 for logging. If you do not specify a logger instance, a default logger (NoneLogger) will be used. The default logger does not log anything.</p>
 <p>For more information on using WrapLog, see <a href="http://sourceforge.net/projects/wraplog">http://sourceforge.net/projects/wraplog</a>.</p>
