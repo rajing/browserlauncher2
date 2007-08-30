@@ -1,4 +1,4 @@
-<!-- $Id: projectsusing.shtml,v 1.5 2007/06/13 16:41:02 jchapman0 Exp $ -->
+<!-- $Id: projectsusing.shtml,v 1.6 2007/08/30 19:51:34 jchapman0 Exp $ -->
 <html>
 <head>
 	<title>Projects Using BrowserLauncher2 Page</title>
@@ -16,6 +16,10 @@
 <h2>Buddi: Personal budget software for the rest of us</h2>
 (<a href="http://buddi.sourceforge.net">http://buddi.sourceforge.net</a>)
 <p>Buddi is a personal finance and budgeting program, aimed at those who have little or no financial background.</p>
+
+<h2>I Hate Kanji</h2>
+(<a href="http://ihatekanji.sourceforge.net">http://ihatekanji.sourceforge.net</a>)
+<p>This software is yet another tool for Japanese kanji learning.</p>
 
 <h2>Java Lemonade Stand</h2>
 (<a href="http://jlemonadestand.sourceforge.net">http://jlemonadestand.sourceforge.net</a>)
