@@ -1,3 +1,5 @@
+$Id: README.txt,v 1.4 2007/08/30 19:44:04 jchapman0 Exp $
+
 Introduction
 ------------
 
@@ -56,11 +58,28 @@ BrowserLauncherRunner runner = new BrowserLauncherRunner(launcher, urlString, er
 Thread launcherThread = new Thread(runner);
 launcherThread.start();
 
+Third Party Libraries:
+
+BrowserLauncher2 uses two libraries: WrapLog and Pure Java registry wrapper for Windows.  
+The code for these libraries is integrated into the BrowserLauncher2 build.
+
 Logging
 ---------
 BrowserLauncher2 uses a subset of WrapLog 1.1 for logging. If you do not specify a logger 
 instance, a default logger (NoneLogger) will be used. The default logger does not log 
 anything.
 
+WrapLog is available under the BSD License.
+
 For more information on using WrapLog, see http://sourceforge.net/projects/wraplog.
 
+Windows Registry Access
+-----------------------
+BrowserLauncher2 uses Pure Java registry wrapper for Windows (release/version 2.0) for
+reading the Windows registry to locate browsers on a user's system.
+
+Pure Java registry wrapper for Windows is available under the GNU Library or Lesser 
+General Public License (LGPL).
+
+For more information on using Pure Java registry wrapper for Windows, see 
+http://sourceforge.net/projects/java-registry.
