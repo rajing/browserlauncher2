@@ -1,7 +1,7 @@
-<!-- $Id: sidebar.shtml,v 1.8 2007/06/13 19:54:55 jchapman0 Exp $ -->
+<!-- $Id: sidebar.shtml,v 1.9 2007/08/30 19:52:00 jchapman0 Exp $ -->
 <div class="sidebar">
-<a href="http://sourceforge.net/project/showfiles.php?group_id=127980"><b><font size="+2" color="#0000dd">Download 1.2</font></b></a>
-<br/><b>Latest Release:</b><br/>June 14, 2007
+<a href="http://sourceforge.net/project/showfiles.php?group_id=127980"><b><font size="+2" color="#0000dd">Download 1.3</font></b></a>
+<br/><b>Latest Release:</b><br/>August 31, 2007
 <ul>
 	<li><a href="index.shtml">Home</a></li>		
 	<li><a href="http://sourceforge.net/projects/browserlaunch2/">Project Page</a></li>
@@ -18,6 +18,9 @@
 <li><a href="docs.shtml#browsertargetting">Browser Targetting</a></li>
 <li><a href="docs.shtml#forcing_new_browser_win">Forcing a New Browser Window</a></li>
 <li><a href="docs.shtml#defbrowserfromsysprop">Default Browser from System Property</a></li>
+
+<li><a href="docs.shtml#browdiscprop">Browser Discovery Property (Windows only)</a></li>
+
 <li><a href="docs.shtml#logging">Logging</a></li>
 <li><a href="api/index.html">API JavaDocs</a></li>
 <li><a href="problems.shtml">Problems and Workarounds</a></li>
