@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: WindowsBrowserLaunching.java,v 1.12 2007/08/30 19:36:43 jchapman0 Exp $
+// $Id: WindowsBrowserLaunching.java,v 1.13 2007/08/31 15:54:10 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
 
 import java.io.File;
@@ -46,6 +46,7 @@ import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 import edu.stanford.ejalbert.launching.IBrowserLaunching;
 import net.sf.wraplog.AbstractLogger;
+import edu.stanford.ejalbert.launching.utils.LaunchingUtils;
 
 /**
  * Handles initialization, configuration, and calls to open a url.
@@ -342,6 +343,7 @@ public class WindowsBrowserLaunching
         }
     }
 
+
     private Map getExeNamesToBrowsers(List tempBrowsersToCheck) {
         Map exeNamesToBrowsers = new HashMap();
         Iterator iter = tempBrowsersToCheck.iterator();
@@ -463,16 +465,15 @@ public class WindowsBrowserLaunching
     /**
      * Returns the windows arguments for launching a default browser.
      *
-     * @todo implement
-     *
      * @param protocol String
      * @param urlString String
      * @return String[]
      */
     private String[] getCommandArgs(String protocol,
                                     String urlString) {
-        String commandArgs = commandsDefaultBrowser.replaceAll(
-                "<url>",
+        String commandArgs = LaunchingUtils.replaceArgs(
+                commandsDefaultBrowser,
+                null,
                 urlString);
         return commandArgs.split("[ ]");
     }
@@ -493,12 +494,10 @@ public class WindowsBrowserLaunching
                                   WindowsBrowser winbrowser,
                                   String urlString,
                                   boolean forceNewWindow) {
-        String commandArgs = commandsTargettedBrowser.replaceAll(
-                "<url>",
+        String commandArgs = LaunchingUtils.replaceArgs(
+                commandsTargettedBrowser,
+                winbrowser.getBrowserApplicationName(),
                 urlString);
-        commandArgs = commandArgs.replaceAll(
-                "<browser>",
-                winbrowser.getBrowserApplicationName());
         String args = "";
         if (forceNewWindow) {
             args = winbrowser.getForceNewWindowArgs();

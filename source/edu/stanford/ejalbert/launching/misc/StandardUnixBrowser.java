@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004,2005,2006 Jeff Chapman
+    Copyright 2004,2005,2006,2007 Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: StandardUnixBrowser.java,v 1.7 2006/09/11 20:39:48 jchapman0 Exp $
+// $Id: StandardUnixBrowser.java,v 1.8 2007/08/31 15:54:10 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.misc;
 
 import java.io.BufferedReader;
@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import net.sf.wraplog.AbstractLogger;
+import edu.stanford.ejalbert.launching.utils.LaunchingUtils;
 
 /**
  * Contains information on a unix browser.
@@ -106,8 +107,9 @@ class StandardUnixBrowser
      */
     private String[] getCommandLineArgs(String argsString,
                                         String urlString) {
-        argsString = argsString.replaceAll("<browser>", browserArgName);
-        argsString = argsString.replaceAll("<url>", urlString);
+        argsString = LaunchingUtils.replaceArgs(argsString,
+                                                browserArgName,
+                                                urlString);
         return argsString.split("[ ]");
     }
 
