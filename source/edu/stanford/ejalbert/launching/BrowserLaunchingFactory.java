@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLaunchingFactory.java,v 1.7 2007/08/27 14:14:10 jchapman0 Exp $
+// $Id: BrowserLaunchingFactory.java,v 1.8 2007/12/21 17:11:14 jchapman0 Exp $
 package edu.stanford.ejalbert.launching;
 
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
@@ -30,6 +30,7 @@ import edu.stanford.ejalbert.launching.misc.SunOSBrowserLaunching;
 import edu.stanford.ejalbert.launching.misc.UnixNetscapeBrowserLaunching;
 import edu.stanford.ejalbert.launching.windows.WindowsBrowserLaunching;
 import net.sf.wraplog.AbstractLogger;
+import edu.stanford.ejalbert.launching.soylatte.SoyLatteBrowserLaunching;
 
 /**
  * Factory for determining the OS and returning the appropriate version
@@ -112,6 +113,11 @@ public class BrowserLaunchingFactory {
                         logger,
                         WindowsBrowserLaunching.WINKEY_WINNT);
             }
+        }
+        // SoyLatte running under a Mac OS X platform.
+        else if (osName.startsWith("Darwin")) {
+            logger.info("Darwin");
+            return new SoyLatteBrowserLaunching(logger);
         }
         else if (osName.startsWith("SunOS")) {
             logger.info("SunOS");
