@@ -1,4 +1,4 @@
-<!-- $Id: projectsusing.shtml,v 1.6 2007/08/30 19:51:34 jchapman0 Exp $ -->
+<!-- $Id: projectsusing.shtml,v 1.7 2007/12/21 17:05:57 jchapman0 Exp $ -->
 <html>
 <head>
 	<title>Projects Using BrowserLauncher2 Page</title>
@@ -28,6 +28,10 @@
 <h2>Jreepad</h2>
 (<a href="http://jreepad.sourceforge.net">http://jreepad.sourceforge.net</a>)
 <p>Jreepad is an excellent free "personal database" program - it's a great way to organise all your personal notes, thoughts, tasks, recipes, memories...Jreepad is an excellent free "personal database" program - it's a great way to organise all your personal notes, thoughts, tasks, recipes, memories...</p>
+
+<h2>k5n Desktop Calendar</h2>
+(<a href="http://www.k5n.us/k5ncal.php">http://www.k5n.us/k5ncal.php</a>)
+<p>The k5n Desktop Calendar (k5nCal, for short) is a calendar application for your desktop. It shares features with applications like Apple iCal and Microsoft Outlook, but it is open source. It is built upon Java Calendar Tools, and all data is stored in RFC 2445 iCalendar format.</p>
 
 <h2>PaperCut NG - Print Quotas</h2>
 (<a href="http://www.papercut.biz">http://www.papercut.biz</a>)
