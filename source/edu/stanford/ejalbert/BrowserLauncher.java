@@ -18,18 +18,22 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncher.java,v 1.13 2007/08/27 14:12:51 jchapman0 Exp $
+// $Id: BrowserLauncher.java,v 1.14 2008/11/12 21:11:00 jchapman0 Exp $
 package edu.stanford.ejalbert;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import edu.stanford.ejalbert.browserevents.BrowserEvent;
+import edu.stanford.ejalbert.browserevents.BrowserEventListener;
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
-import edu.stanford.ejalbert.exceptionhandler.
-        BrowserLauncherDefaultErrorHandler;
+import edu.stanford.ejalbert.exceptionhandler.BrowserLauncherDefaultErrorHandler;
 import edu.stanford.ejalbert.exceptionhandler.BrowserLauncherErrorHandler;
 import edu.stanford.ejalbert.launching.BrowserLaunchingFactory;
+import edu.stanford.ejalbert.launching.IBrowserEventCallBack;
 import edu.stanford.ejalbert.launching.IBrowserLaunching;
 import net.sf.wraplog.AbstractLogger;
 import net.sf.wraplog.NoneLogger;
@@ -90,7 +94,8 @@ import net.sf.wraplog.NoneLogger;
  * @author Markus Gebhard
  * @author Jeff Chapman
  */
-public class BrowserLauncher {
+public class BrowserLauncher
+        implements IBrowserEventCallBack {
     /**
      * Key to system property containing name of users
      * preferred browser.
@@ -129,6 +134,10 @@ public class BrowserLauncher {
     private final IBrowserLaunching launching; // in ctor
     private AbstractLogger logger; // in init method
     private BrowserLauncherErrorHandler errorHandler; // in ctor
+    private final Set browserEventListeners = new HashSet();
+    private String userName; // in ctor
+    private static final Integer attemptIdLock = new Integer(0);
+    private static int attemptIdValue = 0;
 
     /**
      * Initializes the browser launcher for the operating system on which
@@ -201,6 +210,7 @@ public class BrowserLauncher {
                            BrowserLauncherErrorHandler errorHandler)
             throws BrowserLaunchingInitializingException,
             UnsupportedOperatingSystemException {
+        this.userName = System.getProperty("user.name");
         // assign logger or use default
         if (logger == null) {
             logger = new NoneLogger();
@@ -237,6 +247,7 @@ public class BrowserLauncher {
         }
         IBrowserLaunching launching =
                 BrowserLaunchingFactory.createSystemBrowserLaunching(logger);
+        launching.setBrowserEventCallBack(this);
         launching.initialize();
         return launching;
     }
@@ -286,7 +297,59 @@ public class BrowserLauncher {
         }
     }
 
+    /* -------------- from IBrowserEventCallBack ----======--- */
+
+    public int getOpenAttemptId() {
+        int id;
+        synchronized(attemptIdLock) {
+            id = attemptIdValue++;
+        }
+        return id;
+    }
+
+    public void fireBrowserEvent(int id,
+                                 int attemptId,
+                                 Process proc,
+                                 String browserName,
+                                 String urlLaunched) {
+        BrowserEvent bevent = new BrowserEvent(id,
+                                               attemptId,
+                                               proc,
+                                               userName,
+                                               browserName,
+                                               urlLaunched);
+        BrowserEventListener[] listeners = null;
+        int lcnt = 0;
+        synchronized (browserEventListeners) {
+            lcnt = browserEventListeners.size();
+            listeners = (BrowserEventListener[]) browserEventListeners.toArray(new
+                    BrowserEventListener[lcnt]);
+        }
+
+        // maybe put this into a different thread??
+
+        for (int idx = 0; idx < lcnt; idx++) {
+            listeners[idx].handleBrowserEvent(bevent);
+        }
+    }
+
     /* ---------------------- API Methods -------------------- */
+
+    public void addBrowserEventListener(BrowserEventListener listener) {
+        if (listener != null) {
+            synchronized (browserEventListeners) {
+                browserEventListeners.add(listener);
+            }
+        }
+    }
+
+    public void removeBrowserEventListener(BrowserEventListener listener) {
+        if (listener != null) {
+            synchronized (browserEventListeners) {
+                browserEventListeners.remove(listener);
+            }
+        }
+    }
 
     /**
      * Returns the logger being used by this BrowserLauncher instance.

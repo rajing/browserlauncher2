@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004,2005,2006,2007 Markus Gebhard, Jeff Chapman
+    Copyright 2004,2005,2006,2007,2008 Markus Gebhard, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: WindowsBrowserLaunching.java,v 1.13 2007/08/31 15:54:10 jchapman0 Exp $
+// $Id: WindowsBrowserLaunching.java,v 1.14 2008/11/12 21:11:01 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.windows;
 
 import java.io.File;
@@ -47,6 +47,7 @@ import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 import edu.stanford.ejalbert.launching.IBrowserLaunching;
 import net.sf.wraplog.AbstractLogger;
 import edu.stanford.ejalbert.launching.utils.LaunchingUtils;
+import edu.stanford.ejalbert.launching.IBrowserEventCallBack;
 
 /**
  * Handles initialization, configuration, and calls to open a url.
@@ -567,6 +568,15 @@ public class WindowsBrowserLaunching
     }
 
     /* ----------------- from IBrowserLaunching -------------------- */
+
+    /**
+     * Registers the browser event call back with the launcher object.
+     *
+     * @param callback IBrowserEventCallBack
+     */
+    public void setBrowserEventCallBack(IBrowserEventCallBack callback) {
+        //browserEventCallback = callback;
+    }
 
     /**
      * Initializes the browser launcher from the windows config

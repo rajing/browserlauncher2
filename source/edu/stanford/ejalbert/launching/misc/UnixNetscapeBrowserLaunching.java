@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004,2005,2006 Markus Gebhard, Jeff Chapman
+    Copyright 2004,2005,2006,2008 Markus Gebhard, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: UnixNetscapeBrowserLaunching.java,v 1.14 2006/11/07 14:08:31 jchapman0 Exp $
+// $Id: UnixNetscapeBrowserLaunching.java,v 1.15 2008/11/12 21:11:00 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.misc;
 
 import java.io.IOException;
@@ -35,6 +35,8 @@ import java.util.TreeMap;
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
+import edu.stanford.ejalbert.launching.IBrowserEvent;
+import edu.stanford.ejalbert.launching.IBrowserEventCallBack;
 import edu.stanford.ejalbert.launching.IBrowserLaunching;
 import net.sf.wraplog.AbstractLogger;
 
@@ -68,6 +70,10 @@ public class UnixNetscapeBrowserLaunching
      * try to force url into a new browser instance/window.
      */
     private boolean forceNewWindow = false;
+    /**
+     * object to call for browser events.
+     */
+    protected IBrowserEventCallBack browserEventCallback = null;
 
     /**
      * Sets the logger and config file name.
@@ -110,6 +116,7 @@ public class UnixNetscapeBrowserLaunching
         logger.info(unixBrowser.getBrowserDisplayName());
         logger.info(urlString);
         try {
+            int attemptId = browserEventCallback.getOpenAttemptId();
             int exitCode = -1;
             Process process = null;
             String[] args;
@@ -121,6 +128,12 @@ public class UnixNetscapeBrowserLaunching
                     logger.debug(Arrays.asList(args).toString());
                 }
                 process = Runtime.getRuntime().exec(args);
+                browserEventCallback.fireBrowserEvent(
+                        IBrowserEvent.ID_BROWSER_LAUNCHED,
+                        attemptId,
+                        process,
+                        unixBrowser.getBrowserApplicationName(),
+                        urlString);
                 exitCode = process.waitFor();
             }
             // try call to force a new window if requested
@@ -130,6 +143,12 @@ public class UnixNetscapeBrowserLaunching
                     logger.debug(Arrays.asList(args).toString());
                 }
                 process = Runtime.getRuntime().exec(args);
+                browserEventCallback.fireBrowserEvent(
+                        IBrowserEvent.ID_BROWSER_LAUNCHED,
+                        attemptId,
+                        process,
+                        unixBrowser.getBrowserApplicationName(),
+                        urlString);
                 exitCode = process.waitFor();
             }
             // open in a new window
@@ -139,6 +158,12 @@ public class UnixNetscapeBrowserLaunching
                     logger.debug(Arrays.asList(args).toString());
                 }
                 process = Runtime.getRuntime().exec(args);
+                browserEventCallback.fireBrowserEvent(
+                        IBrowserEvent.ID_BROWSER_LAUNCHED,
+                        attemptId,
+                        process,
+                        unixBrowser.getBrowserApplicationName(),
+                        urlString);
                 exitCode = process.waitFor();
             }
             if (exitCode == 0) {
@@ -154,6 +179,15 @@ public class UnixNetscapeBrowserLaunching
     }
 
     /* ---------------------- from IBrowserLaunching ----------------------- */
+
+    /**
+     * Registers the browser event call back with the launcher object.
+     *
+     * @param callback IBrowserEventCallBack
+     */
+    public void setBrowserEventCallBack(IBrowserEventCallBack callback) {
+        browserEventCallback = callback;
+    }
 
     /**
      * Uses the which command to find out which browsers are available.

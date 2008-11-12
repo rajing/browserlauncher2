@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004,2005,2006,2007 Markus Gebhard, Jeff Chapman
+    Copyright 2004,2005,2006,2007,2008 Markus Gebhard, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: IBrowserLaunching.java,v 1.9 2007/08/27 14:15:20 jchapman0 Exp $
+// $Id: IBrowserLaunching.java,v 1.10 2008/11/12 21:11:00 jchapman0 Exp $
 package edu.stanford.ejalbert.launching;
 
 import java.util.List;
@@ -87,6 +87,13 @@ public interface IBrowserLaunching {
      */
     public void initialize()
             throws BrowserLaunchingInitializingException;
+
+    /**
+     * Registers the browser event call back with the launcher object.
+     *
+     * @param callback IBrowserEventCallBack
+     */
+    public void setBrowserEventCallBack(IBrowserEventCallBack callback);
 
     /**
      * Opens the passed url in the system's default browser.

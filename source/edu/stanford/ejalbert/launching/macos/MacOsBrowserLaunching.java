@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2004,2006 Markus Gebhard, Jeff Chapman
+    Copyright 2004,2006,2008 Markus Gebhard, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: MacOsBrowserLaunching.java,v 1.3 2006/09/11 20:38:13 jchapman0 Exp $
+// $Id: MacOsBrowserLaunching.java,v 1.4 2008/11/12 21:11:00 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.macos;
 
 import java.util.List;
@@ -27,6 +27,7 @@ import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 import edu.stanford.ejalbert.launching.IBrowserLaunching;
+import edu.stanford.ejalbert.launching.IBrowserEventCallBack;
 
 /**
  * @author Markus Gebhard
@@ -46,6 +47,15 @@ public abstract class MacOsBrowserLaunching
     protected static final String FINDER_CREATOR = "MACS";
 
     /* ---------------- from IBrowserLaunching ---------------- */
+
+    /**
+     * Registers the browser event call back with the launcher object.
+     *
+     * @param callback IBrowserEventCallBack
+     */
+    public void setBrowserEventCallBack(IBrowserEventCallBack callback) {
+        //browserEventCallback = callback;
+    }
 
     /**
      * Falls through to non-targetted openUrl method. Browser

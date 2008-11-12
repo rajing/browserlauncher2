@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: BrowserLauncherTestApp.java,v 1.22 2007/01/31 18:32:41 jchapman0 Exp $
+// $Id: BrowserLauncherTestApp.java,v 1.23 2008/11/12 21:11:01 jchapman0 Exp $
 package edu.stanford.ejalbert.testing;
 
 import java.awt.BorderLayout;
@@ -54,6 +54,9 @@ import javax.swing.JCheckBox;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import edu.stanford.ejalbert.browserprefui.BrowserPrefAction;
+import edu.stanford.ejalbert.browserclosers.IBrowserCloser;
+import edu.stanford.ejalbert.browserclosers.DefaultBrowserCloser;
+import edu.stanford.ejalbert.browserevents.BrowserEvent;
 
 /**
  * Standalone gui that allows for testing the broserlauncher code and provides
@@ -75,6 +78,8 @@ public class BrowserLauncherTestApp
     private ResourceBundle bundle; // in ctor
     private JCheckBox windowPolicyCBox = new JCheckBox();
 
+    //private IBrowserCloser browserCloser = new DefaultBrowserCloser();
+
     public BrowserLauncherTestApp() {
         super();
         try {
@@ -86,6 +91,9 @@ public class BrowserLauncherTestApp
             launcher = new BrowserLauncher(
                     logger,
                     new TestAppErrorHandler(debugTextArea));
+
+            //launcher.addBrowserEventListener(browserCloser);
+
             ComboBoxModel cbModel = new DefaultComboBoxModel(launcher.
                     getBrowserList().toArray());
             browserBox.setModel(cbModel);
@@ -186,6 +194,14 @@ public class BrowserLauncherTestApp
                 copyButton_actionPerformed(e);
             }
         });
+        JButton killBrowserButton = new JButton(bundle.getString(
+                "bttn.killbrowser"));
+        killBrowserButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                killBrowserButton_actionPerformed(e);
+            }
+        });
+
         JPanel debugTextBttnPanel = new JPanel();
         BoxLayout bttnBoxLayout = new BoxLayout(
                 debugTextBttnPanel,
@@ -202,6 +218,8 @@ public class BrowserLauncherTestApp
         debugTextBttnPanel.add(loggingLevelBttn);
         debugTextBttnPanel.add(Box.createHorizontalStrut(3));
         debugTextBttnPanel.add(copyButton);
+        debugTextBttnPanel.add(Box.createHorizontalStrut(3));
+        debugTextBttnPanel.add(killBrowserButton);
         debugTextBttnPanel.add(Box.createHorizontalStrut(2));
 
         windowPolicyCBox.addItemListener(new ItemListener() {
@@ -291,6 +309,16 @@ public class BrowserLauncherTestApp
                                           ex.getMessage(),
                                           "Error Message",
                                           JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void killBrowserButton_actionPerformed(ActionEvent e) {
+        if (logger.isInfoEnabled()) {
+            logger.info("kill browser button clicked");
+        }
+        BrowserEvent[] browserEvents = browserCloser.getBrowserEvents();
+        if(browserEvents.length > 0) {
+            browserCloser.closeBrowser(browserEvents[0]);
         }
     }
 

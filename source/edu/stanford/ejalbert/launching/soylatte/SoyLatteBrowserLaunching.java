@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2007 Jeff Chapman
+    Copyright 2007,2008 Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,7 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: SoyLatteBrowserLaunching.java,v 1.1 2007/12/21 17:13:35 jchapman0 Exp $
+// $Id: SoyLatteBrowserLaunching.java,v 1.2 2008/11/12 21:11:00 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.soylatte;
 
 import java.io.IOException;
@@ -37,6 +37,7 @@ import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 import edu.stanford.ejalbert.launching.IBrowserLaunching;
 import net.sf.wraplog.AbstractLogger;
+import edu.stanford.ejalbert.launching.IBrowserEventCallBack;
 
 
 public class SoyLatteBrowserLaunching
@@ -144,6 +145,15 @@ public class SoyLatteBrowserLaunching
     }
 
     /* ---------------------- from IBrowserLaunching ----------------------- */
+
+    /**
+     * Registers the browser event call back with the launcher object.
+     *
+     * @param callback IBrowserEventCallBack
+     */
+    public void setBrowserEventCallBack(IBrowserEventCallBack callback) {
+        //browserEventCallback = callback;
+    }
 
     /**
      * Uses the which command to find out which browsers are available.

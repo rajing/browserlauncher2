@@ -1,5 +1,5 @@
 /************************************************
-    Copyright 2005,2006 Olivier Hochreutiner, Jeff Chapman
+    Copyright 2005,2006,2008 Olivier Hochreutiner, Jeff Chapman
 
     This file is part of BrowserLauncher2.
 
@@ -18,12 +18,13 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ************************************************/
-// $Id: SunOSBrowserLaunching.java,v 1.3 2006/10/26 20:02:18 jchapman0 Exp $
+// $Id: SunOSBrowserLaunching.java,v 1.4 2008/11/12 21:11:00 jchapman0 Exp $
 package edu.stanford.ejalbert.launching.misc;
 
 import edu.stanford.ejalbert.exception.BrowserLaunchingExecutionException;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
+import edu.stanford.ejalbert.launching.IBrowserEvent;
 import edu.stanford.ejalbert.launching.IBrowserLaunching;
 import net.sf.wraplog.AbstractLogger;
 
@@ -86,8 +87,15 @@ public class SunOSBrowserLaunching
             }
             else {
                 logger.info(defBrowser.getBrowserDisplayName());
+                int attemptId = browserEventCallback.getOpenAttemptId();
                 Process process = Runtime.getRuntime().exec(
                         defBrowser.getArgsForStartingBrowser(urlString));
+                browserEventCallback.fireBrowserEvent(
+                        IBrowserEvent.ID_BROWSER_LAUNCHED,
+                        attemptId,
+                        process,
+                        defBrowser.getBrowserApplicationName(),
+                        urlString);
                 process.waitFor();
             }
         }
