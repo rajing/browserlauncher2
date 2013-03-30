@@ -26,6 +26,7 @@ import edu.stanford.ejalbert.launching.macos.MacOs2_0BrowserLaunching;
 import edu.stanford.ejalbert.launching.macos.MacOs2_1BrowserLaunching;
 import edu.stanford.ejalbert.launching.macos.MacOs3_0BrowserLaunching;
 import edu.stanford.ejalbert.launching.macos.MacOs3_1BrowserLaunching;
+import edu.stanford.ejalbert.launching.macos.MacOsXBrowserLaunching;
 import edu.stanford.ejalbert.launching.misc.SunOSBrowserLaunching;
 import edu.stanford.ejalbert.launching.misc.UnixNetscapeBrowserLaunching;
 import edu.stanford.ejalbert.launching.windows.WindowsBrowserLaunching;
@@ -56,7 +57,10 @@ public class BrowserLaunchingFactory {
             AbstractLogger logger)
             throws UnsupportedOperatingSystemException {
         String osName = System.getProperty("os.name");
-        if (osName.startsWith("Mac OS")) {
+        if (osName.contains("OS X")) {
+            return new MacOsXBrowserLaunching();
+        }
+        else if (osName.startsWith("Mac OS")) {
             logger.info("Mac OS");
             String mrjVersion = System.getProperty("mrj.version");
             String majorMRJVersion = mrjVersion.substring(0, 3);
