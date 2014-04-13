@@ -46,7 +46,7 @@ public class MacOsXBrowserLaunching
         try {
             Class desktopClass = Class.forName(
                     "java.awt.Desktop");
-            desktopObject = desktopClass.getMethod("getDesktop", null).invoke(null, null);
+            desktopObject = desktopClass.getMethod("getDesktop", (Class[])null).invoke(null, (Object[])null);
             openURL = desktopClass.getDeclaredMethod("open",
                     new Class[] {File.class});
         }
