@@ -46,9 +46,9 @@ public class MacOsXBrowserLaunching
         try {
             Class desktopClass = Class.forName(
                     "java.awt.Desktop");
-            desktopObject = desktopClass.getMethod("getDesktop", null).invoke(null, null);
-            openURL = desktopClass.getDeclaredMethod("open",
-                    new Class[] {File.class});
+            desktopObject = desktopClass.getMethod("getDesktop", (Class[])null).invoke(null, (Object[])null);
+            openURL = desktopClass.getDeclaredMethod("browse",
+                    new Class[] {URI.class});
         }
         catch (Exception e) {
             throw new BrowserLaunchingInitializingException(e);
@@ -60,7 +60,7 @@ public class MacOsXBrowserLaunching
             BrowserLaunchingExecutionException,
             BrowserLaunchingInitializingException {
         try {
-            openURL.invoke(desktopObject, new Object[] {new File(new URI(urlString))});
+            openURL.invoke(desktopObject, new Object[] {new URI(urlString)});
         }
         catch (Exception e) {
             throw new BrowserLaunchingExecutionException(e);
